@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AccelerAudio</string>
+    <string name="home">Premi su + per iniziare una registrazione</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="action_new">Nuova registrazione</string>
+    <string name="title_activity_record">Record</string>
+    <string name="start">Registra</string>
+    <string name="stop">Stop</string>
+    <string name="pause">Pausa</string>
+    <string name="initial_message">Premi Registra per iniziare a registrare i dati dall\'accelerometro</string>
+    <string name="asse_x">Asse X</string>
+    <string name="asse_y">Asse Y</string>
+    <string name="asse_z">Asse Z</string>
+
+</resources>
