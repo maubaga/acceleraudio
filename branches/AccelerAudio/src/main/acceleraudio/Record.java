@@ -1,13 +1,13 @@
 package main.acceleraudio;
 
 
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -15,7 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.MediaController;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 public class Record extends ActionBarActivity implements SensorEventListener {
 
@@ -26,6 +32,7 @@ public class Record extends ActionBarActivity implements SensorEventListener {
 	private static byte[] recordZ = new byte[1000];
 	private static int recordCount;
 	private static boolean isStart;
+	long timeStop = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,38 +119,108 @@ public class Record extends ActionBarActivity implements SensorEventListener {
 		if (!isStart)
 			return;
 
-		recordX[recordCount] = (byte) x;
-		recordY[recordCount] = (byte) y;
-		recordZ[recordCount] = (byte) z;
-		recordCount++;
+		try{
+			recordX[recordCount] = (byte) (x * 10);
+			recordY[recordCount] = (byte) (y * 10);
+			recordZ[recordCount] = (byte) (z * 10);
+			recordCount++;
+		}
+		catch (ArrayIndexOutOfBoundsException e){
+			//The three array are too short, I need to resize them
+			byte[] recordXtmp = new byte[recordX.length * 2];
+			byte[] recordYtmp = new byte[recordX.length * 2];
+			byte[] recordZtmp = new byte[recordX.length * 2];
+			
+			for (int i = 0; i < recordX.length; i++){
+				recordXtmp[i] = recordX[i];
+				recordYtmp[i] = recordY[i];
+				recordZtmp[i] = recordZ[i];
+			}
+			recordX = recordXtmp;
+			recordY = recordYtmp;
+			recordZ = recordZtmp;
+			
+			//Now I have add the last value
+			recordX[recordCount] = (byte) (x * 10);
+			recordY[recordCount] = (byte) (y * 10);
+			recordZ[recordCount] = (byte) (z * 10);
+			recordCount++;
+		}
+		
 
 	}
 
 	public void startRecord(View view){
 		isStart = true;
-		String result = "La registrazione è ora partita,"
-				+ " premere pausa per fermare momentaneamente la registrazione o stop per fermarla";
+		
+		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
+		LinearLayout mic = (LinearLayout)findViewById(R.id.mic);
+		LinearLayout buttons = (LinearLayout)findViewById(R.id.buttons);
+		ImageButton play = (ImageButton)findViewById(R.id.play);
+		ImageButton pause = (ImageButton)findViewById(R.id.pause);
+		VideoView videoView = (VideoView)findViewById(R.id.bar);
+		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		
+		chrono.setVisibility(View.VISIBLE);
+		chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
+		chrono.start();
+		
+		
+        MediaController mediaController = new MediaController(this);
+         mediaController.setAnchorView(videoView);
+        videoView.setMediaController(mediaController);
 
-		TextView textView = (TextView) findViewById(R.id.show_results);
-		textView.setText(result);
+//        videoView.setVideoPath("/sdcard/Video/Techno_chicken.MP4");
+
+        videoView.start();
+		
+        scroll.setVisibility(View.GONE);
+		mic.setVisibility(View.GONE);
+		buttons.setVisibility(View.VISIBLE);		
+		play.setVisibility(View.GONE);
+		pause.setVisibility(View.VISIBLE);
+//		bars.setVisibility(View.VISIBLE);
 	}
 
 	public void pauseRecord(View view){
 		isStart = false;
-		String result = "La registrazione è ora in pausa,"
-				+ " premi start per coninuare o stop per terminare e visualizzare i dati registrati";
-
-		TextView textView = (TextView) findViewById(R.id.show_results);
-		textView.setText(result);
+		
+		ImageButton play = (ImageButton)findViewById(R.id.play);
+		ImageButton pause = (ImageButton)findViewById(R.id.pause);
+		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+	
+		chrono.stop();
+		timeStop = chrono.getBase() - SystemClock.elapsedRealtime();
+		
+		play.setVisibility(View.VISIBLE);
+		pause.setVisibility(View.GONE);
 	}
 
 	public void stopRecord(View view){
 		isStart = false;
 		String result = "";
 		for(int j = 0; j < recordCount; j++)
-			result = result +"x=" + recordX[j] + " y=" + recordY[j] + " z=" + recordZ[j] +"\n";
-
-		TextView textView = (TextView) findViewById(R.id.show_results);
+			result = result +"x= " + recordX[j] + "    y= " + recordY[j] + "    z= " + recordZ[j] +"\n";
+		
+		recordCount = 0; //Reset the count, so if I press play again the recording restart
+		
+		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
+		TextView textView = (TextView) findViewById(R.id.show_results);		
+		ImageButton play = (ImageButton)findViewById(R.id.play);
+		ImageButton pause = (ImageButton)findViewById(R.id.pause);
+		LinearLayout bars = (LinearLayout)findViewById(R.id.bars);
+		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		
+		chrono.setVisibility(View.GONE);
+		chrono.setBase(SystemClock.elapsedRealtime());
+		chrono.stop();
+		timeStop = 0;
+		
+		play.setVisibility(View.VISIBLE);
+		pause.setVisibility(View.GONE);		
+		scroll.setVisibility(View.VISIBLE);
+		bars.setVisibility(View.GONE);
+		
 		textView.setText(result);
 	}
 
