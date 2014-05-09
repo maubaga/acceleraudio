@@ -13,5 +13,10 @@
     <string name="asse_x">Asse X</string>
     <string name="asse_y">Asse Y</string>
     <string name="asse_z">Asse Z</string>
+    <string name="title_activity_pref">PrefActivity</string>
+    <string name="selected_axes">Assi selezionati</string>
+    <string name="sample_rate">Frequenza di campionamento</string>
+    <string name="max_duration">Durata massima di registrazione</string>
+    <string name="amount_upsampling">Parametro di interpolazione</string>
 
 </resources>
