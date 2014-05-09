@@ -10,7 +10,6 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -28,7 +27,11 @@
         <activity
             android:name="main.acceleraudio.RecordActivity"
             android:label="@string/title_activity_record"
-            android:parentActivityName="MainActivity" >
+            android:parentActivityName="main.acceleraudio.MainActivity" >
+        </activity>
+        <activity
+            android:name="main.acceleraudio.PrefActivity"
+            android:label="@string/title_activity_pref" >
         </activity>
     </application>
 
