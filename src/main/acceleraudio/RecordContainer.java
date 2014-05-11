@@ -4,9 +4,9 @@
  */
 package main.acceleraudio;
 
-import interfaces.acceleraudio.IRecord;;
+import interfaces.acceleraudio.IRecordContainer;;
 
-public class Record implements IRecord{
+public class RecordContainer implements IRecordContainer{
 	private byte[] recordX;
 	private byte[] recordY;
 	private byte[] recordZ;
@@ -15,7 +15,7 @@ public class Record implements IRecord{
 	/**
 	 * Class constructor
 	 */
-	public Record(){
+	public RecordContainer(){
 		recordX = new byte[1024];
 		recordY = new byte[1024];
 		recordZ = new byte[1024];

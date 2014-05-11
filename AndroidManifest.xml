@@ -33,6 +33,9 @@
             android:name="main.acceleraudio.PrefActivity"
             android:label="@string/title_activity_pref" >
         </activity>
+        <service android:name="main.acceleraudio.RecordService" >
+        </service>
     </application>
+    
 
 </manifest>
