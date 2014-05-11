@@ -1,11 +1,9 @@
 package main.acceleraudio;
 
-
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -23,25 +21,32 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-public class RecordActivity extends ActionBarActivity implements SensorEventListener {
+public class RecordActivity extends ActionBarActivity{
 
-	private SensorManager mSensorManager;
-	private Sensor mAccelerometer;
-	private static boolean isStart;
-	Record record;
 	long timeStop = 0;
+
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
+			byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
+			byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
+			int size = intent.getIntExtra(RecordService.SIZE, 0);
+			String results = "";
+			for (int i = 0; i < size; i++)
+				results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
+			TextView textView = (TextView) findViewById(R.id.show_results);
+			textView.setText(results);
+
+		}
+	};
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_record);
-
-		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		mSensorManager.registerListener(this, mAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
-
-		record = new Record();
-		isStart = false;
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -86,67 +91,38 @@ public class RecordActivity extends ActionBarActivity implements SensorEventList
 		}
 	}
 
+	@Override
 	protected void onResume() {
 		super.onResume();
-		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		registerReceiver(receiver, new IntentFilter(RecordService.NOTIFICATION));
 	}
-
+	@Override
 	protected void onPause() {
 		super.onPause();
-		mSensorManager.unregisterListener(this);
+		unregisterReceiver(receiver);
 	}
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// can be safely ignored for this demo
-	}
-
-	@Override
-	public void onSensorChanged(SensorEvent event) {
-		TextView tvX= (TextView)findViewById(R.id.x_axis);
-		TextView tvY= (TextView)findViewById(R.id.y_axis);
-		TextView tvZ= (TextView)findViewById(R.id.z_axis);
-		float x = event.values[0];
-		float y = event.values[1];
-		float z = event.values[2];
-
-		tvX.setText(Float.toString(x));
-		tvY.setText(Float.toString(y));
-		tvZ.setText(Float.toString(z));
-
-		if (!isStart)
-			return;
-
-		record.add((byte) (x * 10), (byte) (y * 10), (byte) (z * 10));
-
-	}
 
 	/**
 	 * A method called when the button play is pressed, it start the data storing in the object Record
 	 * @param view
 	 */
 	public void startRecord(View view){
-		isStart = true;
+		//Questo intent fa partire la registrazione in background
+		Intent intent = new Intent(this, RecordService.class);
+		intent.setAction(RecordService.START);
+		startService(intent);
 
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
 		LinearLayout mic = (LinearLayout)findViewById(R.id.mic);
 		LinearLayout buttons = (LinearLayout)findViewById(R.id.buttons);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
-		VideoView videoView = (VideoView)findViewById(R.id.bar);
 		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 
 		chrono.setVisibility(View.VISIBLE);
 		chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
 		chrono.start();
-
-
-		MediaController mediaController = new MediaController(this);
-		mediaController.setAnchorView(videoView);
-		videoView.setMediaController(mediaController);
-
-
-		videoView.start();
 
 		scroll.setVisibility(View.GONE);
 		mic.setVisibility(View.GONE);
@@ -160,7 +136,11 @@ public class RecordActivity extends ActionBarActivity implements SensorEventList
 	 * @param view
 	 */
 	public void pauseRecord(View view){
-		isStart = false;
+
+		//Questo intent notifica al servizio di mettere in pausa la registrazione
+		Intent intent = new Intent(this, RecordService.class);
+		intent.setAction(RecordService.PAUSE);
+		startService(intent);
 
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
@@ -177,17 +157,15 @@ public class RecordActivity extends ActionBarActivity implements SensorEventList
 	 * A method called when the button stop is pressed, this method show the data stored in the object Record
 	 * @param view the button pressed
 	 */
-	public void stopRecord(View view){		
-		isStart = false;
-		String result = record.toString();
-
-		record.reset(); //Reset the count, so if I press play again the recording restart
+	public void stopRecord(View view){	
+		//Questo intent notifica al servizio di cessare la registrazione e di restituire il risultato
+		Intent intent = new Intent(this, RecordService.class);
+		intent.setAction(RecordService.STOP);
+		startService(intent);
 
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
-		TextView textView = (TextView) findViewById(R.id.show_results);		
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
-		LinearLayout bars = (LinearLayout)findViewById(R.id.bars);
 		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 
 		chrono.setVisibility(View.GONE);
@@ -198,9 +176,7 @@ public class RecordActivity extends ActionBarActivity implements SensorEventList
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);		
 		scroll.setVisibility(View.VISIBLE);
-		bars.setVisibility(View.GONE);
 
-		textView.setText(result);
 	}
 
 }
