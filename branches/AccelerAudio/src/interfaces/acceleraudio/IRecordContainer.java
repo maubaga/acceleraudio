@@ -1,6 +1,6 @@
 package interfaces.acceleraudio;
 
-public interface IRecord {
+public interface IRecordContainer {
 	/**
 	 * A method that add three values, one for each arrays
 	 * @param x the value to add at the first array
