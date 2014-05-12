@@ -17,7 +17,10 @@ public class RecordService extends IntentService  implements SensorEventListener
 	public static final String Y_VALUE = "y_value";
 	public static final String Z_VALUE = "z_value";
 	public static final String SIZE = "size";
-	public static final String NOTIFICATION = "com.example.mybackgroundtry.receiver";
+	public static final String NOTIFICATION = "main.acceleraudio.receiver";
+	public static final String INTENT_TYPE = "intent_type";
+	public static final int STOP_SERVICE  = 1;
+	public static final int SENSOR_CHANGE = 0;
 
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
@@ -53,7 +56,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 		}
 		if (STOP.equals(intent.getAction())){
 			isStart = false;
-			publishResults();
+			publishFinishResults();
 		}
 	}
 
@@ -71,15 +74,28 @@ public class RecordService extends IntentService  implements SensorEventListener
 		float y = event.values[1];
 		float z = event.values[2];
 
+		publishResults(x, y, z);
 		record.add((byte) (x * 10), (byte) (y * 10), (byte) (z * 10));
+		
+		
 	}
 
-	private void publishResults() {
+	private void publishFinishResults() {
 		Intent intent = new Intent(NOTIFICATION);
+		intent.putExtra(INTENT_TYPE, STOP_SERVICE);
 		intent.putExtra(X_VALUE, record.getXarray());
 		intent.putExtra(Y_VALUE, record.getYarray());
 		intent.putExtra(Z_VALUE, record.getZarray());
 		intent.putExtra(SIZE, record.getSize());
+		sendBroadcast(intent);
+	}
+	
+	private void publishResults(float x, float y, float z) {
+		Intent intent = new Intent(NOTIFICATION);
+		intent.putExtra(INTENT_TYPE, SENSOR_CHANGE);
+		intent.putExtra(X_VALUE, x);
+		intent.putExtra(Y_VALUE, y);
+		intent.putExtra(Z_VALUE, z);
 		sendBroadcast(intent);
 	}
 } 
