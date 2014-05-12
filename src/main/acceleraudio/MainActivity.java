@@ -11,14 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class MainActivity extends ActionBarActivity {
-	public int i;
 	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		i = 0;
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -40,9 +37,8 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			Intent intent=new Intent(this, PrefActivity.class);
-			startActivity(intent);
-			
+			Intent intent = new Intent(this, PrefActivity.class);
+			startActivity(intent);			
 		}
 		
 		if (id == R.id.action_new) {

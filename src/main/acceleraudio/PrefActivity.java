@@ -39,19 +39,21 @@ public class PrefActivity extends ActionBarActivity {
 		String pref_maxRec = preferences.getString("eTextMaxRec", null);
 		String pref_upsampl = preferences.getString("eTextUpsampling", null);
 		
-		//assegno i valori degli stati ai relativi componenti
-		CheckBox cbX = (CheckBox)findViewById(R.id.checkBoxX); 
-		cbX.setChecked(pref_cbX);
-		CheckBox cbY = (CheckBox)findViewById(R.id.checkBoxY); 
-		cbY.setChecked(pref_cbY);
-		CheckBox cbZ = (CheckBox)findViewById(R.id.checkBoxZ); 
-		cbZ.setChecked(pref_cbZ);
-		EditText et_rate = (EditText)findViewById(R.id.sampleRate);
-		et_rate.setText(pref_rate);
-		EditText et_maxRec = (EditText)findViewById(R.id.max_rec);
-		et_maxRec.setText(pref_maxRec);
-		EditText et_upsampl = (EditText)findViewById(R.id.v_upsamping);
-		et_upsampl.setText(pref_upsampl);
+		//TODO da aggiustare perchè crusha con nullPointException
+		
+//		//assegno i valori degli stati ai relativi componenti
+//		CheckBox cbX = (CheckBox)findViewById(R.id.checkBoxX); 
+//		cbX.setChecked(pref_cbX);
+//		CheckBox cbY = (CheckBox)findViewById(R.id.checkBoxY); 
+//		cbY.setChecked(pref_cbY);
+//		CheckBox cbZ = (CheckBox)findViewById(R.id.checkBoxZ); 
+//		cbZ.setChecked(pref_cbZ);
+//		EditText et_rate = (EditText)findViewById(R.id.sampleRate);
+//		et_rate.setText(pref_rate);
+//		EditText et_maxRec = (EditText)findViewById(R.id.max_rec);
+//		et_maxRec.setText(pref_maxRec);
+//		EditText et_upsampl = (EditText)findViewById(R.id.v_upsamping);
+//		et_upsampl.setText(pref_upsampl);
 	}
 
 	@Override
