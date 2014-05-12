@@ -29,15 +29,31 @@ public class RecordActivity extends ActionBarActivity{
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
-			byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
-			byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
-			int size = intent.getIntExtra(RecordService.SIZE, 0);
-			String results = "";
-			for (int i = 0; i < size; i++)
-				results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
-			TextView textView = (TextView) findViewById(R.id.show_results);
-			textView.setText(results);
+			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.STOP_SERVICE){ //Mi notifica che la registrazione è terminata
+				byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
+				byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
+				byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
+				int size = intent.getIntExtra(RecordService.SIZE, 0);
+				String results = "";
+				for (int i = 0; i < size; i++)
+					results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
+				TextView textView = (TextView) findViewById(R.id.show_results);
+				textView.setText(results);
+			}
+			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.SENSOR_CHANGE){ //Mi notifica che i valori del sensore sono cambiati
+				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
+				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
+				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
+				
+				TextView xTextView = (TextView) findViewById(R.id.x_axis);
+				TextView yTextView = (TextView) findViewById(R.id.y_axis);
+				TextView zTextView = (TextView) findViewById(R.id.z_axis);
+
+				xTextView.setText(x + "");
+				yTextView.setText(y + "");
+				zTextView.setText(z + "");
+				
+			}
 
 		}
 	};
