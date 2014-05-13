@@ -5,18 +5,20 @@
 
 package main.acceleraudio;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import main.acceleraudio.R.array;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import android.os.Build;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 public class PrefActivity extends ActionBarActivity {
 
@@ -59,13 +61,14 @@ public class PrefActivity extends ActionBarActivity {
 		public PlaceholderFragment() {
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_pref, container,
 					false);
 			
-			//recupero gli stati dei componenti utilizzando SharedPreferences
+//			recupero gli stati dei componenti utilizzando SharedPreferences
 			SharedPreferences preferences = this.getActivity().getPreferences(MODE_PRIVATE); 
 			boolean pref_cbX = preferences.getBoolean("cBoxSelectX", false);
 			boolean pref_cbY = preferences.getBoolean("cBoxSelectY", false);
@@ -81,8 +84,24 @@ public class PrefActivity extends ActionBarActivity {
 			cbY.setChecked(pref_cbY);
 			CheckBox cbZ = (CheckBox)rootView.findViewById(R.id.checkBoxZ); 
 			cbZ.setChecked(pref_cbZ);
-			EditText et_rate = (EditText)rootView.findViewById(R.id.sampleRate);
-			et_rate.setText(pref_rate);
+			
+//			EditText et_rate = (EditText)rootView.findViewById(R.id.max_rec);
+//			et_rate.setText(pref_rate);
+			
+			Spinner s = (Spinner)rootView.findViewById(R.id.duration);
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(), array.values, 
+					android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			s.setAdapter(adapter);
+			
+			@SuppressWarnings("unchecked")
+			ArrayAdapter<CharSequence> myAdap = (ArrayAdapter) s.getAdapter(); //cast to an ArrayAdapter
+
+			int spinnerPosition = myAdap.getPosition(pref_rate);
+
+			//set the default according to value
+			s.setSelection(spinnerPosition);
+			
 			EditText et_maxRec = (EditText)rootView.findViewById(R.id.max_rec);
 			et_maxRec.setText(pref_maxRec);
 			EditText et_upsampl = (EditText)rootView.findViewById(R.id.v_upsamping);
@@ -108,8 +127,8 @@ public class PrefActivity extends ActionBarActivity {
 		boolean pref_cbZ = cbZ.isChecked();
 		
 		//stato del box di testo numerico relativo alla freq. di campionamento
-		EditText et_rate = (EditText)findViewById(R.id.sampleRate);
-		String pref_rate = et_rate.getText().toString();
+		Spinner s = (Spinner)findViewById(R.id.duration);
+		String pref_rate = s.getSelectedItem().toString();
 		
 		//stato del box di testo numerico relativo alla massima durata della registrazione
 		EditText et_maxRec = (EditText)findViewById(R.id.max_rec);
