@@ -18,7 +18,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class PrefActivity extends ActionBarActivity {
 
@@ -75,7 +77,7 @@ public class PrefActivity extends ActionBarActivity {
 			boolean pref_cbZ = preferences.getBoolean("cBoxSelectZ", false);
 			String pref_rate = preferences.getString("eTextSampleRate", null);
 			String pref_maxRec = preferences.getString("eTextMaxRec", null);
-			String pref_upsampl = preferences.getString("eTextUpsampling", null);
+			int pref_upsampl = preferences.getInt("sbUpsampling", 0);
 			
 			//assegno i valori degli stati ai relativi componenti
 			CheckBox cbX = (CheckBox)rootView.findViewById(R.id.checkBoxX); 
@@ -104,8 +106,12 @@ public class PrefActivity extends ActionBarActivity {
 			
 			EditText et_maxRec = (EditText)rootView.findViewById(R.id.max_rec);
 			et_maxRec.setText(pref_maxRec);
-			EditText et_upsampl = (EditText)rootView.findViewById(R.id.v_upsamping);
-			et_upsampl.setText(pref_upsampl);
+			SeekBar et_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
+			et_upsampl.setProgress(pref_upsampl);
+			
+			//sincronizzo il valore progress della seekbar e lo visualizzo  
+			TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
+			tvProgress.setText(pref_upsampl+"");
 			
 			return rootView;
 		}
@@ -135,8 +141,8 @@ public class PrefActivity extends ActionBarActivity {
 		String pref_maxRec = et_maxRec.getText().toString();
 		
 		//stato del box di testo numerico relativo al parametro di interpolazione
-		EditText et_upsampl = (EditText)findViewById(R.id.v_upsamping);
-		String pref_upsampl = et_upsampl.getText().toString();
+		SeekBar et_upsampl = (SeekBar)findViewById(R.id.v_upsamping);
+		int pref_upsampl = et_upsampl.getProgress();
 		
 		//salvo lo stato
 		editor.putBoolean("cBoxSelectX", pref_cbX);
@@ -144,7 +150,7 @@ public class PrefActivity extends ActionBarActivity {
 		editor.putBoolean("cBoxSelectZ", pref_cbZ);
 		editor.putString("eTextSampleRate", pref_rate);
 		editor.putString("eTextMaxRec", pref_maxRec);
-		editor.putString("eTextUpsampling", pref_upsampl);
+		editor.putInt("sbUpsampling", pref_upsampl);
 		
 		editor.commit();
 	}

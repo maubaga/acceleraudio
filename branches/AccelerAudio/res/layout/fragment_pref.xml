@@ -102,10 +102,19 @@
         android:text="@string/amount_upsampling"
         android:textSize="18sp" />
 
-    <EditText
+    <SeekBar
         android:id="@+id/v_upsamping"
-        android:layout_width="100dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="number" />
+        android:max="100"
+    	android:progress="47" />
+
+    <TextView
+        android:id="@+id/progress_seekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="8dp"
+        android:textSize="18sp" />
 
 </LinearLayout>
