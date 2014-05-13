@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -90,28 +89,56 @@ public class PrefActivity extends ActionBarActivity {
 //			EditText et_rate = (EditText)rootView.findViewById(R.id.max_rec);
 //			et_rate.setText(pref_rate);
 			
-			Spinner s = (Spinner)rootView.findViewById(R.id.duration);
-			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(), array.values, 
+			Spinner s1 = (Spinner)rootView.findViewById(R.id.sample_rate);
+			ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity().getBaseContext(), array.sample_values, 
 					android.R.layout.simple_spinner_item);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			s.setAdapter(adapter);
+			adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			s1.setAdapter(adapter1);
 			
 			@SuppressWarnings("unchecked")
-			ArrayAdapter<CharSequence> myAdap = (ArrayAdapter) s.getAdapter(); //cast to an ArrayAdapter
+			ArrayAdapter<CharSequence> myAdap1 = (ArrayAdapter) s1.getAdapter(); //cast to an ArrayAdapter
 
-			int spinnerPosition = myAdap.getPosition(pref_rate);
+			int spinner1Position = myAdap1.getPosition(pref_rate);
 
 			//set the default according to value
-			s.setSelection(spinnerPosition);
+			s1.setSelection(spinner1Position);
 			
-			EditText et_maxRec = (EditText)rootView.findViewById(R.id.max_rec);
-			et_maxRec.setText(pref_maxRec);
+			Spinner s2 = (Spinner)rootView.findViewById(R.id.duration);
+			ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity().getBaseContext(), array.rec_values, 
+					android.R.layout.simple_spinner_item);
+			adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			s2.setAdapter(adapter2);
+			
+			@SuppressWarnings("unchecked")
+			ArrayAdapter<CharSequence> myAdap2 = (ArrayAdapter) s2.getAdapter(); //cast to an ArrayAdapter
+
+			int spinner2Position = myAdap2.getPosition(pref_maxRec);
+
+			//set the default according to value
+			s2.setSelection(spinner2Position);
+			
+			final TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
 			SeekBar et_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
 			et_upsampl.setProgress(pref_upsampl);
+			tvProgress.setText(String.valueOf(pref_upsampl)); 
 			
-			//sincronizzo il valore progress della seekbar e lo visualizzo  
-			TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
-			tvProgress.setText(pref_upsampl+"");
+			et_upsampl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
+
+				   @Override 
+				   public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { 
+					   tvProgress.setText(String.valueOf(progress)); 
+				   } 
+
+				   @Override 
+				   public void onStartTrackingTouch(SeekBar seekBar) { 
+					   //no need to use this
+				   } 
+
+				   @Override 
+				   public void onStopTrackingTouch(SeekBar seekBar) {
+					   //no need to use this
+				   } 
+				       });
 			
 			return rootView;
 		}
@@ -133,12 +160,12 @@ public class PrefActivity extends ActionBarActivity {
 		boolean pref_cbZ = cbZ.isChecked();
 		
 		//stato del box di testo numerico relativo alla freq. di campionamento
-		Spinner s = (Spinner)findViewById(R.id.duration);
-		String pref_rate = s.getSelectedItem().toString();
+		Spinner s1 = (Spinner)findViewById(R.id.sample_rate);
+		String pref_rate = s1.getSelectedItem().toString();
 		
 		//stato del box di testo numerico relativo alla massima durata della registrazione
-		EditText et_maxRec = (EditText)findViewById(R.id.max_rec);
-		String pref_maxRec = et_maxRec.getText().toString();
+		Spinner s2 = (Spinner)findViewById(R.id.duration);
+		String pref_maxRec = s2.getSelectedItem().toString();
 		
 		//stato del box di testo numerico relativo al parametro di interpolazione
 		SeekBar et_upsampl = (SeekBar)findViewById(R.id.v_upsamping);
