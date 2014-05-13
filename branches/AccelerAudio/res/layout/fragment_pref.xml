@@ -56,7 +56,7 @@
         android:paddingTop="8dp" >
 
         <Spinner
-            android:id="@+id/duration"
+            android:id="@+id/sample_rate"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -81,18 +81,12 @@
         android:orientation="horizontal"
         android:paddingTop="8dp" >
 
-        <EditText
-            android:id="@+id/max_rec"
-            android:layout_width="100dp"
+        <Spinner
+            android:id="@+id/duration"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:textSize="16sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sec"
-            android:textSize="16sp"
-            android:paddingLeft="2dp" />
     </LinearLayout>
 
     <TextView
