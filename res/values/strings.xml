@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">AccelerAudio</string>
-    <string name="home">Premi su + per iniziare una registrazione</string>
+    <string name="home">Premi + per iniziare una registrazione</string>
     <string name="action_settings">Impostazioni</string>
     <string name="action_new">Nuova registrazione</string>
     <string name="title_activity_record">Record</string>
@@ -17,6 +17,18 @@
     <string name="selected_axes">Assi selezionati</string>
     <string name="sample_rate">Frequenza di campionamento</string>
     <string name="max_duration">Durata massima di registrazione</string>
+    <string name="samples">campioni/s</string>
+    <string name="sec">s</string>
     <string name="amount_upsampling">Parametro di interpolazione</string>
+    
+    <string-array name="values">
+        
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
+        
+    </string-array>
 
 </resources>
