@@ -6,6 +6,7 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,12 +39,12 @@ public class MainActivity extends Activity {
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 
-		try {
-			fout = openFileOutput(file,MODE_WORLD_READABLE);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//		try {
+		//			fout = openFileOutput(file,MODE_WORLD_READABLE);
+		//		} catch (Exception e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 
 
 
@@ -79,13 +80,23 @@ public class MainActivity extends Activity {
 			//This is the array with our data
 			byte[] dataAdded = new byte[50000];
 
-			FileOutputStream fOut = openFileOutput(file,MODE_WORLD_READABLE);
-			WriteWaveFileHeader(fOut, (dataAdded.length*num_channels*(bits_per_sample/8)), 
-					(36+(dataAdded.length*num_channels*(bits_per_sample/8))), 
+			FileOutputStream fOut = openFileOutput(file,MODE_PRIVATE);
+
+			long totalAudioLen = dataAdded.length * num_channels * (bits_per_sample / 8);
+			long chunkSize = 36 + (dataAdded.length * num_channels * (bits_per_sample / 8));
+			long byteRate = sample_rate * num_channels * (bits_per_sample / 8);
+
+			WriteWaveFileHeader(fOut, totalAudioLen, 
+					chunkSize, 
 					sample_rate, num_channels, 
-					(sample_rate*num_channels*(bits_per_sample/8)));
+					byteRate);
+
+
 			for (int i = 0; i < dataAdded.length; i++)
 				dataAdded[i] = (byte)r.nextInt(127);
+			
+			averageArray(dataAdded); //loop this method for more average!
+
 			fOut.write(dataAdded);
 			fOut.close();
 			Toast.makeText(getBaseContext(),"Il file è stato creato!",
@@ -98,24 +109,25 @@ public class MainActivity extends Activity {
 	}
 
 	//read the .wav file
-	// TODO use MediaPlayer to reproduce the song
 
-	//	public void read(View view){
-	//	      try{
-	//	         FileInputStream fin = openFileInput(file);
-	//	         int c;
-	//	         String temp="";
-	//	         while( (c = fin.read()) != -1){
-	//	            temp = temp + Character.toString((char)c);
-	//	         }
-	//	         testo.setText(temp);
-	//	         Toast.makeText(getBaseContext(),"file read",
-	//	         Toast.LENGTH_SHORT).show();
-	//
-	//	      }catch(Exception e){
-	//
-	//	      }
-	//	   }
+	public void read(View view){
+		try{
+			MediaPlayer mp = new MediaPlayer();
+			try {
+				mp.setDataSource("/data/data/com.example.filecreator/files/" + file);
+				mp.prepare();
+				mp.start();
+			} catch (IOException e) {
+				Toast.makeText(getBaseContext(),"prepare failed",
+						Toast.LENGTH_SHORT).show();
+			}
+
+
+		}catch(Exception e){
+			Toast.makeText(getBaseContext(),e.toString(),
+					Toast.LENGTH_SHORT).show();
+		}
+	}
 
 	//define the header of the .wav file. DON'T CHANGE IT!
 	private void WriteWaveFileHeader(
@@ -171,6 +183,12 @@ public class MainActivity extends Activity {
 		header[43] = (byte) ((totalAudioLen >> 24) & 0xff);
 
 		out.write(header, 0, 44);
+	}
+	
+	private void averageArray(byte[] byteArray){
+		for (int i = 1; i < byteArray.length - 1; i++){
+			byteArray[i] = (byte) ((byteArray[i - 1] + byteArray[i] + byteArray[i + 1]) /  3);
+		}
 	}
 
 	/**
