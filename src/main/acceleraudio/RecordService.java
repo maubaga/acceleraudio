@@ -22,7 +22,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 	public static final int STOP_SERVICE  = 1;
 	public static final int SENSOR_CHANGE = 0;
 
-	private SensorManager mSensorManager;
+	private static SensorManager mSensorManager;
 	private Sensor mAccelerometer;
 	private static RecordContainer record;
 	private static boolean isStart = false;
@@ -35,12 +35,12 @@ public class RecordService extends IntentService  implements SensorEventListener
 	// will be called asynchronously by Android
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		if (START.equals(intent.getAction())){
-			if (isOnPause){                     //se era in pausa non devo ricreare tutto
+		if (START.equals(intent.getAction())){ //the button start is pressed.
+			if (isOnPause){                     //isn't the first time, i don't need to create the sensorManager and the RecordContainer
 				isStart = true;
 				isOnPause = false;
 			}
-			else{                               //se non era in pausa allora è la prima volta che premo il pulsante play
+			else{                               //is the first time than I have to create the sensorManager and the RecordContainer
 				record = new RecordContainer();
 
 				mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -56,6 +56,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 		}
 		if (STOP.equals(intent.getAction())){
 			isStart = false;
+			mSensorManager.unregisterListener(this);
 			publishFinishResults();
 		}
 	}
@@ -70,17 +71,24 @@ public class RecordService extends IntentService  implements SensorEventListener
 		if (!isStart)
 			return;
 
-		float x = event.values[0];
-		float y = event.values[1];
-		float z = event.values[2];
+		synchronized (this) {
+			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+			{
+				float x = event.values[0];
+				float y = event.values[1];
+				float z = event.values[2];
 
-		publishResults(x, y, z);
-		record.add((byte) (x * 10), (byte) (y * 10), (byte) (z * 10));
-		
-		
+				publishResults(x, y, z);
+				record.add((byte) (x * 10), (byte) (y * 10), (byte) (z * 10));
+			}
+		}		
+
 	}
 
-	private void publishFinishResults() {
+	/**
+	 * Called when the button stop is pressed. This method send the value of the three array and the number of samples.
+	 */
+	private void publishFinishResults() {		
 		Intent intent = new Intent(NOTIFICATION);
 		intent.putExtra(INTENT_TYPE, STOP_SERVICE);
 		intent.putExtra(X_VALUE, record.getXarray());
@@ -89,7 +97,13 @@ public class RecordService extends IntentService  implements SensorEventListener
 		intent.putExtra(SIZE, record.getSize());
 		sendBroadcast(intent);
 	}
-	
+
+	/**
+	 * This method send the three value of accelerometer.
+	 * @param x the value of x axis.
+	 * @param y the value of y axis.
+	 * @param z the value of z axis.
+	 */
 	private void publishResults(float x, float y, float z) {
 		Intent intent = new Intent(NOTIFICATION);
 		intent.putExtra(INTENT_TYPE, SENSOR_CHANGE);
