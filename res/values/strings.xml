@@ -20,24 +20,22 @@
     <string name="samples">campioni/s</string>
     <string name="sec">s</string>
     <string name="amount_upsampling">Parametro di interpolazione</string>
-    
+
     <string-array name="sample_values">
-        
         <item>1</item>
         <item>2</item>
         <item>4</item>
         <item>6</item>
         <item>8</item>
-        
     </string-array>
-    
     <string-array name="rec_values">
-        
         <item>30 secondi</item>
         <item>1 minuto</item>
         <item>2 minuti</item>
         <item>5 minuti</item>
-        
     </string-array>
+
+    <string name="title_activity_play">PlayActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
