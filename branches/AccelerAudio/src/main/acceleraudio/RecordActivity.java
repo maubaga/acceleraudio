@@ -37,7 +37,7 @@ public class RecordActivity extends ActionBarActivity{
 //					results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
 //				TextView textView = (TextView) findViewById(R.id.show_results);
 //				textView.setText(results);
-				startPlayActivity(x, y, z, size);				
+				startCreateActivity(x, y, z, size);				
 			}
 			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.SENSOR_CHANGE){ //Mi notifica che i valori del sensore sono cambiati
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
@@ -194,8 +194,8 @@ public class RecordActivity extends ActionBarActivity{
 		scroll.setVisibility(View.VISIBLE);
 	}
 	
-	private void startPlayActivity(byte[] x, byte[] y, byte[] z, int size){
-		Intent playIntent = new Intent(this, PlayActivity.class);
+	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
+		Intent playIntent = new Intent(this, CreateActivity.class);
 		playIntent.putExtra(RecordService.X_VALUE, x);
 		playIntent.putExtra(RecordService.Y_VALUE, y);
 		playIntent.putExtra(RecordService.Z_VALUE, z);
