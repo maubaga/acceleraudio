@@ -6,6 +6,7 @@
 package main.acceleraudio;
 
 import main.acceleraudio.R.array;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -70,7 +71,8 @@ public class PrefActivity extends ActionBarActivity {
 					false);
 			
 //			recupero gli stati dei componenti utilizzando SharedPreferences
-			SharedPreferences preferences = this.getActivity().getPreferences(MODE_PRIVATE); 
+			Context context = getActivity();
+			SharedPreferences preferences = context.getSharedPreferences("prova", Context.MODE_PRIVATE); 
 			boolean pref_cbX = preferences.getBoolean("cBoxSelectX", false);
 			boolean pref_cbY = preferences.getBoolean("cBoxSelectY", false);
 			boolean pref_cbZ = preferences.getBoolean("cBoxSelectZ", false);
@@ -148,7 +150,7 @@ public class PrefActivity extends ActionBarActivity {
 		super.onPause();
 		
 		//utilizzo SharedPreferece e il relativo editor per salvare lo stato dei componenti
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences("prova", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		
 		//stato dei checkbox relativi agli assi selezionati

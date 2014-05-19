@@ -36,6 +36,11 @@
     </string-array>
 
     <string name="title_activity_play">PlayActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="action_accept">Conferma</string>
+    <string name="title_activity_create">Dettagli sessione</string>
+    <string name="first_time"><b>DATA CREAZIONE</b></string>
+    <string name="last_time"><b>ULTIMA MODIFICA</b></string>
+    <string name="axis_title"><b>ASSI UTILIZZATI</b></string>
+    <string name="upscaling_title"><b>DURATA DEI SUONI</b></string>
 
 </resources>
