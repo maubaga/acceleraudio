@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
 		
 		if (id == R.id.action_new) {
 			Intent intent = new Intent(this, RecordActivity.class);
-			startActivity(intent);
+			startActivity(intent); 
 		}
 		return super.onOptionsItemSelected(item);
 	}
