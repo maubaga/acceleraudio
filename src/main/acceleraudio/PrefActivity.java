@@ -78,7 +78,7 @@ public class PrefActivity extends ActionBarActivity {
 			boolean pref_cbZ = preferences.getBoolean("cBoxSelectZ", false);
 			String pref_rate = preferences.getString("eTextSampleRate", null);
 			String pref_maxRec = preferences.getString("eTextMaxRec", null);
-			int pref_upsampl = preferences.getInt("sbUpsampling", 0);
+			int pref_upsampl = preferences.getInt("sbUpsampling", 69);
 			
 			//assegno i valori degli stati ai relativi componenti
 			CheckBox cbX = (CheckBox)rootView.findViewById(R.id.checkBoxX); 

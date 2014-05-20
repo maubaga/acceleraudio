@@ -29,19 +29,21 @@ public class RecordActivity extends ActionBarActivity{
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.STOP_SERVICE){ //Mi notifica che la registrazione è terminata
+			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.STOP_SERVICE){ //The recording is over!
 				byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
 				byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 				byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
 				int size = intent.getIntExtra(RecordService.SIZE, 0);
+				
 //				String results = "";
 //				for (int i = 0; i < size; i++)
 //					results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
 //				TextView textView = (TextView) findViewById(R.id.show_results);
 //				textView.setText(results);
+				
 				startCreateActivity(x, y, z, size);				
 			}
-			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.SENSOR_CHANGE){ //Mi notifica che i valori del sensore sono cambiati
+			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.SENSOR_CHANGE){ //The values of the sensor are changed
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
 				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
@@ -137,11 +139,12 @@ public class RecordActivity extends ActionBarActivity{
 		
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
-		//Questo intent fa partire la registrazione in background
+		//This starts the background recording
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.START);
 		startService(intent);
 
+		//This is only for graphical changes
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
 		LinearLayout mic = (LinearLayout)findViewById(R.id.mic);
 		LinearLayout buttons = (LinearLayout)findViewById(R.id.buttons);
@@ -166,7 +169,7 @@ public class RecordActivity extends ActionBarActivity{
 	 */
 	public void pauseRecord(View view){
 
-		//Questo intent notifica al servizio di mettere in pausa la registrazione
+		//This intent put the background recording on pause
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.PAUSE);
 		startService(intent);
@@ -187,7 +190,7 @@ public class RecordActivity extends ActionBarActivity{
 	 * @param view the button pressed
 	 */
 	public void stopRecord(View view){	
-		//Questo intent notifica al servizio di cessare la registrazione e di restituire il risultato
+		//This intent stop the background recording and notify to return the values
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.STOP);
 		startService(intent);
