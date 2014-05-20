@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -109,13 +109,13 @@ public class RecordActivity extends ActionBarActivity{
 		}
 	}
 	
-	protected void onStart(){
-		super.onStart();
-		
-		oh=new DBOpenHelper(this);
-		SQLiteDatabase db = oh.getWritableDatabase();
-		//TODO popolare database;
-	}
+//	protected void onStart(){
+//		super.onStart();
+//		
+//		oh=new DBOpenHelper(this);
+//		SQLiteDatabase db = oh.getWritableDatabase();
+//		//TODO popolare database;
+//	}
 
 	@Override
 	protected void onResume() {
@@ -134,6 +134,9 @@ public class RecordActivity extends ActionBarActivity{
 	 * @param view
 	 */
 	public void startRecord(View view){
+		
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
 		//Questo intent fa partire la registrazione in background
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.START);
