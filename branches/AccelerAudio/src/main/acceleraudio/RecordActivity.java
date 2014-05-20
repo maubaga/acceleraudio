@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 public class RecordActivity extends ActionBarActivity{
 
 	long timeStop = 0;
+	private DBOpenHelper oh;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -105,6 +107,14 @@ public class RecordActivity extends ActionBarActivity{
 					container, false);
 			return rootView;
 		}
+	}
+	
+	protected void onStart(){
+		super.onStart();
+		
+		oh=new DBOpenHelper(this);
+		SQLiteDatabase db = oh.getWritableDatabase();
+		//TODO popolare database;
 	}
 
 	@Override
