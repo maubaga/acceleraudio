@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,8 @@ import android.widget.Toast;
 public class CreateActivity extends ActionBarActivity {
 
 	static EditText name;
+	static ImageView imageView;
+	static Bitmap session_image;
 	static String session_name;
 	static TextView first_time;
 	static TextView last_time;
@@ -40,8 +44,8 @@ public class CreateActivity extends ActionBarActivity {
 
 	static int pref_upsampl;
 	static int seekbar_value;
+	static int num_axes;
 
-	private String file;
 
 
 	static Intent intent;
@@ -53,7 +57,6 @@ public class CreateActivity extends ActionBarActivity {
 	private byte num_channels = 1; // 1 = mono, 2 = stereo
 	private long sample_rate = 8000; // 8000, 44100...
 
-	FileOutputStream fout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +74,81 @@ public class CreateActivity extends ActionBarActivity {
 		pref_cbZ = preferences.getBoolean("cBoxSelectZ", false);
 		pref_upsampl = preferences.getInt("sbUpsampling", 0);
 
+
+
 		intent = getIntent();
 		x = intent.getByteArrayExtra(RecordService.X_VALUE);
 		y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 		z = intent.getByteArrayExtra(RecordService.Z_VALUE);
 		size = intent.getIntExtra(RecordService.SIZE, 0);
+	}
+
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
+	public static class PlaceholderFragment extends Fragment {
+
+		public PlaceholderFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_create,
+					container, false);
+
+			name = (EditText)rootView.findViewById(R.id.name);
+			imageView = (ImageView) rootView.findViewById(R.id.imageView);
+			first_time = (TextView)rootView.findViewById(R.id.first_time);
+			last_time = (TextView)rootView.findViewById(R.id.last_time);
+			x_axis = (CheckBox)rootView.findViewById(R.id.x);
+			y_axis = (CheckBox)rootView.findViewById(R.id.y);
+			z_axis = (CheckBox)rootView.findViewById(R.id.z);
+
+			final Calendar c = Calendar.getInstance();
+			int yy = c.get(Calendar.YEAR);
+			int mm = c.get(Calendar.MONTH);
+			int dd = c.get(Calendar.DAY_OF_MONTH);
+
+			first_time.setText(dd + "/" + (mm + 1) + "/" + yy);
+			last_time.setText(dd + "/" + (mm + 1) + "/" + yy);
+
+			session_image = createImage();
+			imageView.setImageBitmap(session_image);
+
+			x_axis.setChecked(pref_cbX);
+			y_axis.setChecked(pref_cbY);
+			z_axis.setChecked(pref_cbZ);
+
+			final TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
+			et_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
+			et_upsampl.setProgress(pref_upsampl);
+			tvProgress.setText(String.valueOf(pref_upsampl));
+			seekbar_value = pref_upsampl;
+
+			et_upsampl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
+
+				@Override 
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { 
+					tvProgress.setText(String.valueOf(progress + 1)); 
+
+					seekbar_value = progress + 1;
+				} 
+
+				@Override 
+				public void onStartTrackingTouch(SeekBar seekBar) { 
+					//no need to use this
+				} 
+
+				@Override 
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					//no need to use this
+				} 
+			});
+
+
+			return rootView;
+		}
 	}
 
 	@Override
@@ -94,32 +167,15 @@ public class CreateActivity extends ActionBarActivity {
 		int id = item.getItemId();
 
 		if (id == R.id.action_accept) {
-			create(x, y, z, size);
-		}
 
-		if (id == R.id.action_settings) {
-			Intent intent = new Intent(this, PrefActivity.class);
-			startActivity(intent);
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	//https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
-	//write the .wav file
-	private void create(byte[] x, byte[] y, byte[] z, int size ){
-
-		try {
-
-			//Save the name of the session
 			session_name = name.getText().toString();
 
 			if(session_name.equals("")){
 				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_LONG).show();
-				return;
+				return false;
 			}
 
-			int num_axes = 0;
-
+			num_axes = 0;
 			if(x_axis.isChecked())
 				num_axes++;
 			if(y_axis.isChecked())
@@ -129,10 +185,45 @@ public class CreateActivity extends ActionBarActivity {
 
 			if(num_axes == 0){
 				Toast.makeText(this,"Devi selezionare almeno un asse!", Toast.LENGTH_LONG).show();
-				return;
+				return false;
 			}
 
-			file = session_name + ".wav"; //name of the .wav file
+
+			saveImage();
+			createWavFile(x, y, z, size);
+
+		}
+
+		if (id == R.id.action_settings) {
+			Intent intent = new Intent(this, PrefActivity.class);
+			startActivity(intent);
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+
+	private void saveImage(){
+		FileOutputStream out;
+		String file = session_name + ".png"; //name of the .png file
+		try {
+			out = openFileOutput(file, MODE_PRIVATE);
+			session_image.compress(Bitmap.CompressFormat.PNG, 90, out);
+			Toast toast=Toast.makeText(this,"Immagine creta",Toast.LENGTH_LONG);
+			toast.show();
+			out.close();
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	//https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
+	//write the .wav file
+	private void createWavFile(byte[] x, byte[] y, byte[] z, int size ){
+
+		try {
+
+			String file = session_name + ".wav"; //name of the .wav file
 
 			//create the data to add
 			final int UPSAMPLING = seekbar_value;
@@ -175,75 +266,14 @@ public class CreateActivity extends ActionBarActivity {
 			createIntent.putExtra("session_name", session_name);
 
 			startActivity(createIntent);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_create,
-					container, false);
-
-			name = (EditText)rootView.findViewById(R.id.name);
-			first_time = (TextView)rootView.findViewById(R.id.first_time);
-			last_time = (TextView)rootView.findViewById(R.id.last_time);
-			x_axis = (CheckBox)rootView.findViewById(R.id.x);
-			y_axis = (CheckBox)rootView.findViewById(R.id.y);
-			z_axis = (CheckBox)rootView.findViewById(R.id.z);
-
-			final Calendar c = Calendar.getInstance();
-			int yy = c.get(Calendar.YEAR);
-			int mm = c.get(Calendar.MONTH);
-			int dd = c.get(Calendar.DAY_OF_MONTH);
-
-			first_time.setText(dd + "/" + (mm + 1) + "/" + yy);
-			last_time.setText(dd + "/" + (mm + 1) + "/" + yy);
-
-			x_axis.setChecked(pref_cbX);
-			y_axis.setChecked(pref_cbY);
-			z_axis.setChecked(pref_cbZ);
-
-			final TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
-			et_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
-			et_upsampl.setProgress(pref_upsampl);
-			tvProgress.setText(String.valueOf(pref_upsampl));
-			seekbar_value = pref_upsampl;
-
-			et_upsampl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
-
-				@Override 
-				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { 
-					tvProgress.setText(String.valueOf(progress + 1)); 
-
-					seekbar_value = progress + 1;
-				} 
-
-				@Override 
-				public void onStartTrackingTouch(SeekBar seekBar) { 
-					//no need to use this
-				} 
-
-				@Override 
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					//no need to use this
-				} 
-			});
 
 
-			return rootView;
-		}
-	}
 
 	//define the header of the .wav file. DON'T CHANGE IT!
 	private void WriteWaveFileHeader(
@@ -305,6 +335,28 @@ public class CreateActivity extends ActionBarActivity {
 		for (int i = 1; i < byteArray.length - 1; i++){
 			byteArray[i] = (byte) ((byteArray[i - 1] + byteArray[i] + byteArray[i + 1]) /  3);
 		}
+	}
+
+	private static Bitmap createImage() {
+		//creo l'immagine
+		Bitmap bmp = Bitmap.createBitmap(10, 10, Bitmap.Config.RGB_565); // this creates a MUTABLE bitmap
+		long value = System.currentTimeMillis();
+
+		//le do i valori
+		int color = (int) value;
+		int[] indexes = new int[4];
+		for(int i = 0; i < indexes.length; i++)
+			indexes[i] = (int)((value >> 2 * i) & 0xff) % (bmp.getWidth() / 2);
+
+		for(int i = 0; i < indexes.length; i++){
+			for(int j = i; j < indexes.length; j++){
+				bmp.setPixel(indexes[i], indexes[j], color);
+				bmp.setPixel(indexes[i], bmp.getHeight() - indexes[j] - 1, color);
+				bmp.setPixel(bmp.getWidth() - indexes[i] -1, indexes[j], color);
+				bmp.setPixel(bmp.getWidth() - indexes[i] -1, bmp.getHeight() - indexes[j] - 1, color);
+			}
+		}
+		return bmp;
 	}
 
 }
