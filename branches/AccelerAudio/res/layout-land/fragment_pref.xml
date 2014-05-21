@@ -56,7 +56,7 @@
         android:paddingTop="8dp" >
 
         <Spinner
-            android:id="@+id/duration"
+            android:id="@+id/sample_rate"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -81,18 +81,12 @@
         android:orientation="horizontal"
         android:paddingTop="8dp" >
 
-        <EditText
-            android:id="@+id/max_rec"
-            android:layout_width="100dp"
+        <Spinner
+            android:id="@+id/duration"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:textSize="16sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sec"
-            android:textSize="16sp"
-            android:paddingLeft="2dp" />
     </LinearLayout>
 
     <TextView
@@ -102,10 +96,19 @@
         android:text="@string/amount_upsampling"
         android:textSize="18sp" />
 
-    <EditText
+    <SeekBar
         android:id="@+id/v_upsamping"
-        android:layout_width="100dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="number" />
+        android:max="99"
+    	android:progress="47" />
+
+    <TextView
+        android:id="@+id/progress_seekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="8dp"
+        android:textSize="18sp" />
 
 </LinearLayout>
