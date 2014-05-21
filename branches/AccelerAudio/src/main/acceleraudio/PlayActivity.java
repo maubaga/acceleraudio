@@ -2,9 +2,9 @@ package main.acceleraudio;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -14,29 +14,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class PlayActivity extends ActionBarActivity {
 	MediaPlayer mp;
 	static Intent intent;
 	static String session_name;
-	static byte[] x, y , z;
-	static int size;
-	private static String file; //name of the .wav file
 
 	FileOutputStream fout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		intent = getIntent();
-		x = intent.getByteArrayExtra(RecordService.X_VALUE);
-		y = intent.getByteArrayExtra(RecordService.Y_VALUE);
-		z = intent.getByteArrayExtra(RecordService.Z_VALUE);
-		session_name = intent.getStringExtra("session_name");
-		size = intent.getIntExtra(RecordService.SIZE, 0);
-		//		create(x, y, z, size);
 		setContentView(R.layout.activity_play);
 
 		if (savedInstanceState == null) {
@@ -44,8 +34,8 @@ public class PlayActivity extends ActionBarActivity {
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 
-		file = session_name + ".wav";
-
+		intent = getIntent();
+		session_name = intent.getStringExtra("session_name");
 	}
 
 	@Override
@@ -82,7 +72,8 @@ public class PlayActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_play, container,
 					false);
-
+			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
+			imageView.setImageURI(Uri.parse("/data/data/main.acceleraudio/files/" + session_name + ".png"));
 			return rootView;
 		}
 	}
@@ -93,7 +84,7 @@ public class PlayActivity extends ActionBarActivity {
 		try{
 			mp = new MediaPlayer();
 			try {
-				mp.setDataSource("/data/data/main.acceleraudio/files/" + file);
+				mp.setDataSource("/data/data/main.acceleraudio/files/" + session_name + ".wav");
 				mp.prepare();
 				mp.start();
 				Button buttonStop = (Button) findViewById(R.id.stop_music);
