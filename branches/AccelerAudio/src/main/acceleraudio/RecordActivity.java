@@ -12,8 +12,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -34,20 +36,20 @@ public class RecordActivity extends ActionBarActivity{
 				byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 				byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
 				int size = intent.getIntExtra(RecordService.SIZE, 0);
-				
-//				String results = "";
-//				for (int i = 0; i < size; i++)
-//					results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
-//				TextView textView = (TextView) findViewById(R.id.show_results);
-//				textView.setText(results);
-				
+
+				//				String results = "";
+				//				for (int i = 0; i < size; i++)
+				//					results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
+				//				TextView textView = (TextView) findViewById(R.id.show_results);
+				//				textView.setText(results);
+
 				startCreateActivity(x, y, z, size);				
 			}
 			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.SENSOR_CHANGE){ //The values of the sensor are changed
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
 				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
-				
+
 				TextView xTextView = (TextView) findViewById(R.id.x_axis);
 				TextView yTextView = (TextView) findViewById(R.id.y_axis);
 				TextView zTextView = (TextView) findViewById(R.id.z_axis);
@@ -55,7 +57,7 @@ public class RecordActivity extends ActionBarActivity{
 				xTextView.setText(x + "");
 				yTextView.setText(y + "");
 				zTextView.setText(z + "");
-				
+
 			}
 
 		}
@@ -110,14 +112,14 @@ public class RecordActivity extends ActionBarActivity{
 			return rootView;
 		}
 	}
-	
-//	protected void onStart(){
-//		super.onStart();
-//		
-//		oh=new DBOpenHelper(this);
-//		SQLiteDatabase db = oh.getWritableDatabase();
-//		//TODO popolare database;
-//	}
+
+	//	protected void onStart(){
+	//		super.onStart();
+	//		
+	//		oh=new DBOpenHelper(this);
+	//		SQLiteDatabase db = oh.getWritableDatabase();
+	//		//TODO popolare database;
+	//	}
 
 	@Override
 	protected void onResume() {
@@ -137,8 +139,19 @@ public class RecordActivity extends ActionBarActivity{
 	 */
 	public void startRecord(View view){
 		
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		
+		final int rotation = ((WindowManager) this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+        switch (rotation) {
+         case Surface.ROTATION_0:
+        	 setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); 
+ 			break;
+         case Surface.ROTATION_90:
+        	 setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); 
+ 			break;
+         case Surface.ROTATION_270:
+        	 setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE); 
+ 			break;
+     }
+
 		//This starts the background recording
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.START);
@@ -209,16 +222,16 @@ public class RecordActivity extends ActionBarActivity{
 		pause.setVisibility(View.GONE);		
 		scroll.setVisibility(View.VISIBLE);
 	}
-	
+
 	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
 		Intent playIntent = new Intent(this, CreateActivity.class);
 		playIntent.putExtra(RecordService.X_VALUE, x);
 		playIntent.putExtra(RecordService.Y_VALUE, y);
 		playIntent.putExtra(RecordService.Z_VALUE, z);
 		playIntent.putExtra(RecordService.SIZE, size);
-		
+
 		startActivity(playIntent);
 	}
-	
+
 
 }
