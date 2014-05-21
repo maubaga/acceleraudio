@@ -128,7 +128,7 @@ public class PrefActivity extends ActionBarActivity {
 
 				   @Override 
 				   public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { 
-					   tvProgress.setText(String.valueOf(progress)); 
+					   tvProgress.setText(String.valueOf(progress + 1)); 
 				   } 
 
 				   @Override 
@@ -171,7 +171,7 @@ public class PrefActivity extends ActionBarActivity {
 		
 		//stato del box di testo numerico relativo al parametro di interpolazione
 		SeekBar et_upsampl = (SeekBar)findViewById(R.id.v_upsamping);
-		int pref_upsampl = et_upsampl.getProgress();
+		int pref_upsampl = (et_upsampl.getProgress() + 1);
 		
 		//salvo lo stato
 		editor.putBoolean("cBoxSelectX", pref_cbX);

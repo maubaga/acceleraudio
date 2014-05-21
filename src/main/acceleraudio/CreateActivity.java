@@ -39,6 +39,7 @@ public class CreateActivity extends ActionBarActivity {
 	static int seekbar_value;
 
 	private String file;
+	
 
 	static Intent intent;
 	static byte[] x, y , z;
@@ -102,52 +103,61 @@ public class CreateActivity extends ActionBarActivity {
 
 	//https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
 	//write the .wav file
-	public void create(byte[] x, byte[] y, byte[] z, int size ){
+	private void create(byte[] x, byte[] y, byte[] z, int size ){
 
 		try {
 
-			if(!x_axis.isChecked()){
-
-				for(int i = 0; i < x.length; i++){
-
-					x[i] = 0;
-
-				}
-
-			}
-
-			if(!y_axis.isChecked()){
-
-				for(int i = 0; i < y.length; i++){
-
-					y[i] = 0;
-
-				}
-
-			}
-			
-			if(!z_axis.isChecked()){
-
-				for(int i = 0; i < z.length; i++){
-
-					z[i] = 0;
-
-				}
-
-			}
-
 			//Save the name of the session
 			session_name = name.getText().toString();
+
+			
+			
+			if(session_name.equals("")){
+				Toast.makeText(this,"Inserisci un nome per la sessione",Toast.LENGTH_LONG).show();
+				return;
+			}
+			
+			int num_axes = 0;
+
+			if(x_axis.isChecked())
+				num_axes++;
+
+			if(y_axis.isChecked())
+				num_axes++;
+
+			if(z_axis.isChecked())
+				num_axes++;
+			
+			if(num_axes == 0){
+				Toast.makeText(this,"Devi selezionare almeno un asse!",Toast.LENGTH_LONG).show();
+				return;
+			}
 
 			file = session_name + ".wav"; //name of the .wav file
 
 			//create the data to add
 			final int UPSAMPLING = seekbar_value;
 			byte[] dataAdded = new byte[size * UPSAMPLING];
-			for(int i = 0; i < size; i++)
-				for(int j = i * UPSAMPLING; j < (i + 1) * UPSAMPLING; j++)
-					dataAdded[j] = (byte)((x[i] + y[i] + z[i]) / 3); //TODO trovare un modo più intelligente per usare i valori
+			
+			for(int i = 0; i < size; i++){
 
+				int sum_axes = 0;
+
+				if(x_axis.isChecked())
+					sum_axes += x[i];
+
+
+				if(y_axis.isChecked())
+					sum_axes += y[i];
+
+				if(z_axis.isChecked())
+					sum_axes += z[i];
+
+
+				for(int j = i * UPSAMPLING; j < (i + 1) * UPSAMPLING; j++)
+					dataAdded[j] = (byte)(sum_axes / num_axes); //TODO trovare un modo più intelligente per usare i valori
+
+			}	
 			FileOutputStream fOut = openFileOutput(file,MODE_PRIVATE);
 
 			long totalAudioLen = dataAdded.length * num_channels * (bits_per_sample / 8);
@@ -163,13 +173,18 @@ public class CreateActivity extends ActionBarActivity {
 
 			fOut.write(dataAdded);
 			fOut.close();
-			//				Toast.makeText(getBaseContext(),"Il file è stato creato!",
-			//						Toast.LENGTH_SHORT).show();
+//							Toast.makeText(getBaseContext(),"Il file è stato creato!",
+//									Toast.LENGTH_SHORT).show();
 
-			Intent createIntent = new Intent(this, PlayActivity.class);
-			createIntent.putExtra("session_name", session_name);
 
-			startActivity(createIntent);
+				Intent createIntent = new Intent(this, PlayActivity.class);
+				createIntent.putExtra("session_name", session_name);
+
+				startActivity(createIntent);
+			
+				
+				
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -220,9 +235,9 @@ public class CreateActivity extends ActionBarActivity {
 
 				@Override 
 				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { 
-					tvProgress.setText(String.valueOf(progress)); 
+					tvProgress.setText(String.valueOf(progress + 1)); 
 
-					seekbar_value = progress;
+					seekbar_value = progress + 1;
 				} 
 
 				@Override 

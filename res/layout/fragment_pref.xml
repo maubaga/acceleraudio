@@ -100,7 +100,7 @@
         android:id="@+id/v_upsamping"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:max="100"
+        android:max="99"
     	android:progress="47" />
 
     <TextView
