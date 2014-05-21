@@ -1,6 +1,6 @@
 /**
  * 
- * @author Michele Lissandrin
+ * @author Michele Lissandrin, Matteo Franzosi
  */
 
 package main.acceleraudio;

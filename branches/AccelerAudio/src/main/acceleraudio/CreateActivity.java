@@ -1,3 +1,6 @@
+/**
+ * @author Mauro Bagatella
+ */
 package main.acceleraudio;
 
 import java.io.FileOutputStream;
@@ -39,7 +42,7 @@ public class CreateActivity extends ActionBarActivity {
 	static int seekbar_value;
 
 	private String file;
-	
+
 
 	static Intent intent;
 	static byte[] x, y , z;
@@ -110,26 +113,22 @@ public class CreateActivity extends ActionBarActivity {
 			//Save the name of the session
 			session_name = name.getText().toString();
 
-			
-			
 			if(session_name.equals("")){
-				Toast.makeText(this,"Inserisci un nome per la sessione",Toast.LENGTH_LONG).show();
+				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_LONG).show();
 				return;
 			}
-			
+
 			int num_axes = 0;
 
 			if(x_axis.isChecked())
 				num_axes++;
-
 			if(y_axis.isChecked())
 				num_axes++;
-
 			if(z_axis.isChecked())
 				num_axes++;
-			
+
 			if(num_axes == 0){
-				Toast.makeText(this,"Devi selezionare almeno un asse!",Toast.LENGTH_LONG).show();
+				Toast.makeText(this,"Devi selezionare almeno un asse!", Toast.LENGTH_LONG).show();
 				return;
 			}
 
@@ -138,26 +137,22 @@ public class CreateActivity extends ActionBarActivity {
 			//create the data to add
 			final int UPSAMPLING = seekbar_value;
 			byte[] dataAdded = new byte[size * UPSAMPLING];
-			
+
 			for(int i = 0; i < size; i++){
 
 				int sum_axes = 0;
 
 				if(x_axis.isChecked())
 					sum_axes += x[i];
-
-
 				if(y_axis.isChecked())
 					sum_axes += y[i];
-
 				if(z_axis.isChecked())
 					sum_axes += z[i];
 
-
 				for(int j = i * UPSAMPLING; j < (i + 1) * UPSAMPLING; j++)
-					dataAdded[j] = (byte)(sum_axes / num_axes); //TODO trovare un modo più intelligente per usare i valori
-
+					dataAdded[j] = (byte)(sum_axes / num_axes);
 			}	
+
 			FileOutputStream fOut = openFileOutput(file,MODE_PRIVATE);
 
 			long totalAudioLen = dataAdded.length * num_channels * (bits_per_sample / 8);
@@ -173,23 +168,17 @@ public class CreateActivity extends ActionBarActivity {
 
 			fOut.write(dataAdded);
 			fOut.close();
-//							Toast.makeText(getBaseContext(),"Il file è stato creato!",
-//									Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(getBaseContext(),"Il file è stato creato!",
+			//					Toast.LENGTH_SHORT).show();
 
+			Intent createIntent = new Intent(this, PlayActivity.class);
+			createIntent.putExtra("session_name", session_name);
 
-				Intent createIntent = new Intent(this, PlayActivity.class);
-				createIntent.putExtra("session_name", session_name);
-
-				startActivity(createIntent);
+			startActivity(createIntent);
 			
-				
-				
-
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -262,54 +251,54 @@ public class CreateActivity extends ActionBarActivity {
 			long totalDataLen, long longSampleRate, int channels,
 			long byteRate) throws IOException {
 
-		byte[] header = new byte[44];
+		byte[] headerBuffer = new byte[44];
 
-		header[0] = 'R';  // RIFF/WAVE header
-		header[1] = 'I';
-		header[2] = 'F';
-		header[3] = 'F';
-		header[4] = (byte) (totalDataLen & 0xff);
-		header[5] = (byte) ((totalDataLen >> 8) & 0xff);
-		header[6] = (byte) ((totalDataLen >> 16) & 0xff);
-		header[7] = (byte) ((totalDataLen >> 24) & 0xff);
-		header[8] = 'W';
-		header[9] = 'A';
-		header[10] = 'V';
-		header[11] = 'E';
-		header[12] = 'f';  // 'fmt ' chunk
-		header[13] = 'm';
-		header[14] = 't';
-		header[15] = ' ';
-		header[16] = 16;  // 4 bytes: size of 'fmt ' chunk
-		header[17] = 0;
-		header[18] = 0;
-		header[19] = 0;
-		header[20] = 1;  // format = 1
-		header[21] = 0;
-		header[22] = (byte) channels;
-		header[23] = 0;
-		header[24] = (byte) (longSampleRate & 0xff);
-		header[25] = (byte) ((longSampleRate >> 8) & 0xff);
-		header[26] = (byte) ((longSampleRate >> 16) & 0xff);
-		header[27] = (byte) ((longSampleRate >> 24) & 0xff);
-		header[28] = (byte) (byteRate & 0xff);
-		header[29] = (byte) ((byteRate >> 8) & 0xff);
-		header[30] = (byte) ((byteRate >> 16) & 0xff);
-		header[31] = (byte) ((byteRate >> 24) & 0xff);
-		header[32] = (byte) (2 * 16 / 8);  // block align
-		header[33] = 0;
-		header[34] = bits_per_sample;  // bits per sample
-		header[35] = 0;
-		header[36] = 'd';
-		header[37] = 'a';
-		header[38] = 't';
-		header[39] = 'a';
-		header[40] = (byte) (totalAudioLen & 0xff);
-		header[41] = (byte) ((totalAudioLen >> 8) & 0xff);
-		header[42] = (byte) ((totalAudioLen >> 16) & 0xff);
-		header[43] = (byte) ((totalAudioLen >> 24) & 0xff);
+		headerBuffer[0] = 'R';  // RIFF/WAVE header
+		headerBuffer[1] = 'I';
+		headerBuffer[2] = 'F';
+		headerBuffer[3] = 'F';
+		headerBuffer[4] = (byte) (totalDataLen & 0xff);
+		headerBuffer[5] = (byte) ((totalDataLen >> 8) & 0xff);
+		headerBuffer[6] = (byte) ((totalDataLen >> 16) & 0xff);
+		headerBuffer[7] = (byte) ((totalDataLen >> 24) & 0xff);
+		headerBuffer[8] = 'W';
+		headerBuffer[9] = 'A';
+		headerBuffer[10] = 'V';
+		headerBuffer[11] = 'E';
+		headerBuffer[12] = 'f';  // 'fmt ' chunk
+		headerBuffer[13] = 'm';
+		headerBuffer[14] = 't';
+		headerBuffer[15] = ' ';
+		headerBuffer[16] = 16;  // 4 bytes: size of 'fmt ' chunk
+		headerBuffer[17] = 0;
+		headerBuffer[18] = 0;
+		headerBuffer[19] = 0;
+		headerBuffer[20] = 1;  // format = 1
+		headerBuffer[21] = 0;
+		headerBuffer[22] = (byte) channels;
+		headerBuffer[23] = 0;
+		headerBuffer[24] = (byte) (longSampleRate & 0xff);
+		headerBuffer[25] = (byte) ((longSampleRate >> 8) & 0xff);
+		headerBuffer[26] = (byte) ((longSampleRate >> 16) & 0xff);
+		headerBuffer[27] = (byte) ((longSampleRate >> 24) & 0xff);
+		headerBuffer[28] = (byte) (byteRate & 0xff);
+		headerBuffer[29] = (byte) ((byteRate >> 8) & 0xff);
+		headerBuffer[30] = (byte) ((byteRate >> 16) & 0xff);
+		headerBuffer[31] = (byte) ((byteRate >> 24) & 0xff);
+		headerBuffer[32] = (byte) (2 * 16 / 8);  // block align
+		headerBuffer[33] = 0;
+		headerBuffer[34] = bits_per_sample;  // bits per sample
+		headerBuffer[35] = 0;
+		headerBuffer[36] = 'd';
+		headerBuffer[37] = 'a';
+		headerBuffer[38] = 't';
+		headerBuffer[39] = 'a';
+		headerBuffer[40] = (byte) (totalAudioLen & 0xff);
+		headerBuffer[41] = (byte) ((totalAudioLen >> 8) & 0xff);
+		headerBuffer[42] = (byte) ((totalAudioLen >> 16) & 0xff);
+		headerBuffer[43] = (byte) ((totalAudioLen >> 24) & 0xff);
 
-		out.write(header, 0, 44);
+		out.write(headerBuffer, 0, 44);
 	}
 
 	private void averageArray(byte[] byteArray){

@@ -83,7 +83,6 @@
             android:id="@+id/show_results"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/initial_message"
             android:textSize="18sp" />
     </ScrollView>
 
