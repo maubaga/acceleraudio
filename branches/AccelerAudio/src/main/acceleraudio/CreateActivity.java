@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -56,6 +57,9 @@ public class CreateActivity extends ActionBarActivity {
 	private byte bits_per_sample = 8; // 8, 16...
 	private byte num_channels = 1; // 1 = mono, 2 = stereo
 	private long sample_rate = 8000; // 8000, 44100...
+	
+	//database
+	private DBOpenHelper oh;
 
 
 	@Override
@@ -189,9 +193,25 @@ public class CreateActivity extends ActionBarActivity {
 			}
 
 
-			saveImage();
-			createWavFile(x, y, z, size);
-
+			boolean isSaved = saveImage();
+			boolean isCreated = createWavFile(x, y, z, size);
+			
+			if(isSaved && isCreated){
+				Intent createIntent = new Intent(this, PlayActivity.class);
+				createIntent.putExtra("session_name", session_name);
+				
+				//TODO AGGIUGNERE I DATI AL DATABASE
+				oh=new DBOpenHelper(this);
+				SQLiteDatabase db = oh.getWritableDatabase();
+				
+				startActivity(createIntent);			
+			}
+			else{
+				Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
+				return false;
+			}
+			
+			return true;
 		}
 
 		if (id == R.id.action_settings) {
@@ -201,8 +221,7 @@ public class CreateActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-
-	private void saveImage(){
+	private boolean saveImage(){
 		FileOutputStream out;
 		String file = session_name + ".png"; //name of the .png file
 		try {
@@ -211,15 +230,17 @@ public class CreateActivity extends ActionBarActivity {
 			Toast toast=Toast.makeText(this,"Immagine creta",Toast.LENGTH_LONG);
 			toast.show();
 			out.close();
+			return true;
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
 	//https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
 	//write the .wav file
-	private void createWavFile(byte[] x, byte[] y, byte[] z, int size ){
+	private boolean createWavFile(byte[] x, byte[] y, byte[] z, int size ){
 
 		try {
 
@@ -262,13 +283,11 @@ public class CreateActivity extends ActionBarActivity {
 			//			Toast.makeText(getBaseContext(),"Il file è stato creato!",
 			//					Toast.LENGTH_SHORT).show();
 
-			Intent createIntent = new Intent(this, PlayActivity.class);
-			createIntent.putExtra("session_name", session_name);
-
-			startActivity(createIntent);
+			return true;
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
