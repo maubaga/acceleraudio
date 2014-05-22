@@ -6,7 +6,7 @@ package main.acceleraudio;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
-
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -200,9 +200,19 @@ public class CreateActivity extends ActionBarActivity {
 				Intent createIntent = new Intent(this, PlayActivity.class);
 				createIntent.putExtra("session_name", session_name);
 				
-				//TODO AGGIUGNERE I DATI AL DATABASE
 				oh=new DBOpenHelper(this);
 				SQLiteDatabase db = oh.getWritableDatabase();
+				ContentValues values = new ContentValues();
+				values.put(DBOpenHelper.NAME, session_name);
+				values.put(DBOpenHelper.DATE_TIME, first_time.getText().toString());
+				values.put(DBOpenHelper.MODIFY, last_time.getText().toString());
+				values.put(DBOpenHelper.RATE, -1);
+				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() +1 );
+				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked() );
+				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked() );
+				values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked() );
+				db.insert(DBOpenHelper.TABLE, null, values);
+				//TODO verificare che la riga sia presente effettivamente nel database
 				
 				startActivity(createIntent);			
 			}
