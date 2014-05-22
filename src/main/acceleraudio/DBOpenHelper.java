@@ -10,12 +10,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "AccAudio.db";
 	private static final int DATABASE_VERSION = 1;
 	public static final String TABLE = "registrazione";
-	public static final String NAME = "nome file";
-	public static final String DATE = "data";
-	public static final String TIME = "ora";
-	public static final String MODIFY = "ultima modifica";
-	public static final String RATE = "bit-rate";
+	public static final String NAME = "nome_file";
+	public static final String DATE_TIME = "data_ora";
+	public static final String MODIFY = "ultima_modifica";
+	public static final String RATE = "bit_rate";
 	public static final String UPSAMPL = "interpolazione";
+	public static final String X_CHECK = "asse_x";
+	public static final String Y_CHECK = "asse_y";
+	public static final String Z_CHECK = "asse_z";
 
 	public DBOpenHelper(Context context){
 		super(context, DATABASE_NAME, null, DATABASE_VERSION); 
@@ -27,11 +29,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 		String sql = "create table " + TABLE + 
 					"( "+ BaseColumns._ID + " integer primary key autoincrement, " +
 					NAME + " text not null, " + 
-					DATE + " text not null, " +
-					TIME + " text not null, " +
+					DATE_TIME + " text not null, " + //vedere formato su doc SQLite
 					MODIFY + " text not null, " +
-					RATE + " text not null, " +
-					UPSAMPL + " integer);"; 
+					RATE + " integer, " +
+					UPSAMPL + " integer, " +
+					X_CHECK + " boolean, " +
+					Y_CHECK + " boolean, " +
+					Z_CHECK + " boolean);"; 
 		db.execSQL(sql); 
 	} 
 

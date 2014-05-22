@@ -25,7 +25,6 @@ import android.widget.TextView;
 public class RecordActivity extends ActionBarActivity{
 
 	long timeStop = 0;
-	private DBOpenHelper oh;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -113,13 +112,6 @@ public class RecordActivity extends ActionBarActivity{
 		}
 	}
 
-	//	protected void onStart(){
-	//		super.onStart();
-	//		
-	//		oh=new DBOpenHelper(this);
-	//		SQLiteDatabase db = oh.getWritableDatabase();
-	//		//TODO popolare database;
-	//	}
 
 	@Override
 	protected void onResume() {
