@@ -237,8 +237,8 @@ public class CreateActivity extends ActionBarActivity {
 		try {
 			out = openFileOutput(file, MODE_PRIVATE);
 			session_image.compress(Bitmap.CompressFormat.PNG, 90, out);
-			Toast toast=Toast.makeText(this,"Immagine creta",Toast.LENGTH_LONG);
-			toast.show();
+//			Toast toast=Toast.makeText(this,"Immagine creta",Toast.LENGTH_LONG);
+//			toast.show();
 			out.close();
 			return true;
 		} 
