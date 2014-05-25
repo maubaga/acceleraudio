@@ -72,6 +72,57 @@
             android:textSize="18sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/bars"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:visibility="gone"
+        android:gravity="bottom|center" >
+
+        <View
+            android:id="@+id/x_bar1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#000"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/y_bar1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#888"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/z_bar1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#000"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/y_bar2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#888"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/x_bar2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#000"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/z_bar2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#888" />
+        
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scroll"
@@ -110,7 +161,7 @@
         android:orientation="horizontal"
         android:paddingTop="8dp"
         android:visibility="gone" >
-        
+
         <Chronometer
             android:id="@+id/chrono"
             android:layout_width="0dp"
@@ -118,9 +169,9 @@
             android:layout_gravity="bottom"
             android:layout_weight="2"
             android:gravity="center"
+            android:scaleType="fitCenter"
             android:textSize="38sp"
-            android:visibility="gone"
-            android:scaleType="fitCenter" />
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/play"

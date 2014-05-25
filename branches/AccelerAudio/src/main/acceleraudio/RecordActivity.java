@@ -1,5 +1,6 @@
 package main.acceleraudio;
 
+import android.app.ActionBar.LayoutParams;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -51,11 +52,34 @@ public class RecordActivity extends ActionBarActivity{
 
 				TextView xTextView = (TextView) findViewById(R.id.x_axis);
 				TextView yTextView = (TextView) findViewById(R.id.y_axis);
-				TextView zTextView = (TextView) findViewById(R.id.z_axis);
+				TextView zTextView = (TextView) findViewById(R.id.z_axis);				
+				LinearLayout bars = (LinearLayout)findViewById(R.id.bars);
+				View x_bar1 = (View)findViewById(R.id.x_bar1);
+				View x_bar2 = (View)findViewById(R.id.x_bar2);
+				View y_bar1 = (View)findViewById(R.id.y_bar1);
+				View y_bar2 = (View)findViewById(R.id.y_bar2);
+				View z_bar1 = (View)findViewById(R.id.z_bar1);
+				View z_bar2 = (View)findViewById(R.id.z_bar2);
 
 				xTextView.setText(x + "");
 				yTextView.setText(y + "");
 				zTextView.setText(z + "");
+				
+				int x_bar_height = Math.abs((int)x)*15;
+				int y_bar_height = Math.abs((int)y)*15;
+				int z_bar_height = Math.abs((int)z)*15;
+				
+//				x_bar_height = Math.abs(Integer.parseInt(xTextView.getText().toString()));
+//				y_bar_height = Integer.parseInt(yTextView.getText().toString());
+//				z_bar_height = Integer.parseInt(zTextView.getText().toString());
+				
+				bars.setVisibility(View.VISIBLE);
+				x_bar1.setLayoutParams(new LinearLayout.LayoutParams(150, x_bar_height));
+				x_bar2.setLayoutParams(new LinearLayout.LayoutParams(150, x_bar_height));
+				y_bar1.setLayoutParams(new LinearLayout.LayoutParams(150, y_bar_height));
+				y_bar2.setLayoutParams(new LinearLayout.LayoutParams(150, y_bar_height));
+				z_bar1.setLayoutParams(new LinearLayout.LayoutParams(150, z_bar_height));
+				z_bar2.setLayoutParams(new LinearLayout.LayoutParams(150, z_bar_height));
 
 			}
 
@@ -204,12 +228,14 @@ public class RecordActivity extends ActionBarActivity{
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		LinearLayout bars = (LinearLayout)findViewById(R.id.bars);
 
 		chrono.setVisibility(View.GONE);
 		chrono.setBase(SystemClock.elapsedRealtime());
 		chrono.stop();
 		timeStop = 0;
 
+		bars.setVisibility(View.GONE);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);		
 		scroll.setVisibility(View.VISIBLE);

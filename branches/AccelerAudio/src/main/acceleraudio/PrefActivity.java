@@ -170,8 +170,9 @@ public class PrefActivity extends ActionBarActivity {
 		String pref_maxRec = s2.getSelectedItem().toString();
 		
 		//stato del box di testo numerico relativo al parametro di interpolazione
-		SeekBar et_upsampl = (SeekBar)findViewById(R.id.v_upsamping);
-		int pref_upsampl = (et_upsampl.getProgress() + 1);
+		TextView tvProgress=(TextView)findViewById(R.id.progress_seekbar);
+		int seekbar_value = Integer.parseInt(tvProgress.getText().toString());
+		int pref_upsampl = (seekbar_value);
 		
 		//salvo lo stato
 		editor.putBoolean("cBoxSelectX", pref_cbX);
