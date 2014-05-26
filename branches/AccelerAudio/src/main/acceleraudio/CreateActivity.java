@@ -34,8 +34,8 @@ public class CreateActivity extends ActionBarActivity {
 	static ImageView imageView;
 	static Bitmap session_image;
 	static String session_name;
-	static TextView first_time;
-	static TextView last_time;
+	static TextView first_date;
+	static TextView last_date;
 	static CheckBox x_axis;
 	static CheckBox y_axis;
 	static CheckBox z_axis;
@@ -105,8 +105,8 @@ public class CreateActivity extends ActionBarActivity {
 
 			name = (EditText)rootView.findViewById(R.id.name);
 			imageView = (ImageView) rootView.findViewById(R.id.imageView);
-			first_time = (TextView)rootView.findViewById(R.id.first_time);
-			last_time = (TextView)rootView.findViewById(R.id.last_time);
+			first_date = (TextView)rootView.findViewById(R.id.first_date);
+			last_date = (TextView)rootView.findViewById(R.id.last_date);
 			x_axis = (CheckBox)rootView.findViewById(R.id.x);
 			y_axis = (CheckBox)rootView.findViewById(R.id.y);
 			z_axis = (CheckBox)rootView.findViewById(R.id.z);
@@ -115,9 +115,12 @@ public class CreateActivity extends ActionBarActivity {
 			int yy = c.get(Calendar.YEAR);
 			int mm = c.get(Calendar.MONTH);
 			int dd = c.get(Calendar.DAY_OF_MONTH);
+			int hh = c.get(Calendar.HOUR_OF_DAY);
+			int mn = c.get(Calendar.MINUTE);
+//			int ss = c.get(Calendar.SECOND);
 
-			first_time.setText(dd + "/" + (mm + 1) + "/" + yy);
-			last_time.setText(dd + "/" + (mm + 1) + "/" + yy);
+			first_date.setText(dd + "/" + (mm + 1) + "/" + yy + "  " + hh + ":" + mn);
+			last_date.setText(dd + "/" + (mm + 1) + "/" + yy + "  " + hh + ":" + mn);
 
 			session_image = createImage();
 			imageView.setImageBitmap(session_image);
@@ -260,8 +263,8 @@ public class CreateActivity extends ActionBarActivity {
 				SQLiteDatabase db = oh.getWritableDatabase();
 				ContentValues values = new ContentValues();
 				values.put(DBOpenHelper.NAME, session_name);
-				values.put(DBOpenHelper.DATE_TIME, first_time.getText().toString());
-				values.put(DBOpenHelper.MODIFY, last_time.getText().toString());
+				values.put(DBOpenHelper.DATE_TIME, first_date.getText().toString());
+				values.put(DBOpenHelper.MODIFY, last_date.getText().toString());
 				values.put(DBOpenHelper.RATE, -1);
 				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() +1 );
 				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
