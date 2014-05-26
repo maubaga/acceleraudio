@@ -20,7 +20,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="Traccia 1"
+            android:hint="Traccia 1"
             android:singleLine="true" />
     </LinearLayout>
 
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_weight="1"
-            android:text="@string/first_time"
+            android:text="@string/first_date_h1"
             android:textColor="#7a7a7a"
             android:textSize="14sp" />
 
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/last_time"
+            android:text="@string/last_date_h1"
             android:textColor="#7a7a7a"
             android:textSize="14sp" />
     </LinearLayout>
@@ -63,7 +63,7 @@
         android:paddingTop="8dp" >
 
         <TextView
-            android:id="@+id/first_time"
+            android:id="@+id/first_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -71,13 +71,14 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/last_time"
+            android:id="@+id/last_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_weight="1"
             android:textSize="18sp" />
     </LinearLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
