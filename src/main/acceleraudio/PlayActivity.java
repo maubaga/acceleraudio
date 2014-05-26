@@ -2,6 +2,7 @@ package main.acceleraudio;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -15,12 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlayActivity extends ActionBarActivity {
 	MediaPlayer mp;
 	static Intent intent;
 	static String session_name;
+	static String appFileDirectory;
 
 	FileOutputStream fout;
 
@@ -35,6 +38,7 @@ public class PlayActivity extends ActionBarActivity {
 		}
 
 		intent = getIntent();
+		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
 		session_name = intent.getStringExtra("session_name");
 	}
 
@@ -72,8 +76,13 @@ public class PlayActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_play, container,
 					false);
+			
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
-			imageView.setImageURI(Uri.parse("/data/data/main.acceleraudio/files/" + session_name + ".png"));
+			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
+			
+			TextView textView = (TextView) rootView.findViewById(R.id.session_name);
+			textView.setText(session_name);
+			
 			return rootView;
 		}
 	}
@@ -81,10 +90,13 @@ public class PlayActivity extends ActionBarActivity {
 
 	//read the .wav file
 	public void play(View view){
+		if(mp != null)
+			mp.stop();
+
 		try{
 			mp = new MediaPlayer();
 			try {
-				mp.setDataSource("/data/data/main.acceleraudio/files/" + session_name + ".wav");
+				mp.setDataSource(appFileDirectory + session_name + ".wav");
 				mp.prepare();
 				mp.start();
 				Button buttonStop = (Button) findViewById(R.id.stop_music);
@@ -103,6 +115,7 @@ public class PlayActivity extends ActionBarActivity {
 	
 	public void stop(View view) {
 		mp.stop();
+		mp = null;
 		Button buttonStop = (Button) findViewById(R.id.stop_music);
 		buttonStop.setVisibility(View.INVISIBLE);
 	}
