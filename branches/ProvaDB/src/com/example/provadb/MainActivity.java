@@ -4,6 +4,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,12 +26,6 @@ public class MainActivity extends ActionBarActivity {
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-		MyOpenHelper prova=new MyOpenHelper(this);
-		SQLiteDatabase db = prova.getWritableDatabase(); 
-		ContentValues values = new ContentValues();
-		values.put(prova.MATR, "1005523");
-		values.put(prova.NAME, "Giovanni Rossi");
-		db.insert(prova.TABLE, null, values);
 	}
 
 	@Override
@@ -68,6 +63,28 @@ public class MainActivity extends ActionBarActivity {
 					false);
 			
 			return rootView;
+		}
+	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
+		
+		MyOpenHelper prova=new MyOpenHelper(this);
+		SQLiteDatabase db = prova.getWritableDatabase(); 
+		ContentValues values = new ContentValues();
+		values.put(prova.MATR, 1005523);
+		values.put(prova.NAME, "Giovanni Rossi");
+		db.insert(prova.TABLE, null, values);
+		
+		String[] colonne = {prova.MATR, prova.NAME};
+		Cursor cr = db.query(prova.TABLE, colonne, null, null, null, null, null, null);
+		
+		cr.moveToFirst();
+		for(int i=0; i<cr.getColumnCount(); i++){
+			System.out.println(cr.getColumnName(i)+": "+cr.getInt(i)+";");
+			i++;
+			System.out.println(cr.getColumnName(i)+": "+cr.getString(i)+";");
 		}
 	}
 
