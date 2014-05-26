@@ -1,114 +1,154 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp" >
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/selected_axes"
-        android:textSize="18sp" />
+    android:layout_height="match_parent" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:paddingTop="8dp" >
-
-        <CheckBox
-            android:id="@+id/checkBoxX"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/asse_x"
-            android:textSize="16sp" />
-
-        <CheckBox
-            android:id="@+id/checkBoxY"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/asse_y"
-            android:textSize="16sp" />
-
-        <CheckBox
-            android:id="@+id/checkBoxZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/asse_z"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:text="@string/sample_rate"
-        android:textSize="18sp" />
+        android:orientation="vertical"
+        android:padding="16dp" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:paddingTop="8dp" >
+        <LinearLayout
+            android:id="@+id/axes_container"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="vertical"
+            android:paddingLeft="4dp" >
 
-        <Spinner
-            android:id="@+id/sample_rate"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/selected_axes"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/checkBoxX"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/asse_x"
+                    android:textSize="16sp" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxY"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/asse_y"
+                    android:textSize="16sp" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxZ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/asse_z"
+                    android:textSize="16sp" />
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:paddingTop="8dp"
+            android:background="#7a7a7a" />
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:clickable="true"
+            android:onClick="sampleRateChooser"
+            android:orientation="vertical"
+            android:paddingLeft="4dp"
+            android:paddingTop="4dp"
+            android:background="@drawable/selector_colors" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/sample_rate"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/sample_rate_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="#7a7a7a" />
+            
+        </LinearLayout>
+        
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:paddingTop="8dp"
+            android:background="#7a7a7a" />
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:clickable="true"
+            android:onClick="durationChooser"
+            android:orientation="vertical"
+            android:paddingLeft="4dp"
+            android:paddingTop="4dp"
+            android:background="@drawable/selector_colors" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/max_duration"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/max_duration_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="#7a7a7a" />
+            
+        </LinearLayout>
+        
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:paddingTop="4dp"
+            android:background="#7a7a7a" />
+
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="@string/amount_upsampling"
+            android:textSize="18sp" />
+
+        <SeekBar
+            android:id="@+id/v_upsamping"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:max="99"
+            android:progress="99" />
+
+        <TextView
+            android:id="@+id/progress_seekbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/samples"
-            android:textSize="16sp" />
+            android:layout_gravity="center"
+            android:paddingTop="8dp"
+            android:textSize="18sp" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:text="@string/max_duration"
-        android:textSize="18sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:paddingTop="8dp" >
-
-        <Spinner
-            android:id="@+id/duration"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:text="@string/amount_upsampling"
-        android:textSize="18sp" />
-
-    <SeekBar
-        android:id="@+id/v_upsamping"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:max="99"
-    	android:progress="47" />
-
-    <TextView
-        android:id="@+id/progress_seekbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingTop="8dp"
-        android:textSize="18sp" />
-
-</LinearLayout>
+</ScrollView>

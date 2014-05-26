@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <array name="rates">
+        <item>@string/sample_rate1</item>
+        <item>@string/sample_rate2</item>
+        <item>@string/sample_rate4</item>
+        <item>@string/sample_rate6</item>
+        <item>@string/sample_rate8</item>
+    </array>
+    
+    <array name="durations">
+        <item>@string/duration1</item>
+        <item>@string/duration2</item>
+        <item>@string/duration3</item>
+        <item>@string/duration4</item>
+    </array>
+    
+</resources>
