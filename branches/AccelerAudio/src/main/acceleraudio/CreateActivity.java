@@ -6,6 +6,7 @@ package main.acceleraudio;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -123,6 +125,46 @@ public class CreateActivity extends ActionBarActivity {
 			x_axis.setChecked(pref_cbX);
 			y_axis.setChecked(pref_cbY);
 			z_axis.setChecked(pref_cbZ);
+			
+			//Checking if at least one axes is selected
+			x_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
+
+				   @Override 
+				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
+					   if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
+						   
+						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						   buttonView.setChecked(true);
+						   
+					   }
+				   } 
+				       });
+			
+			y_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
+
+				   @Override 
+				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
+					   if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
+						   
+						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						   buttonView.setChecked(true);
+						   
+					   }
+				   } 
+				       });
+			
+			z_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
+
+				   @Override 
+				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
+					   if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
+						   
+						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						   buttonView.setChecked(true);
+						   
+					   }
+				   } 
+				       });
 
 			final TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
 			et_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
@@ -173,10 +215,24 @@ public class CreateActivity extends ActionBarActivity {
 		if (id == R.id.action_accept) {
 
 			session_name = name.getText().toString();
-
+			//Check if a name is given
 			if(session_name.equals("")){
-				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_LONG).show();
+				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
 				return false;
+			}
+			
+			if(session_name.contains("  ")){
+				Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			
+			if(session_name.substring(0, 1).equals(" ")){
+				Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
+				return false;
+			}
+			
+			if(session_name.length() > 20){
+				session_name = session_name.substring(0, 20);
 			}
 
 			num_axes = 0;
@@ -186,7 +242,7 @@ public class CreateActivity extends ActionBarActivity {
 				num_axes++;
 			if(z_axis.isChecked())
 				num_axes++;
-
+			//Check if at least one axis is selected
 			if(num_axes == 0){
 				Toast.makeText(this,"Devi selezionare almeno un asse!", Toast.LENGTH_LONG).show();
 				return false;
@@ -200,7 +256,7 @@ public class CreateActivity extends ActionBarActivity {
 				Intent createIntent = new Intent(this, PlayActivity.class);
 				createIntent.putExtra("session_name", session_name);
 				
-				oh=new DBOpenHelper(this);
+				oh = new DBOpenHelper(this);
 				SQLiteDatabase db = oh.getWritableDatabase();
 				ContentValues values = new ContentValues();
 				values.put(DBOpenHelper.NAME, session_name);
@@ -208,9 +264,9 @@ public class CreateActivity extends ActionBarActivity {
 				values.put(DBOpenHelper.MODIFY, last_time.getText().toString());
 				values.put(DBOpenHelper.RATE, -1);
 				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() +1 );
-				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked() );
-				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked() );
-				values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked() );
+				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
+				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
+				values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked());
 				db.insert(DBOpenHelper.TABLE, null, values);
 				//TODO verificare che la riga sia presente effettivamente nel database
 				
