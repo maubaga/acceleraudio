@@ -34,6 +34,8 @@ public class CreateActivity extends ActionBarActivity {
 	static ImageView imageView;
 	static Bitmap session_image;
 	static String session_name;
+	static String date;
+	static String time;
 	static TextView first_date;
 	static TextView last_date;
 	static CheckBox x_axis;
@@ -118,9 +120,23 @@ public class CreateActivity extends ActionBarActivity {
 			int hh = c.get(Calendar.HOUR_OF_DAY);
 			int mn = c.get(Calendar.MINUTE);
 //			int ss = c.get(Calendar.SECOND);
+			String minutes = "";
+			
+			if(mn < 10){
+				
+				minutes = "0" + mn; 
+				
+			} else{
+				
+				minutes = "" + mn;
+				
+			}
+			
+			date = dd + "/" + (mm + 1) + "/" + yy;
+			time = hh + ":" + minutes;
 
-			first_date.setText(dd + "/" + (mm + 1) + "/" + yy + "  " + hh + ":" + mn);
-			last_date.setText(dd + "/" + (mm + 1) + "/" + yy + "  " + hh + ":" + mn);
+			first_date.setText(date + " " + time);
+			last_date.setText(date + " " + time);
 
 			session_image = createImage();
 			imageView.setImageBitmap(session_image);
@@ -234,8 +250,8 @@ public class CreateActivity extends ActionBarActivity {
 				return false;
 			}
 			
-			if(session_name.length() > 20){
-				session_name = session_name.substring(0, 20);
+			if(session_name.length() > 12){
+				session_name = session_name.substring(0, 12);
 			}
 
 			num_axes = 0;
@@ -263,8 +279,10 @@ public class CreateActivity extends ActionBarActivity {
 				SQLiteDatabase db = oh.getWritableDatabase();
 				ContentValues values = new ContentValues();
 				values.put(DBOpenHelper.NAME, session_name);
-				values.put(DBOpenHelper.DATE_TIME, first_date.getText().toString());
-				values.put(DBOpenHelper.MODIFY, last_date.getText().toString());
+				values.put(DBOpenHelper.FIRST_DATE, date);
+				values.put(DBOpenHelper.FIRST_TIME, time);
+				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
+				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
 				values.put(DBOpenHelper.RATE, -1);
 				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() +1 );
 				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
