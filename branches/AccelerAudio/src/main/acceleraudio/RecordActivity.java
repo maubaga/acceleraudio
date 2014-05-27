@@ -64,15 +64,15 @@ public class RecordActivity extends ActionBarActivity{
 				xTextView.setText(x + "");
 				yTextView.setText(y + "");
 				zTextView.setText(z + "");
-				
+
 				int x_bar_height = Math.abs((int)x)*15;
 				int y_bar_height = Math.abs((int)y)*15;
 				int z_bar_height = Math.abs((int)z)*15;
-				
-//				x_bar_height = Math.abs(Integer.parseInt(xTextView.getText().toString()));
-//				y_bar_height = Integer.parseInt(yTextView.getText().toString());
-//				z_bar_height = Integer.parseInt(zTextView.getText().toString());
-				
+
+				//				x_bar_height = Math.abs(Integer.parseInt(xTextView.getText().toString()));
+				//				y_bar_height = Integer.parseInt(yTextView.getText().toString());
+				//				z_bar_height = Integer.parseInt(zTextView.getText().toString());
+
 				bars.setVisibility(View.VISIBLE);
 				x_bar1.setLayoutParams(new LinearLayout.LayoutParams(150, x_bar_height));
 				x_bar2.setLayoutParams(new LinearLayout.LayoutParams(150, x_bar_height));
@@ -154,19 +154,19 @@ public class RecordActivity extends ActionBarActivity{
 	 * @param view
 	 */
 	public void startRecord(View view){
-		
-		final int rotation = ((WindowManager) this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
-        switch (rotation) {
-         case Surface.ROTATION_0:
-        	 setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); 
- 			break;
-         case Surface.ROTATION_90:
-        	 setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); 
- 			break;
-         case Surface.ROTATION_270:
-        	 setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE); 
- 			break;
-     }
+
+		final int rotation = ((WindowManager) this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
+		switch (rotation) {
+		case Surface.ROTATION_0:
+			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); 
+			break;
+		case Surface.ROTATION_90:
+			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); 
+			break;
+		case Surface.ROTATION_270:
+			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE); 
+			break;
+		}
 
 		//This starts the background recording
 		Intent intent = new Intent(this, RecordService.class);
@@ -219,10 +219,7 @@ public class RecordActivity extends ActionBarActivity{
 	 * @param view the button pressed
 	 */
 	public void stopRecord(View view){	
-		//This intent stop the background recording and notify to return the values
-		Intent intent = new Intent(this, RecordService.class);
-		intent.setAction(RecordService.STOP);
-		startService(intent);
+
 
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
@@ -239,6 +236,11 @@ public class RecordActivity extends ActionBarActivity{
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);		
 		scroll.setVisibility(View.VISIBLE);
+
+		//This intent stop the background recording and notify to return the values
+		Intent intent = new Intent(this, RecordService.class);
+		intent.setAction(RecordService.STOP);
+		startService(intent);
 	}
 
 	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
