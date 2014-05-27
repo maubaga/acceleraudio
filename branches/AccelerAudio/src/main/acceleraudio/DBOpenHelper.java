@@ -11,8 +11,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 	public static final String TABLE = "registrazione";
 	public static final String NAME = "nome_file";
-	public static final String DATE_TIME = "data_ora";
-	public static final String MODIFY = "ultima_modifica";
+	public static final String FIRST_DATE = "data";
+	public static final String FIRST_TIME = "ora";
+	public static final String LAST_MODIFY_DATE = "ultima_modifica_data";
+	public static final String LAST_MODIFY_TIME = "ultima_modifica_ora";
 	public static final String RATE = "bit_rate";
 	public static final String UPSAMPL = "interpolazione";
 	public static final String X_CHECK = "asse_x";
@@ -29,8 +31,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 		String sql = "create table " + TABLE + 
 					"( "+ BaseColumns._ID + " integer primary key autoincrement, " +
 					NAME + " text not null, " + 
-					DATE_TIME + " text not null, " + //vedere formato su doc SQLite
-					MODIFY + " text not null, " +
+					FIRST_DATE + " text not null, " +
+					FIRST_TIME + " text not null, " +//vedere formato su doc SQLite
+					LAST_MODIFY_DATE + " text not null, " +
+					LAST_MODIFY_TIME + " text not null, " +
 					RATE + " integer, " +
 					UPSAMPL + " integer, " +
 					X_CHECK + " boolean, " +
@@ -41,5 +45,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
 	@Override 
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE);
+		onCreate(db);
+		
 	}
+	
 }
