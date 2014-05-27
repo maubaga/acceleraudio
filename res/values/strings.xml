@@ -5,6 +5,9 @@
     
     <string name="action_new">Nuova registrazione</string>
     <string name="home">Premi + per iniziare una registrazione</string>
+    <string name="empty_db">Il database è vuoto!</string>
+    <string name="name_h1"><b>NOME</b></string>
+    <string name="date_h1"><b>DATA</b></string>
     
     <!-- ****** RECORDACTIVITY ****** -->
     
@@ -25,7 +28,7 @@
     <string name="first_date_h1"><b>DATA CREAZIONE</b></string>
     <string name="last_date_h1"><b>ULTIMA MODIFICA</b></string>
     <string name="axis_title"><b>ASSI UTILIZZATI</b></string>
-    <string name="upscaling_title"><b>INTERPOLAZIONE</b></string>
+    <string name="upscaling_title"><b>DURATA DEI SUONI</b></string>
     <string name="session_img_description">Immagine della sessione</string>
     
     <!-- ****** PLAYACTIVITY ****** -->
