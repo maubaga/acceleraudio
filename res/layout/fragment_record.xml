@@ -83,42 +83,42 @@
 
         <View
             android:id="@+id/x_bar1"
-            android:layout_width="50dp"
+            android:layout_width="10dp"
             android:layout_height="50dp"
             android:background="#000"
             android:layout_marginRight="2dp" />
         
         <View
             android:id="@+id/y_bar1"
-            android:layout_width="50dp"
+            android:layout_width="10dp"
             android:layout_height="50dp"
             android:background="#888"
             android:layout_marginRight="2dp" />
         
         <View
             android:id="@+id/z_bar1"
-            android:layout_width="50dp"
+            android:layout_width="10dp"
             android:layout_height="50dp"
             android:background="#000"
             android:layout_marginRight="2dp" />
         
         <View
             android:id="@+id/y_bar2"
-            android:layout_width="50dp"
+            android:layout_width="10dp"
             android:layout_height="50dp"
             android:background="#888"
             android:layout_marginRight="2dp" />
         
         <View
             android:id="@+id/x_bar2"
-            android:layout_width="50dp"
+            android:layout_width="10dp"
             android:layout_height="50dp"
             android:background="#000"
             android:layout_marginRight="2dp" />
         
         <View
             android:id="@+id/z_bar2"
-            android:layout_width="50dp"
+            android:layout_width="10dp"
             android:layout_height="50dp"
             android:background="#888" />
         

@@ -25,7 +25,7 @@
     <string name="first_date_h1"><b>DATA CREAZIONE</b></string>
     <string name="last_date_h1"><b>ULTIMA MODIFICA</b></string>
     <string name="axis_title"><b>ASSI UTILIZZATI</b></string>
-    <string name="upscaling_title"><b>DURATA DEI SUONI</b></string>
+    <string name="upscaling_title"><b>INTERPOLAZIONE</b></string>
     <string name="session_img_description">Immagine della sessione</string>
     
     <!-- ****** PLAYACTIVITY ****** -->
@@ -37,7 +37,7 @@
     <string name="title_activity_pref">Impostazioni</string>
     <string name="selected_axes">Assi selezionati</string>
     <string name="sample_rate">Frequenza di campionamento</string>
-    <string name="max_duration">Durata massima di registrazione</string>
+    <string name="max_duration">Durata massima</string>
     <string name="amount_upsampling">Parametro di interpolazione</string>    
     <string name="sample_rate1">1 campione/s</string>
     <string name="sample_rate2">2 campioni/s</string>
