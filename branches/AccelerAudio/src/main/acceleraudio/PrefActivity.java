@@ -72,7 +72,6 @@ public class PrefActivity extends ActionBarActivity {
 		public PlaceholderFragment() {
 		}
 
-		@SuppressWarnings("rawtypes")
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
