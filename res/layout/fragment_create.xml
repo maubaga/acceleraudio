@@ -153,8 +153,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="85"
-            android:max="99"
-            android:progress="47" />
+            android:max="99"/>
 
         <TextView
             android:id="@+id/progress_seekbar"

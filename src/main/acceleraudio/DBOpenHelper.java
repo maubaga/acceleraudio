@@ -29,8 +29,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) 
 	{ 
 		String sql = "create table " + TABLE + 
-					"( "+ BaseColumns._ID + " integer primary key autoincrement, " +
-					NAME + " text not null, " + 
+					"( "+ NAME + " text primary key, " + 
 					FIRST_DATE + " text not null, " +
 					FIRST_TIME + " text not null, " +//vedere formato su doc SQLite
 					LAST_MODIFY_DATE + " text not null, " +

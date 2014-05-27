@@ -80,7 +80,7 @@ public class PrefActivity extends ActionBarActivity {
 			
 //			recupero gli stati dei componenti utilizzando SharedPreferences
 			Context context = getActivity();
-			SharedPreferences preferences = context.getSharedPreferences("prova", Context.MODE_PRIVATE); 
+			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); 
 			boolean pref_cbX = preferences.getBoolean("cBoxSelectX", true);
 			boolean pref_cbY = preferences.getBoolean("cBoxSelectY", true);
 			boolean pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
@@ -176,7 +176,7 @@ public class PrefActivity extends ActionBarActivity {
 		super.onPause();
 		
 		//utilizzo SharedPreferece e il relativo editor per salvare lo stato dei componenti
-		SharedPreferences preferences = getSharedPreferences("prova", Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		
 		//stato dei checkbox relativi agli assi selezionati

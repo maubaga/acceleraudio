@@ -76,7 +76,7 @@ public class CreateActivity extends ActionBarActivity {
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 
-		SharedPreferences preferences = this.getSharedPreferences("prova", MODE_PRIVATE); 
+		SharedPreferences preferences = this.getSharedPreferences("Session_Preferences", MODE_PRIVATE); 
 		pref_cbX = preferences.getBoolean("cBoxSelectX", true);
 		pref_cbY = preferences.getBoolean("cBoxSelectY", true);
 		pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
