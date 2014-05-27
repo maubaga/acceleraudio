@@ -152,7 +152,7 @@
             android:id="@+id/v_upsamping"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="9"
+            android:layout_weight="85"
             android:max="99"
             android:progress="47" />
 
@@ -160,7 +160,7 @@
             android:id="@+id/progress_seekbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="15"
             android:gravity="center_horizontal"
             android:paddingTop="4dp"
             android:textSize="18sp" />
