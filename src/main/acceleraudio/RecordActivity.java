@@ -1,6 +1,5 @@
 package main.acceleraudio;
 
-import android.app.ActionBar.LayoutParams;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

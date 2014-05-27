@@ -13,14 +13,15 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_height="100dp"
+            android:contentDescription="@string/session_img_description" />
 
         <EditText
             android:id="@+id/name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="Traccia 1"
+            android:hint="@string/name_hint"
             android:singleLine="true" />
     </LinearLayout>
 

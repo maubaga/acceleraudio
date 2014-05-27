@@ -72,6 +72,57 @@
             android:textSize="18sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/bars"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:visibility="gone"
+        android:gravity="bottom|center" >
+
+        <View
+            android:id="@+id/x_bar1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#000"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/y_bar1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#888"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/z_bar1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#000"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/y_bar2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#888"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/x_bar2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#000"
+            android:layout_marginRight="2dp" />
+        
+        <View
+            android:id="@+id/z_bar2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#888" />
+        
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scroll"
@@ -90,7 +141,8 @@
         android:id="@+id/mic"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:gravity="center" >
+        android:gravity="center"
+        android:padding="70dp" >
 
         <ImageButton
             android:layout_width="match_parent"
@@ -98,8 +150,9 @@
             android:layout_gravity="center"
             android:background="#00000000"
             android:onClick="startRecord"
+            android:scaleType="fitCenter"
             android:src="@drawable/mic"
-            android:scaleType="fitCenter" />
+            android:contentDescription="@string/record_img_description" />
     </LinearLayout>
 
     <LinearLayout
@@ -109,7 +162,7 @@
         android:orientation="horizontal"
         android:paddingTop="8dp"
         android:visibility="gone" >
-        
+
         <Chronometer
             android:id="@+id/chrono"
             android:layout_width="0dp"
@@ -117,9 +170,9 @@
             android:layout_gravity="bottom"
             android:layout_weight="2"
             android:gravity="center"
+            android:scaleType="fitCenter"
             android:textSize="38sp"
-            android:visibility="gone"
-            android:scaleType="fitCenter" />
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/play"
@@ -130,7 +183,8 @@
             android:background="#00000000"
             android:onClick="startRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_play" />
+            android:src="@drawable/media_play"
+            android:contentDescription="@string/play_img_description" />
 
         <ImageButton
             android:id="@+id/pause"
@@ -142,7 +196,8 @@
             android:onClick="pauseRecord"
             android:scaleType="fitCenter"
             android:src="@drawable/media_pause"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@string/play_img_description" />
 
         <ImageButton
             android:layout_width="0dp"
@@ -152,7 +207,8 @@
             android:background="#00000000"
             android:onClick="stopRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_stop" />
+            android:src="@drawable/media_stop"
+            android:contentDescription="@string/play_img_description" />
     </LinearLayout>
 
 </LinearLayout>

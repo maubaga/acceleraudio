@@ -151,7 +151,8 @@
             android:background="#00000000"
             android:onClick="startRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/mic" />
+            android:src="@drawable/mic"
+            android:contentDescription="@string/record_img_description" />
     </LinearLayout>
 
     <LinearLayout
@@ -182,7 +183,8 @@
             android:background="#00000000"
             android:onClick="startRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_play" />
+            android:src="@drawable/media_play"
+            android:contentDescription="@string/play_img_description" />
 
         <ImageButton
             android:id="@+id/pause"
@@ -194,7 +196,8 @@
             android:onClick="pauseRecord"
             android:scaleType="fitCenter"
             android:src="@drawable/media_pause"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@string/play_img_description" />
 
         <ImageButton
             android:layout_width="0dp"
@@ -204,7 +207,8 @@
             android:background="#00000000"
             android:onClick="stopRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_stop" />
+            android:src="@drawable/media_stop"
+            android:contentDescription="@string/play_img_description" />
     </LinearLayout>
 
 </LinearLayout>
