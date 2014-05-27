@@ -75,10 +75,10 @@ public class CreateActivity extends ActionBarActivity {
 		}
 
 		SharedPreferences preferences = this.getSharedPreferences("prova", MODE_PRIVATE); 
-		pref_cbX = preferences.getBoolean("cBoxSelectX", false);
-		pref_cbY = preferences.getBoolean("cBoxSelectY", false);
-		pref_cbZ = preferences.getBoolean("cBoxSelectZ", false);
-		pref_upsampl = preferences.getInt("sbUpsampling", 0);
+		pref_cbX = preferences.getBoolean("cBoxSelectX", true);
+		pref_cbY = preferences.getBoolean("cBoxSelectY", true);
+		pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
+		pref_upsampl = preferences.getInt("sbUpsampling", 100);
 
 
 
