@@ -12,6 +12,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 
 	public static final String START = "start";
 	public static final String STOP = "stop";
+	public static final String CANCEL = "cancel";
 	public static final String PAUSE = "pause";
 	public static final String X_VALUE = "x_value";
 	public static final String Y_VALUE = "y_value";
@@ -57,7 +58,13 @@ public class RecordService extends IntentService  implements SensorEventListener
 		if (STOP.equals(intent.getAction())){
 			isStart = false;
 			mSensorManager.unregisterListener(this);
-			publishFinishResults();
+			publishFinishResults(); 
+		}
+		if (CANCEL.equals(intent.getAction())){
+			isStart = false;
+			if(mSensorManager != null)
+				mSensorManager.unregisterListener(this);
+			record = null; 
 		}
 	}
 

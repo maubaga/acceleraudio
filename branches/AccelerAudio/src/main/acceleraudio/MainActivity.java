@@ -1,6 +1,5 @@
 package main.acceleraudio;
 
-import static android.provider.BaseColumns._ID;
 import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
 import static main.acceleraudio.DBOpenHelper.NAME;
 import static main.acceleraudio.DBOpenHelper.TABLE;
@@ -27,7 +26,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private boolean resumeHasRun = false;
 	private DBOpenHelper dbHelper;
-	static String folder;
+	private static String folder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
 		showSessions(cursor);
 
 	}
-
+	
 	@Override 
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -72,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	final static String IMG_NAME = folder + NAME + ".png";
-	private static String[] FROM = { _ID, NAME, NAME, LAST_MODIFY_DATE };
+	private static String[] FROM = { NAME, NAME, LAST_MODIFY_DATE };
 	private static String ORDER_BY = NAME + " ASC";
 
 	private Cursor getSessions() {
@@ -130,6 +129,7 @@ public class MainActivity extends ActionBarActivity {
 			play.setLayoutParams(new LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
 			play.setImageResource(R.drawable.media_play);
 			play.setScaleType(ScaleType.FIT_CENTER);
+			play.setBackgroundColor(0);
 			play.setOnClickListener(new OnClickListener() {
 				 
 				@Override
@@ -182,6 +182,7 @@ public class MainActivity extends ActionBarActivity {
 	    }
 
 	}
+	
 
 	//	/**
 	//	 * A placeholder fragment containing a simple view.

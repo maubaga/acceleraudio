@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -21,10 +22,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RecordActivity extends ActionBarActivity{
 
-	long timeStop = 0;
+	private long timeStop = 0;
+	private static long maxRecordTime;
+	private Chronometer chrono;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -64,27 +68,38 @@ public class RecordActivity extends ActionBarActivity{
 				yTextView.setText(y + "");
 				zTextView.setText(z + "");
 
-				int x_bar_height = Math.abs((int)x)*15;
-				int y_bar_height = Math.abs((int)y)*15;
-				int z_bar_height = Math.abs((int)z)*15;
+				int x_bar_height = Math.abs((int) x) * 10;
+				int y_bar_height = Math.abs((int) y) * 10;
+				int z_bar_height = Math.abs((int) z) * 10;
 
 				//				x_bar_height = Math.abs(Integer.parseInt(xTextView.getText().toString()));
 				//				y_bar_height = Integer.parseInt(yTextView.getText().toString());
 				//				z_bar_height = Integer.parseInt(zTextView.getText().toString());
 
 				bars.setVisibility(View.VISIBLE);
-				x_bar1.setLayoutParams(new LinearLayout.LayoutParams(150, x_bar_height));
-				x_bar2.setLayoutParams(new LinearLayout.LayoutParams(150, x_bar_height));
-				y_bar1.setLayoutParams(new LinearLayout.LayoutParams(150, y_bar_height));
-				y_bar2.setLayoutParams(new LinearLayout.LayoutParams(150, y_bar_height));
-				z_bar1.setLayoutParams(new LinearLayout.LayoutParams(150, z_bar_height));
-				z_bar2.setLayoutParams(new LinearLayout.LayoutParams(150, z_bar_height));
-
+				x_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, x_bar_height));
+				x_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, x_bar_height));
+				y_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, y_bar_height));
+				y_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, y_bar_height));
+				z_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));
+				z_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));
+				
+				//check the max duration of the registration
+				checkMaxDuration();					
 			}
 
 		}
 	};
 
+
+	@Override
+	public void onBackPressed() {
+		//This intent delete the background recording
+		Intent intent = new Intent(this, RecordService.class);
+		intent.setAction(RecordService.CANCEL);
+		startService(intent);
+		finish(); 
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,10 +146,23 @@ public class RecordActivity extends ActionBarActivity{
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_record,
 					container, false);
+			
+			Context context = getActivity();
+			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); 
+			String pref_maxRec = preferences.getString("eTextMaxRec", getResources().getString(R.string.duration1));
+			
+			if (getResources().getString(R.string.duration1).equals(pref_maxRec))
+				maxRecordTime = 30 * 1000;
+			if (getResources().getString(R.string.duration2).equals(pref_maxRec))
+				maxRecordTime = 60 * 1000;
+			if (getResources().getString(R.string.duration3).equals(pref_maxRec))
+				maxRecordTime = 120 * 1000;
+			if (getResources().getString(R.string.duration4).equals(pref_maxRec))
+				maxRecordTime = 300 * 1000;
+			
 			return rootView;
 		}
 	}
-
 
 	@Override
 	protected void onResume() {
@@ -178,7 +206,7 @@ public class RecordActivity extends ActionBarActivity{
 		LinearLayout buttons = (LinearLayout)findViewById(R.id.buttons);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
-		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		chrono = (Chronometer)findViewById(R.id.chrono);
 
 		chrono.setVisibility(View.VISIBLE);
 		chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
@@ -204,7 +232,7 @@ public class RecordActivity extends ActionBarActivity{
 
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
-		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		chrono = (Chronometer)findViewById(R.id.chrono);
 
 		chrono.stop();
 		timeStop = chrono.getBase() - SystemClock.elapsedRealtime();
@@ -219,11 +247,10 @@ public class RecordActivity extends ActionBarActivity{
 	 */
 	public void stopRecord(View view){	
 
-
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
-		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		chrono = (Chronometer)findViewById(R.id.chrono);
 		LinearLayout bars = (LinearLayout)findViewById(R.id.bars);
 
 		chrono.setVisibility(View.GONE);
@@ -250,6 +277,13 @@ public class RecordActivity extends ActionBarActivity{
 		playIntent.putExtra(RecordService.SIZE, size);
 
 		startActivity(playIntent);
+	}
+	
+	private void checkMaxDuration(){
+		if(SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime){
+			stopRecord(null);
+			Toast.makeText(this,"Raggiunta la durata massima raggiunta di " + (maxRecordTime / 1000) + " secondi.", Toast.LENGTH_LONG).show();
+		}
 	}
 
 
