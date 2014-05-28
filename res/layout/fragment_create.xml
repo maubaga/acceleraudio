@@ -22,7 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:hint="@string/name_hint"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:inputType="textCapSentences" />
     </LinearLayout>
 
     <LinearLayout

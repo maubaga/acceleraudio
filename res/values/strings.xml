@@ -5,9 +5,13 @@
     
     <string name="action_new">Nuova registrazione</string>
     <string name="home">Premi + per iniziare una registrazione</string>
-    <string name="empty_db">Il database è vuoto!</string>
+    <string name="empty_db">Non hai ancora registrato nessuna sessione. 
+        \n\nPremi <b>+</b> per iniziare.</string>
     <string name="name_h1"><b>NOME</b></string>
     <string name="date_h1"><b>DATA</b></string>
+    <string name="rename">Rinomina</string>
+    <string name="duplicate">Duplica</string>
+    <string name="delete">Elimina</string>
     
     <!-- ****** RECORDACTIVITY ****** -->
     

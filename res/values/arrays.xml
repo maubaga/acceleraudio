@@ -16,4 +16,10 @@
         <item>@string/duration4</item>
     </array>
     
+    <array name="context_menu">
+        <item>@string/rename</item>
+        <item>@string/duplicate</item>
+        <item>@string/delete</item>
+    </array>
+    
 </resources>
