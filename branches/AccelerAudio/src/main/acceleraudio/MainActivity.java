@@ -3,6 +3,8 @@ package main.acceleraudio;
 import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
 import static main.acceleraudio.DBOpenHelper.NAME;
 import static main.acceleraudio.DBOpenHelper.TABLE;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -85,8 +88,25 @@ public class MainActivity extends ActionBarActivity {
 
 	private void showSessions(Cursor cursor) {
 
+		TextView empty_db = (TextView)findViewById(R.id.empty_db);
+		LinearLayout index = (LinearLayout)findViewById(R.id.index);
+		View index_line = (View)findViewById(R.id.index_line);
 		LinearLayout main_container = (LinearLayout)findViewById(R.id.main_container);
 		main_container.removeAllViews();
+		
+		if(cursor.getCount() == 0){
+			
+			index.setVisibility(View.GONE);
+			index_line.setVisibility(View.GONE);
+			empty_db.setVisibility(View.VISIBLE);
+			
+		} else{
+			
+			index.setVisibility(View.VISIBLE);
+			index_line.setVisibility(View.VISIBLE);
+			empty_db.setVisibility(View.GONE);
+			
+		}
 
 		for(int i = 0; i < cursor.getCount(); i++){
 
@@ -95,6 +115,8 @@ public class MainActivity extends ActionBarActivity {
 			LinearLayout session = new LinearLayout(this);
 			session.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
 			session.setOrientation(LinearLayout.HORIZONTAL);
+			session.setClickable(true);
+			session.setBackgroundResource(R.drawable.selector_colors);
 
 			ImageView img = new ImageView(this);
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -140,10 +162,23 @@ public class MainActivity extends ActionBarActivity {
 				}
 	 
 			});
+			
+			session.setOnLongClickListener(new OnLongClickListener() { 
+		        @Override
+		        public boolean onLongClick(View v) {
+		            
+		        	contextMenu(v, session_name);
+		        	
+		        	return true;
+		        	
+		        }
+		    });
 
 			View line = new View(this);
 			line.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics())));
 			line.setBackgroundColor(0x227a7a7a);
+			
+			
 
 			session.addView(img);
 			session.addView(name);
@@ -161,6 +196,41 @@ public class MainActivity extends ActionBarActivity {
 		Intent intent = new Intent(this, PlayActivity.class);
 		intent.putExtra("session_name", name);
 		startActivity(intent);
+		
+	}
+	
+	private void contextMenu(View v, String session_name){
+		
+		new AlertDialog.Builder(MainActivity.this).setTitle(session_name).setItems(R.array.context_menu,
+				new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						
+						switch(which){
+						
+						case 0:
+							break;
+							
+						case 1:
+							break;
+							
+						case 2:
+							break;
+						
+						}
+						
+					}
+				}).show();
+		
+	}
+	
+	private void deleteSession(String session_name){
+		
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		db.delete(TABLE, NAME + "=" + session_name, null);
+		
+		getSessions();
 		
 	}
 
