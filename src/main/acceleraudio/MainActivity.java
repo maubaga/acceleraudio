@@ -1,5 +1,10 @@
 package main.acceleraudio;
 
+import static main.acceleraudio.DBOpenHelper.X_CHECK;
+import static main.acceleraudio.DBOpenHelper.Y_CHECK;
+import static main.acceleraudio.DBOpenHelper.Z_CHECK;
+import static main.acceleraudio.DBOpenHelper.UPSAMPL;
+import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
 import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
 import static main.acceleraudio.DBOpenHelper.NAME;
 import static main.acceleraudio.DBOpenHelper.TABLE;
@@ -74,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	final static String IMG_NAME = folder + NAME + ".png";
-	private static String[] FROM = { NAME, NAME, LAST_MODIFY_DATE };
+	private static String[] FROM = { NAME, NAME, LAST_MODIFY_DATE, FIRST_DATE, UPSAMPL };
 	private static String ORDER_BY = NAME + " ASC";
 
 	private Cursor getSessions() {
@@ -146,18 +151,36 @@ public class MainActivity extends ActionBarActivity {
 			date.setTextSize(16);
 			date.setText(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
 			date.setLayoutParams(params3);
+			final String first_date = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
+			final String last_date = date.getText().toString();
+			final String upsampl = cursor.getString(cursor.getColumnIndex(UPSAMPL));
+			
+			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_date + 
+					"\n\nUltima modifica: " + last_date + "\n\nAssi utilizzati: " + last_date +
+					"\n\nInterpolazione: " + upsampl;
 
 			ImageButton play = new ImageButton(this);
 			play.setLayoutParams(new LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
 			play.setImageResource(R.drawable.media_play);
 			play.setScaleType(ScaleType.FIT_CENTER);
-			play.setBackgroundColor(0);
+			play.setBackgroundResource(R.drawable.selector_colors);
 			play.setOnClickListener(new OnClickListener() {
 				 
 				@Override
 				public void onClick(View arg0) {
 	 
 				   startSession(arg0, session_name);
+	 
+				}
+	 
+			});
+			
+			session.setOnClickListener(new OnClickListener() {
+				 
+				@Override
+				public void onClick(View arg0) {
+	 
+				   detailsView(arg0, message);
 	 
 				}
 	 
@@ -199,11 +222,27 @@ public class MainActivity extends ActionBarActivity {
 		
 	}
 	
+private void detailsView(View v, String message){
+		
+		new AlertDialog.Builder(MainActivity.this)
+	    .setTitle(R.string.details)
+	    .setMessage(message)
+	    .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+						        public void onClick(DialogInterface dialog, int which) { 
+						            return;
+						        }
+						     })
+	     .show();
+		
+	}
+	
 	private void contextMenu(View v, String session_name){
 		
+		final String name = session_name;
+		
 		new AlertDialog.Builder(MainActivity.this).setTitle(session_name).setItems(R.array.context_menu,
-				new DialogInterface.OnClickListener() {
-					
+				new DialogInterface.OnClickListener() {		
+			
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						
@@ -216,6 +255,21 @@ public class MainActivity extends ActionBarActivity {
 							break;
 							
 						case 2:
+							new AlertDialog.Builder(MainActivity.this)
+						    .setTitle(name)
+						    .setMessage(R.string.confirm_delete)
+						    .setIcon(null)
+						    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+						        public void onClick(DialogInterface dialog, int which) { 
+						            deleteSession(name);
+						        }
+						     })
+						    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+						        public void onClick(DialogInterface dialog, int which) { 
+						            return;
+						        }
+						     })
+						     .show();
 							break;
 						
 						}
@@ -228,9 +282,11 @@ public class MainActivity extends ActionBarActivity {
 	private void deleteSession(String session_name){
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		db.delete(TABLE, NAME + "=" + session_name, null);
+		db.delete(TABLE, NAME + "='" + session_name + "'", null);
 		
-		getSessions();
+		showSessions(getSessions());
+		
+		//TODO Eliminare anche i file!
 		
 	}
 

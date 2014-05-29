@@ -75,10 +75,11 @@ public class RecordService extends IntentService  implements SensorEventListener
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (!isStart)
-			return;
 
 		synchronized (this) {
+			if (!isStart)
+				return;
+			
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
 			{
 				float x = event.values[0];

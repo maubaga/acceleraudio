@@ -17,7 +17,7 @@
     </array>
     
     <array name="context_menu">
-        <item>@string/rename</item>
+        <item>@string/modify</item>
         <item>@string/duplicate</item>
         <item>@string/delete</item>
     </array>
