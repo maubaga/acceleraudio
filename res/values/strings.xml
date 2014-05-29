@@ -2,7 +2,7 @@
 <resources>
 
     <!-- ****** MAINACTIVITY ****** -->
-    
+
     <string name="action_new">Nuova registrazione</string>
     <string name="home">Premi + per iniziare una registrazione</string>
     <string name="empty_db">Non hai ancora registrato nessuna sessione. 
@@ -15,9 +15,9 @@
     <string name="duplicate">Duplica</string>
     <string name="delete">Elimina</string>
     <string name="confirm_delete">Vuoi eliminare questa sessione?</string>
-    
+
     <!-- ****** RECORDACTIVITY ****** -->
-    
+
     <string name="title_activity_record">Registra</string>
     <string name="asse_x">Asse X</string>
     <string name="asse_y">Asse Y</string>
@@ -26,9 +26,9 @@
     <string name="play_img_description">Play</string>
     <string name="pause_img_description">Pausa</string>
     <string name="stop_img_description">Stop</string>
-    
+
     <!-- ****** CREATEACTIVITY ****** -->
-    
+
     <string name="title_activity_create">Dettagli sessione</string>
     <string name="action_accept">Conferma</string>
     <string name="name_hint">Inserisci nome</string>
@@ -37,30 +37,32 @@
     <string name="axis_title"><b>ASSI UTILIZZATI</b></string>
     <string name="upscaling_title"><b>DURATA DEI SUONI</b></string>
     <string name="session_img_description">Immagine della sessione</string>
-    
+
     <!-- ****** PLAYACTIVITY ****** -->
-    
+
     <string name="title_activity_play">Lettore musicale</string>
-    
+
     <!-- ****** PREFACTIVITY ****** -->
-    
+
     <string name="title_activity_pref">Impostazioni</string>
     <string name="selected_axes">Assi selezionati</string>
     <string name="sample_rate">Frequenza di campionamento</string>
     <string name="max_duration">Durata massima</string>
-    <string name="amount_upsampling">Parametro di interpolazione</string>    
+    <string name="amount_upsampling">Parametro di interpolazione</string>
     <string name="sample_rate1">1 campione/s</string>
     <string name="sample_rate2">2 campioni/s</string>
     <string name="sample_rate4">4 campioni/s</string>
     <string name="sample_rate6">6 campioni/s</string>
-    <string name="sample_rate8">8 campioni/s</string>    
+    <string name="sample_rate8">8 campioni/s</string>
     <string name="duration1">30 secondi</string>
     <string name="duration2">1 minuto</string>
     <string name="duration3">2 minuti</string>
     <string name="duration4">5 minuti</string>
-    
+
     <!-- ****** ALTRO ****** -->
     <string name="app_name">AccelerAudio</string>
     <string name="action_settings">Impostazioni</string>
-    
+    <string name="title_activity_modify">ModifyActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>
