@@ -1,6 +1,20 @@
 package main.acceleraudio;
 
-import static main.acceleraudio.DBOpenHelper.*;
+import static main.acceleraudio.DBOpenHelper.DATA_SIZE;
+import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
+import static main.acceleraudio.DBOpenHelper.FIRST_TIME;
+import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
+import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_TIME;
+import static main.acceleraudio.DBOpenHelper.NAME;
+import static main.acceleraudio.DBOpenHelper.RATE;
+import static main.acceleraudio.DBOpenHelper.TABLE;
+import static main.acceleraudio.DBOpenHelper.UPSAMPL;
+import static main.acceleraudio.DBOpenHelper.X_CHECK;
+import static main.acceleraudio.DBOpenHelper.X_VALUES;
+import static main.acceleraudio.DBOpenHelper.Y_CHECK;
+import static main.acceleraudio.DBOpenHelper.Y_VALUES;
+import static main.acceleraudio.DBOpenHelper.Z_CHECK;
+import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 
 import java.io.File;
 
@@ -85,7 +99,17 @@ public class MainActivity extends ActionBarActivity {
 		Cursor cursor = db.query(TABLE, FROM, null, null, null, null, ORDER_BY);
 		startManagingCursor(cursor);
 		//TODO Trovare un metodo alternativo che non sia deprecato
-
+		return cursor;
+	}
+	
+	private Cursor getArraysData(String songName) {
+		// Get the three arrays from blob fields in the data base and the dimension of the arrays
+		String[] FROM = { X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME};
+		String WHERE = NAME + "= '" + songName + "'";
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
+		startManagingCursor(cursor);
+		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
 	}
 
@@ -114,7 +138,6 @@ public class MainActivity extends ActionBarActivity {
 		for(int i = 0; i < cursor.getCount(); i++){
 
 			cursor.moveToPosition(i);
-
 			LinearLayout session = new LinearLayout(this);
 			session.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
 			session.setOrientation(LinearLayout.HORIZONTAL);
@@ -278,6 +301,17 @@ public class MainActivity extends ActionBarActivity {
 				switch(which){
 
 				case 0: //TODO set modify action
+					Cursor cursor = getArraysData(name);
+					cursor.moveToFirst();
+					byte[] x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
+					byte[] y = cursor.getBlob(cursor.getColumnIndex(Y_VALUES));
+					byte[] z = cursor.getBlob(cursor.getColumnIndex(Z_VALUES));
+					int size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
+					String data = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
+					String time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
+					startModifyActivity(name, data, time, x, y, z, size);
+//					Toast.makeText(getBaseContext(),y.length +"", Toast.LENGTH_SHORT).show();
+
 					break;
 
 				case 1: //TODO set duplicate action
@@ -340,6 +374,19 @@ public class MainActivity extends ActionBarActivity {
 
 		}
 
+		
+	}
+	private void startModifyActivity(String session_name, String data, String time, byte[] x, byte[] y, byte[] z, int size){
+		Intent modifyIntent = new Intent(this, ModifyActivity.class);
+		modifyIntent.putExtra(FIRST_DATE, data);
+		modifyIntent.putExtra(FIRST_TIME, time);
+		modifyIntent.putExtra(NAME, session_name);
+		modifyIntent.putExtra(X_VALUES, x);
+		modifyIntent.putExtra(Y_VALUES, y);
+		modifyIntent.putExtra(Z_VALUES, z);
+		modifyIntent.putExtra(DATA_SIZE, size);
+
+		startActivity(modifyIntent);
 	}
 
 
