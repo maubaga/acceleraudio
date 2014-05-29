@@ -9,9 +9,12 @@
         \n\nPremi <b>+</b> per iniziare.</string>
     <string name="name_h1"><b>NOME</b></string>
     <string name="date_h1"><b>DATA</b></string>
-    <string name="rename">Rinomina</string>
+    <string name="details">Dettagli</string>
+    <string name="close">Chiudi</string>
+    <string name="modify">Modifica</string>
     <string name="duplicate">Duplica</string>
     <string name="delete">Elimina</string>
+    <string name="confirm_delete">Vuoi eliminare questa sessione?</string>
     
     <!-- ****** RECORDACTIVITY ****** -->
     
