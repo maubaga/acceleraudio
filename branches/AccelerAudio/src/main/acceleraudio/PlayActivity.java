@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,7 +82,7 @@ public class PlayActivity extends ActionBarActivity {
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
 			
 			TextView textView = (TextView) rootView.findViewById(R.id.session_name);
-			textView.setText(session_name);
+			textView.setText(session_name.toUpperCase());
 			
 			return rootView;
 		}
@@ -96,11 +97,13 @@ public class PlayActivity extends ActionBarActivity {
 		try{
 			mp = new MediaPlayer();
 			try {
+				ImageButton play = (ImageButton)findViewById(R.id.play);
+				ImageButton pause = (ImageButton)findViewById(R.id.pause);
+				play.setVisibility(View.GONE);
+				pause.setVisibility(View.VISIBLE);
 				mp.setDataSource(appFileDirectory + session_name + ".wav");
 				mp.prepare();
 				mp.start();
-				Button buttonStop = (Button) findViewById(R.id.stop_music);
-				buttonStop.setVisibility(View.VISIBLE);
 			} catch (IOException e) {
 				Toast.makeText(getBaseContext(),"prepare failed",
 						Toast.LENGTH_SHORT).show();
@@ -114,10 +117,12 @@ public class PlayActivity extends ActionBarActivity {
 	}
 	
 	public void stop(View view) {
-		mp.stop();
-		mp = null;
-		Button buttonStop = (Button) findViewById(R.id.stop_music);
-		buttonStop.setVisibility(View.INVISIBLE);
+		if(mp != null){
+			
+			mp.stop();
+			mp = null;
+			
+		}
 	}
 
 }

@@ -1,13 +1,19 @@
 package main.acceleraudio;
 
+import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
+import static main.acceleraudio.DBOpenHelper.FIRST_TIME;
+import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
+import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_TIME;
+import static main.acceleraudio.DBOpenHelper.NAME;
+import static main.acceleraudio.DBOpenHelper.RATE;
+import static main.acceleraudio.DBOpenHelper.TABLE;
+import static main.acceleraudio.DBOpenHelper.UPSAMPL;
 import static main.acceleraudio.DBOpenHelper.X_CHECK;
 import static main.acceleraudio.DBOpenHelper.Y_CHECK;
 import static main.acceleraudio.DBOpenHelper.Z_CHECK;
-import static main.acceleraudio.DBOpenHelper.UPSAMPL;
-import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
-import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
-import static main.acceleraudio.DBOpenHelper.NAME;
-import static main.acceleraudio.DBOpenHelper.TABLE;
+
+import java.io.File;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +32,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
 		showSessions(cursor);
 
 	}
-	
+
 	@Override 
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -79,7 +86,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	final static String IMG_NAME = folder + NAME + ".png";
-	private static String[] FROM = { NAME, NAME, LAST_MODIFY_DATE, FIRST_DATE, UPSAMPL };
+	private static String[] FROM = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK };
 	private static String ORDER_BY = NAME + " ASC";
 
 	private Cursor getSessions() {
@@ -87,6 +94,7 @@ public class MainActivity extends ActionBarActivity {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, null, null, null, null, ORDER_BY);
 		startManagingCursor(cursor);
+		//TODO Trovare un metodo alternativo che non sia deprecato
 
 		return cursor;
 	}
@@ -98,19 +106,19 @@ public class MainActivity extends ActionBarActivity {
 		View index_line = (View)findViewById(R.id.index_line);
 		LinearLayout main_container = (LinearLayout)findViewById(R.id.main_container);
 		main_container.removeAllViews();
-		
+
 		if(cursor.getCount() == 0){
-			
+
 			index.setVisibility(View.GONE);
 			index_line.setVisibility(View.GONE);
 			empty_db.setVisibility(View.VISIBLE);
-			
+
 		} else{
-			
+
 			index.setVisibility(View.VISIBLE);
 			index_line.setVisibility(View.VISIBLE);
 			empty_db.setVisibility(View.GONE);
-			
+
 		}
 
 		for(int i = 0; i < cursor.getCount(); i++){
@@ -140,7 +148,6 @@ public class MainActivity extends ActionBarActivity {
 			name.setTextSize(16);
 			name.setText(cursor.getString(cursor.getColumnIndex(NAME)));
 			name.setLayoutParams(params2);
-			final String session_name = name.getText().toString();
 
 			TextView date = new TextView(this);
 			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
@@ -151,13 +158,52 @@ public class MainActivity extends ActionBarActivity {
 			date.setTextSize(16);
 			date.setText(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
 			date.setLayoutParams(params3);
-			final String first_date = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
-			final String last_date = date.getText().toString();
+
+			//Session's name
+			final String session_name = name.getText().toString();
+
+			//First and last date
+			String first_date = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
+			String first_time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
+			String last_date = cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE));
+			String last_time = cursor.getString(cursor.getColumnIndex(LAST_MODIFY_TIME));
+			final String first_time_date = first_date + " " + first_time;
+			final String last_time_date = last_date + " " + last_time;
+
+			//Rate value
+			final String rate = cursor.getString(cursor.getColumnIndex(RATE));
+
+			//Upsampling value
 			final String upsampl = cursor.getString(cursor.getColumnIndex(UPSAMPL));
-			
-			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_date + 
-					"\n\nUltima modifica: " + last_date + "\n\nAssi utilizzati: " + last_date +
-					"\n\nInterpolazione: " + upsampl;
+
+			//Used axes
+			String temp_used_axes = "";
+			boolean second_axis = false;
+			if(cursor.getString(cursor.getColumnIndex(X_CHECK)).equals("1")){
+
+				second_axis = true;
+				temp_used_axes = "X";
+
+			}
+			if(cursor.getString(cursor.getColumnIndex(Y_CHECK)).equals("1")){
+				if(second_axis)
+					temp_used_axes += " , ";
+
+				second_axis = true;
+				temp_used_axes += "Y";
+			}
+			if(cursor.getString(cursor.getColumnIndex(Z_CHECK)).equals("1")){
+				if(second_axis)
+					temp_used_axes += " , ";
+
+				temp_used_axes += "Z";
+			}			
+			final String used_axes = temp_used_axes;
+
+			//Text of the Details window
+			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_time_date + 
+					"\n\nUltima modifica: " + last_time_date + "\n\nAssi utilizzati: " + used_axes +
+					"\n\nCampionamento: " + rate + "\n\nInterpolazione: " + upsampl;
 
 			ImageButton play = new ImageButton(this);
 			play.setLayoutParams(new LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
@@ -165,43 +211,43 @@ public class MainActivity extends ActionBarActivity {
 			play.setScaleType(ScaleType.FIT_CENTER);
 			play.setBackgroundResource(R.drawable.selector_colors);
 			play.setOnClickListener(new OnClickListener() {
-				 
+
 				@Override
 				public void onClick(View arg0) {
-	 
-				   startSession(arg0, session_name);
-	 
+
+					startSession(arg0, session_name);
+
 				}
-	 
+
 			});
-			
+
 			session.setOnClickListener(new OnClickListener() {
-				 
+
 				@Override
 				public void onClick(View arg0) {
-	 
-				   detailsView(arg0, message);
-	 
+
+					detailsView(arg0, message);
+
 				}
-	 
+
 			});
-			
+
 			session.setOnLongClickListener(new OnLongClickListener() { 
-		        @Override
-		        public boolean onLongClick(View v) {
-		            
-		        	contextMenu(v, session_name);
-		        	
-		        	return true;
-		        	
-		        }
-		    });
+				@Override
+				public boolean onLongClick(View v) {
+
+					contextMenu(v, session_name);
+
+					return true;
+
+				}
+			});
 
 			View line = new View(this);
 			line.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics())));
 			line.setBackgroundColor(0x227a7a7a);
-			
-			
+
+
 
 			session.addView(img);
 			session.addView(name);
@@ -213,81 +259,85 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 	}
-	
+
 	private void startSession(View view, String name){
-		
+
 		Intent intent = new Intent(this, PlayActivity.class);
 		intent.putExtra("session_name", name);
 		startActivity(intent);
-		
+
 	}
-	
-private void detailsView(View v, String message){
-		
+
+	private void detailsView(View v, String message){
+
 		new AlertDialog.Builder(MainActivity.this)
-	    .setTitle(R.string.details)
-	    .setMessage(message)
-	    .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-						        public void onClick(DialogInterface dialog, int which) { 
-						            return;
-						        }
-						     })
-	     .show();
-		
+		.setTitle(R.string.details)
+		.setMessage(message)
+		.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) { 
+				return;
+			}
+		})
+		.show();
+
 	}
-	
+
 	private void contextMenu(View v, String session_name){
-		
+
 		final String name = session_name;
-		
+
 		new AlertDialog.Builder(MainActivity.this).setTitle(session_name).setItems(R.array.context_menu,
 				new DialogInterface.OnClickListener() {		
-			
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						
-						switch(which){
-						
-						case 0:
-							break;
-							
-						case 1:
-							break;
-							
-						case 2:
-							new AlertDialog.Builder(MainActivity.this)
-						    .setTitle(name)
-						    .setMessage(R.string.confirm_delete)
-						    .setIcon(null)
-						    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-						        public void onClick(DialogInterface dialog, int which) { 
-						            deleteSession(name);
-						        }
-						     })
-						    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-						        public void onClick(DialogInterface dialog, int which) { 
-						            return;
-						        }
-						     })
-						     .show();
-							break;
-						
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+				switch(which){
+
+				case 0:
+					break;
+
+				case 1:
+					break;
+
+				case 2:
+					new AlertDialog.Builder(MainActivity.this)
+					.setTitle(name)
+					.setMessage(R.string.confirm_delete)
+					.setIcon(null)
+					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) { 
+							deleteSession(name);
 						}
-						
-					}
-				}).show();
-		
+					})
+					.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) { 
+							return;
+						}
+					})
+					.show();
+					break;
+
+				}
+
+			}
+		}).show();
+
 	}
-	
+
 	private void deleteSession(String session_name){
-		
+
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		db.delete(TABLE, NAME + "='" + session_name + "'", null);
-		
+
+		File dir = getFilesDir();
+		File image = new File(dir, session_name + ".png");
+		File audio = new File(dir, session_name + ".wav");
+		image.delete();
+		audio.delete();
+
 		showSessions(getSessions());
-		
-		//TODO Eliminare anche i file!
-		
+
 	}
 
 	@Override
@@ -295,20 +345,20 @@ private void detailsView(View v, String message){
 
 		super.onResume();
 		if (!resumeHasRun) {
-	        resumeHasRun = true;
-	        return;
-	    } else{
-	    	
-	    	folder = getApplicationContext().getFilesDir().getPath() + "/";
+			resumeHasRun = true;
+			return;
+		} else{
+
+			folder = getApplicationContext().getFilesDir().getPath() + "/";
 
 			dbHelper = new DBOpenHelper(this);
 			Cursor cursor = getSessions();
 			showSessions(cursor);
-	    	
-	    }
+
+		}
 
 	}
-	
+
 
 	//	/**
 	//	 * A placeholder fragment containing a simple view.

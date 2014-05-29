@@ -291,7 +291,8 @@ public class CreateActivity extends ActionBarActivity {
 				db.insert(DBOpenHelper.TABLE, null, values);
 				//TODO verificare che la riga sia presente effettivamente nel database
 				
-				startActivity(createIntent);			
+				startActivity(createIntent);
+				finish();
 			}
 			else{
 				Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
