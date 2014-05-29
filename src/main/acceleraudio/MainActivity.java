@@ -1,16 +1,6 @@
 package main.acceleraudio;
 
-import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
-import static main.acceleraudio.DBOpenHelper.FIRST_TIME;
-import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
-import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_TIME;
-import static main.acceleraudio.DBOpenHelper.NAME;
-import static main.acceleraudio.DBOpenHelper.RATE;
-import static main.acceleraudio.DBOpenHelper.TABLE;
-import static main.acceleraudio.DBOpenHelper.UPSAMPL;
-import static main.acceleraudio.DBOpenHelper.X_CHECK;
-import static main.acceleraudio.DBOpenHelper.Y_CHECK;
-import static main.acceleraudio.DBOpenHelper.Z_CHECK;
+import static main.acceleraudio.DBOpenHelper.*;
 
 import java.io.File;
 
@@ -85,12 +75,12 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	final static String IMG_NAME = folder + NAME + ".png";
-	private static String[] FROM = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK };
-	private static String ORDER_BY = NAME + " ASC";
+	
 
 	private Cursor getSessions() {
 		// Get all of the notes from the database and create the item list
+		String[] FROM = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK };
+		String ORDER_BY = NAME + " ASC";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, null, null, null, null, ORDER_BY);
 		startManagingCursor(cursor);
@@ -200,10 +190,7 @@ public class MainActivity extends ActionBarActivity {
 			}			
 			final String used_axes = temp_used_axes;
 
-			//Text of the Details window
-			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_time_date + 
-					"\n\nUltima modifica: " + last_time_date + "\n\nAssi utilizzati: " + used_axes +
-					"\n\nCampionamento: " + rate + "\n\nInterpolazione: " + upsampl;
+
 
 			ImageButton play = new ImageButton(this);
 			play.setLayoutParams(new LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
@@ -211,37 +198,33 @@ public class MainActivity extends ActionBarActivity {
 			play.setScaleType(ScaleType.FIT_CENTER);
 			play.setBackgroundResource(R.drawable.selector_colors);
 			play.setOnClickListener(new OnClickListener() {
-
 				@Override
 				public void onClick(View arg0) {
-
 					startSession(arg0, session_name);
-
 				}
 
 			});
-
+			
+			
+			//Text of the Details window
+			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_time_date + 
+					"\n\nUltima modifica: " + last_time_date + "\n\nAssi utilizzati: " + used_axes +
+					"\n\nCampionamento: " + rate + "\n\nInterpolazione: " + upsampl;
 			session.setOnClickListener(new OnClickListener() {
-
 				@Override
 				public void onClick(View arg0) {
-
 					detailsView(arg0, message);
-
 				}
-
 			});
 
 			session.setOnLongClickListener(new OnLongClickListener() { 
 				@Override
 				public boolean onLongClick(View v) {
-
 					contextMenu(v, session_name);
-
 					return true;
-
 				}
 			});
+			
 
 			View line = new View(this);
 			line.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics())));
@@ -294,20 +277,20 @@ public class MainActivity extends ActionBarActivity {
 
 				switch(which){
 
-				case 0:
+				case 0: //TODO set modify action
 					break;
 
-				case 1:
+				case 1: //TODO set duplicate action
 					break;
 
-				case 2:
+				case 2:       //delete button
 					new AlertDialog.Builder(MainActivity.this)
 					.setTitle(name)
 					.setMessage(R.string.confirm_delete)
 					.setIcon(null)
 					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) { 
-							deleteSession(name);
+							deleteSession(name); //here i delete the session
 						}
 					})
 					.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

@@ -22,8 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:hint="@string/name_hint"
-            android:singleLine="true"
-            android:inputType="textCapSentences" />
+            android:inputType="textCapSentences"
+            android:singleLine="true" />
     </LinearLayout>
 
     <LinearLayout
@@ -36,8 +36,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/first_date_h1"
             android:textColor="#7a7a7a"
             android:textSize="14sp" />
@@ -68,19 +68,18 @@
             android:id="@+id/first_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/last_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:textSize="18sp" />
     </LinearLayout>
-
 
     <TextView
         android:layout_width="wrap_content"
@@ -127,7 +126,7 @@
             android:text="@string/asse_z"
             android:textSize="18sp" />
     </LinearLayout>
-    
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -154,7 +153,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="85"
-            android:max="99"/>
+            android:max="99" />
 
         <TextView
             android:id="@+id/progress_seekbar"
@@ -166,5 +165,10 @@
             android:textSize="18sp" />
     </LinearLayout>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="songPreview"
+        android:text="Prova" />
 
 </LinearLayout>
