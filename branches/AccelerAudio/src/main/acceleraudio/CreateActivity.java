@@ -3,6 +3,7 @@
  */
 package main.acceleraudio;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -23,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -30,38 +33,37 @@ import android.widget.Toast;
 
 public class CreateActivity extends ActionBarActivity {
 
-	static EditText name;
-	static ImageView imageView;
-	static Bitmap session_image;
-	static String session_name;
-	static String date;
-	static String time;
-	static TextView first_date;
-	static TextView last_date;
-	static CheckBox x_axis;
-	static CheckBox y_axis;
-	static CheckBox z_axis;
-	static SeekBar et_upsampl;
+	private static EditText name;
+	private static ImageView imageView;
+	private static Bitmap session_image;
+	private static String session_name;
+	private static String date;
+	private static String time;
+	private static TextView first_date;
+	private static TextView last_date;
+	private static CheckBox x_axis;
+	private static CheckBox y_axis;
+	private static CheckBox z_axis;
+	private static SeekBar et_upsampl;
 
-	static boolean pref_cbX;
-	static boolean pref_cbY;
-	static boolean pref_cbZ;
+	private static boolean pref_cbX;
+	private static boolean pref_cbY;
+	private static boolean pref_cbZ;
 
-	static int pref_upsampl;
-	static int seekbar_value;
-	static int num_axes;
+	private static int pref_upsampl;
+	private static int seekbar_value;
 
+	MediaPlayer mp;
 
-
-	static Intent intent;
-	static byte[] x, y , z;
-	static int size;
+	private static Intent intent;
+	private static byte[] x, y, z;
+	private static int size;
 
 	//all file parameters
 	private byte bits_per_sample = 8; // 8, 16...
 	private byte num_channels = 1; // 1 = mono, 2 = stereo
 	private long sample_rate = 8000; // 8000, 44100...
-	
+
 	//database
 	private DBOpenHelper oh;
 
@@ -119,19 +121,19 @@ public class CreateActivity extends ActionBarActivity {
 			int dd = c.get(Calendar.DAY_OF_MONTH);
 			int hh = c.get(Calendar.HOUR_OF_DAY);
 			int mn = c.get(Calendar.MINUTE);
-//			int ss = c.get(Calendar.SECOND);
+			//			int ss = c.get(Calendar.SECOND);
 			String minutes = "";
-			
+
 			if(mn < 10){
-				
+
 				minutes = "0" + mn; 
-				
+
 			} else{
-				
+
 				minutes = "" + mn;
-				
+
 			}
-			
+
 			date = dd + "/" + (mm + 1) + "/" + yy;
 			time = hh + ":" + minutes;
 
@@ -144,46 +146,46 @@ public class CreateActivity extends ActionBarActivity {
 			x_axis.setChecked(pref_cbX);
 			y_axis.setChecked(pref_cbY);
 			z_axis.setChecked(pref_cbZ);
-			
+
 			//Checking if at least one axes is selected
 			x_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
 
-				   @Override 
-				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
-					   if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
-						   
-						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
-						   buttonView.setChecked(true);
-						   
-					   }
-				   } 
-				       });
-			
+				@Override 
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
+					if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
+
+						Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						buttonView.setChecked(true);
+
+					}
+				} 
+			});
+
 			y_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
 
-				   @Override 
-				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
-					   if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
-						   
-						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
-						   buttonView.setChecked(true);
-						   
-					   }
-				   } 
-				       });
-			
+				@Override 
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
+					if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
+
+						Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						buttonView.setChecked(true);
+
+					}
+				} 
+			});
+
 			z_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
 
-				   @Override 
-				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
-					   if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
-						   
-						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
-						   buttonView.setChecked(true);
-						   
-					   }
-				   } 
-				       });
+				@Override 
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
+					if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
+
+						Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						buttonView.setChecked(true);
+
+					}
+				} 
+			});
 
 			final TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
 			et_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
@@ -239,42 +241,29 @@ public class CreateActivity extends ActionBarActivity {
 				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
 				return false;
 			}
-			
+
 			if(session_name.contains("  ")){
 				Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
 				return false;
 			}
-			
+
 			if(session_name.substring(0, 1).equals(" ")){
 				Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
 				return false;
 			}
-			
+
 			if(session_name.length() > 12){
 				session_name = session_name.substring(0, 12);
 			}
 
-			num_axes = 0;
-			if(x_axis.isChecked())
-				num_axes++;
-			if(y_axis.isChecked())
-				num_axes++;
-			if(z_axis.isChecked())
-				num_axes++;
-			//Check if at least one axis is selected
-			if(num_axes == 0){
-				Toast.makeText(this,"Devi selezionare almeno un asse!", Toast.LENGTH_LONG).show();
-				return false;
-			}
 
+			boolean isSaved = saveImage(session_name);
+			boolean isCreated = createWavFile(session_name, x, y, z, size);
 
-			boolean isSaved = saveImage();
-			boolean isCreated = createWavFile(x, y, z, size);
-			
 			if(isSaved && isCreated){
 				Intent createIntent = new Intent(this, PlayActivity.class);
 				createIntent.putExtra("session_name", session_name);
-				
+
 				oh = new DBOpenHelper(this);
 				SQLiteDatabase db = oh.getWritableDatabase();
 				ContentValues values = new ContentValues();
@@ -283,14 +272,17 @@ public class CreateActivity extends ActionBarActivity {
 				values.put(DBOpenHelper.FIRST_TIME, time);
 				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
 				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-				values.put(DBOpenHelper.RATE, -1);
-				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() +1 );
+				values.put(DBOpenHelper.RATE, -1);         //TODO get the rate value
+				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
 				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
 				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
 				values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked());
+				values.put(DBOpenHelper.X_VALUES, x);      //add the three byte array to the database
+				values.put(DBOpenHelper.Y_VALUES, y);
+				values.put(DBOpenHelper.Z_VALUES, z);
+				values.put(DBOpenHelper.DATA_SIZE, size);  //add the number samples to the database
 				db.insert(DBOpenHelper.TABLE, null, values);
-				//TODO verificare che la riga sia presente effettivamente nel database
-				
+
 				startActivity(createIntent);
 				finish();
 			}
@@ -298,7 +290,7 @@ public class CreateActivity extends ActionBarActivity {
 				Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
 				return false;
 			}
-			
+
 			return true;
 		}
 
@@ -309,14 +301,14 @@ public class CreateActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private boolean saveImage(){
+	private boolean saveImage(String imageName){
 		FileOutputStream out;
-		String file = session_name + ".png"; //name of the .png file
+		String file = imageName + ".png"; //name of the .png file
 		try {
 			out = openFileOutput(file, MODE_PRIVATE);
 			session_image.compress(Bitmap.CompressFormat.PNG, 90, out);
-//			Toast toast=Toast.makeText(this,"Immagine creta",Toast.LENGTH_LONG);
-//			toast.show();
+			//			Toast toast=Toast.makeText(this,"Immagine creta",Toast.LENGTH_LONG);
+			//			toast.show();
 			out.close();
 			return true;
 		} 
@@ -328,15 +320,23 @@ public class CreateActivity extends ActionBarActivity {
 
 	//https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
 	//write the .wav file
-	private boolean createWavFile(byte[] x, byte[] y, byte[] z, int size ){
+	private boolean createWavFile(String songName, byte[] x, byte[] y, byte[] z, int size){
 
 		try {
 
-			String file = session_name + ".wav"; //name of the .wav file
+			String file = songName + ".wav"; //name of the .wav file
 
 			//create the data to add
 			final int UPSAMPLING = seekbar_value;
 			byte[] dataAdded = new byte[size * UPSAMPLING];
+
+			int num_axes = 0;
+			if(x_axis.isChecked())
+				num_axes++;
+			if(y_axis.isChecked())
+				num_axes++;
+			if(z_axis.isChecked())
+				num_axes++;
 
 			for(int i = 0; i < size; i++){
 
@@ -364,7 +364,8 @@ public class CreateActivity extends ActionBarActivity {
 					sample_rate, num_channels, 
 					byteRate);
 
-			averageArray(dataAdded); //loop this method for more average!
+			for(int u = 0; u < 10; u++) //TODO ho una media di 10!
+				averageArray(dataAdded); //loop this method for more average!
 
 			fOut.write(dataAdded);
 			fOut.close();
@@ -378,8 +379,6 @@ public class CreateActivity extends ActionBarActivity {
 			return false;
 		}
 	}
-
-
 
 
 	//define the header of the .wav file. DON'T CHANGE IT!
@@ -466,4 +465,36 @@ public class CreateActivity extends ActionBarActivity {
 		return bmp;
 	}
 
+	/**
+	 * This method is called when the button "Prova" is pressed and it create a temporary wav file and play it
+	 * @param view the button pressed
+	 */
+	public void songPreview(View view){
+		//create temporary files
+		boolean isCreated = createWavFile("Temp", x, y, z, size);
+		if(!isCreated){
+			Toast.makeText(getBaseContext(),"File non creato.", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		
+		String appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/";
+		if(mp != null){
+			mp.stop();
+			mp = null;
+		}
+
+		try{
+			mp = new MediaPlayer();
+			try {
+				mp.setDataSource(appFileDirectory + "Temp.wav");
+				mp.prepare();
+				mp.start();
+			} catch (IOException e) {
+				Toast.makeText(getBaseContext(),"prepare failed", Toast.LENGTH_SHORT).show();
+			}
+		}catch(Exception e){
+			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
+		}
+	}
 }

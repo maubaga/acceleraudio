@@ -3,7 +3,6 @@ package main.acceleraudio;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
 	
@@ -20,6 +19,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 	public static final String X_CHECK = "asse_x";
 	public static final String Y_CHECK = "asse_y";
 	public static final String Z_CHECK = "asse_z";
+	public static final String X_VALUES = "x_values";
+	public static final String Y_VALUES = "y_values";
+	public static final String Z_VALUES = "z_values";	
+	public static final String DATA_SIZE = "data_size";
 
 	public DBOpenHelper(Context context){
 		super(context, DATABASE_NAME, null, DATABASE_VERSION); 
@@ -38,7 +41,11 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 					UPSAMPL + " integer, " +
 					X_CHECK + " boolean, " +
 					Y_CHECK + " boolean, " +
-					Z_CHECK + " boolean);"; 
+					Z_CHECK + " boolean, " +
+					X_VALUES + " blob, " +
+					Y_VALUES + " blob, " +
+					Z_VALUES + " blob, " +
+					DATA_SIZE + " integer);"; 
 		db.execSQL(sql); 
 	} 
 
