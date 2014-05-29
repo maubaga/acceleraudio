@@ -46,7 +46,8 @@ public class RecordActivity extends ActionBarActivity{
 				//				TextView textView = (TextView) findViewById(R.id.show_results);
 				//				textView.setText(results);
 
-				startCreateActivity(x, y, z, size);				
+				startCreateActivity(x, y, z, size);	
+				finish();
 			}
 			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.SENSOR_CHANGE){ //The values of the sensor are changed
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
