@@ -49,9 +49,8 @@ import android.widget.Toast;
 
 public class ModifyActivity extends ActionBarActivity {
 
-	private static EditText name;
+	private static EditText nameEditText;
 	private static ImageView imageView;
-	private static Bitmap session_image;
 	private static String session_name;
 	private static String date;
 	private static String time;
@@ -127,7 +126,7 @@ public class ModifyActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_create,
 					container, false);
 
-			name = (EditText)rootView.findViewById(R.id.name);
+			nameEditText = (EditText)rootView.findViewById(R.id.name);
 			imageView = (ImageView) rootView.findViewById(R.id.imageView);
 			first_date = (TextView)rootView.findViewById(R.id.first_date);
 			last_date = (TextView)rootView.findViewById(R.id.last_date);
@@ -135,8 +134,8 @@ public class ModifyActivity extends ActionBarActivity {
 			y_axis = (CheckBox)rootView.findViewById(R.id.y);
 			z_axis = (CheckBox)rootView.findViewById(R.id.z);
 
-			
-			name.setText(oldSessionName);
+
+			nameEditText.setText(oldSessionName);
 			final Calendar c = Calendar.getInstance();
 			int yy = c.get(Calendar.YEAR);
 			int mm = c.get(Calendar.MONTH);
@@ -252,7 +251,7 @@ public class ModifyActivity extends ActionBarActivity {
 
 		if (id == R.id.action_accept) {
 
-			session_name = name.getText().toString();
+			session_name = nameEditText.getText().toString();
 			//Check if a name is given
 			if(session_name.equals("")){
 				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
@@ -279,33 +278,32 @@ public class ModifyActivity extends ActionBarActivity {
 			if(isCreated){
 				Intent createIntent = new Intent(this, PlayActivity.class);
 				createIntent.putExtra("session_name", session_name);
+				
 
+				
+				
 				openHelper = new DBOpenHelper(this);
 				SQLiteDatabase db = openHelper.getWritableDatabase();
+				
 				ContentValues values = new ContentValues();
-				values.put(NAME, session_name);
-				values.put(FIRST_DATE, firstData);
-				values.put(FIRST_TIME, firstTime);
-				values.put(LAST_MODIFY_DATE, date);
-				values.put(LAST_MODIFY_TIME, time);
-				values.put(RATE, -1);         //TODO get the rate value
-				values.put(UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
-				values.put(X_CHECK, x_axis.isChecked());
-				values.put(Y_CHECK, y_axis.isChecked());
-				values.put(Z_CHECK, z_axis.isChecked());
-				values.put(X_VALUES, x);      //add the three byte array to the database
-				values.put(Y_VALUES, y);
-				values.put(Z_VALUES, z);
-				values.put(DATA_SIZE, size);  //add the number samples to the database
-				db.update(TABLE,values,  NAME + "= '" + oldSessionName + "'", null);
+				values.put(DBOpenHelper.NAME, session_name);
+				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
+				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
+				values.put(DBOpenHelper.RATE, -1);         //TODO get the rate value
+				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
+				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
+				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
+				values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked());
+				db.update(DBOpenHelper.TABLE, values, NAME +"= '" + oldSessionName + "'",null);
 
-				if(oldSessionName.equals(session_name)){
+				if(!oldSessionName.equals(session_name)){
 					File dir = getFilesDir();
 					File image = new File(dir, oldSessionName + ".png");
 					File audio = new File(dir, oldSessionName + ".wav");
-					image.renameTo(new File(dir, session_name + ".png")); //TODO indagare sul fatto che non mi rinomina il file!!!!!!!
+					image.renameTo(new File(dir, session_name + ".png"));
 					audio.delete();
 				}
+				
 				startActivity(createIntent);
 				finish();
 			}
@@ -462,9 +460,9 @@ public class ModifyActivity extends ActionBarActivity {
 			Toast.makeText(getBaseContext(),"File non creato.", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
-		
-		
+
+
+
 		if(mp != null){
 			mp.stop();
 			mp = null;
