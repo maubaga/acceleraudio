@@ -22,13 +22,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RecordActivity extends ActionBarActivity{
 
 	private long timeStop = 0;
 	private static long maxRecordTime;
 	private Chronometer chrono;
+	private boolean isStart = false;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -53,7 +53,8 @@ public class RecordActivity extends ActionBarActivity{
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
 				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
-
+//				int size = intent.getIntExtra(RecordService.SIZE, 0); //TODO QUESO È IL NUMERO DI NOTE DA VISUALIZZARE
+				
 				TextView xTextView = (TextView) findViewById(R.id.x_axis);
 				TextView yTextView = (TextView) findViewById(R.id.y_axis);
 				TextView zTextView = (TextView) findViewById(R.id.z_axis);				
@@ -83,10 +84,7 @@ public class RecordActivity extends ActionBarActivity{
 				y_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, y_bar_height));
 				y_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, y_bar_height));
 				z_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));
-				z_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));
-				
-				//check the max duration of the registration
-				checkMaxDuration();					
+				z_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));			
 			}
 
 		}
@@ -169,6 +167,9 @@ public class RecordActivity extends ActionBarActivity{
 	protected void onResume() {
 		super.onResume();
 		registerReceiver(receiver, new IntentFilter(RecordService.NOTIFICATION));
+		//The recording is already stopped in background, this permits to change activity
+		if(isStart && (SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime))
+		stopRecord(null);
 	}
 	@Override
 	protected void onPause() {
@@ -199,7 +200,9 @@ public class RecordActivity extends ActionBarActivity{
 		//This starts the background recording
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.START);
+		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime);
 		startService(intent);
+		isStart = true;
 
 		//This is only for graphical changes
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
@@ -208,7 +211,6 @@ public class RecordActivity extends ActionBarActivity{
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		chrono = (Chronometer)findViewById(R.id.chrono);
-
 		chrono.setVisibility(View.VISIBLE);
 		chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
 		chrono.start();
@@ -218,6 +220,7 @@ public class RecordActivity extends ActionBarActivity{
 		buttons.setVisibility(View.VISIBLE);		
 		play.setVisibility(View.GONE);
 		pause.setVisibility(View.VISIBLE);
+		
 	}
 
 	/**
@@ -278,13 +281,6 @@ public class RecordActivity extends ActionBarActivity{
 		playIntent.putExtra(RecordService.SIZE, size);
 
 		startActivity(playIntent);
-	}
-	
-	private void checkMaxDuration(){
-		if(SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime){
-			stopRecord(null);
-			Toast.makeText(this,"Raggiunta la durata massima raggiunta di " + (maxRecordTime / 1000) + " secondi.", Toast.LENGTH_LONG).show();
-		}
 	}
 
 

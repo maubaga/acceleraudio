@@ -2,12 +2,12 @@ package main.acceleraudio;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,7 +83,7 @@ public class PlayActivity extends ActionBarActivity {
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
 
-			TextView textView = (TextView) rootView.findViewById(R.id.session_name);
+			TextView textView = (TextView) rootView.findViewById(R.id.session_name);			
 			textView.setText(session_name.toUpperCase());
 
 			return rootView;
