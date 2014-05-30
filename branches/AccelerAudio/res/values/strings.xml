@@ -36,6 +36,7 @@
     <string name="last_date_h1"><b>ULTIMA MODIFICA</b></string>
     <string name="axis_title"><b>ASSI UTILIZZATI</b></string>
     <string name="upscaling_title"><b>DURATA DEI SUONI</b></string>
+    <string name="preview">Anteprima</string>
     <string name="session_img_description">Immagine della sessione</string>
 
     <!-- ****** PLAYACTIVITY ****** -->

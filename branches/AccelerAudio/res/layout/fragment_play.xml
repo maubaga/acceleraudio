@@ -9,16 +9,20 @@
         android:id="@+id/session_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:gravity="center"
+        android:textSize="20sp"
         android:textStyle="bold" />
-    
+
     <ImageView
-            android:id="@+id/thumbnail"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:contentDescription="@string/session_img_description" />
-    
+        android:id="@+id/thumbnail"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/session_img_description"
+        android:paddingTop="8dp"
+        android:scaleType="fitCenter" />
+
+
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="fill_parent"
@@ -34,8 +38,7 @@
             android:layout_weight="2"
             android:gravity="center"
             android:scaleType="fitCenter"
-            android:textSize="38sp"
-            android:visibility="gone" />
+            android:textSize="38sp" />
 
         <ImageButton
             android:id="@+id/play"
@@ -44,10 +47,10 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#00000000"
+            android:contentDescription="@string/play_img_description"
             android:onClick="play"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_play"
-            android:contentDescription="@string/play_img_description" />
+            android:src="@drawable/media_play" />
 
         <ImageButton
             android:id="@+id/pause"
@@ -56,11 +59,11 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#00000000"
-            android:onClick="pauseRecord"
+            android:contentDescription="@string/play_img_description"
+            android:onClick="pause"
             android:scaleType="fitCenter"
             android:src="@drawable/media_pause"
-            android:visibility="gone"
-            android:contentDescription="@string/play_img_description" />
+            android:visibility="gone" />
 
         <ImageButton
             android:layout_width="0dp"
@@ -68,10 +71,10 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#00000000"
+            android:contentDescription="@string/play_img_description"
             android:onClick="stop"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_stop"
-            android:contentDescription="@string/play_img_description" />
+            android:src="@drawable/media_stop" />
     </LinearLayout>
 
 </LinearLayout>

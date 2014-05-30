@@ -15,6 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -469,15 +471,16 @@ public class CreateActivity extends ActionBarActivity {
 	 * This method is called when the button "Prova" is pressed and it create a temporary wav file and play it
 	 * @param view the button pressed
 	 */
-	public void songPreview(View view){
+	public void startPreview(View view){
+		
 		//create temporary files
 		boolean isCreated = createWavFile("Temp", x, y, z, size);
 		if(!isCreated){
 			Toast.makeText(getBaseContext(),"File non creato.", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
-		
+
+
 		String appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/";
 		if(mp != null){
 			mp.stop();
@@ -487,11 +490,37 @@ public class CreateActivity extends ActionBarActivity {
 		try{
 			mp = new MediaPlayer();
 			try {
+				
+				Button play = (Button)findViewById(R.id.start_bt);
+				Button stop = (Button)findViewById(R.id.stop_bt);
+				
+				play.setVisibility(View.GONE);
+				stop.setVisibility(View.VISIBLE);
+				
 				mp.setDataSource(appFileDirectory + "Temp.wav");
 				mp.prepare();
 				mp.start();
 			} catch (IOException e) {
 				Toast.makeText(getBaseContext(),"prepare failed", Toast.LENGTH_SHORT).show();
+			}
+		}catch(Exception e){
+			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	public void stopPreview(View view){
+		try{
+			if(mp != null){
+				
+				Button play = (Button)findViewById(R.id.start_bt);
+				Button stop = (Button)findViewById(R.id.stop_bt);
+				
+				play.setVisibility(View.VISIBLE);
+				stop.setVisibility(View.GONE);
+
+				mp.stop();
+				mp = null;
+				
 			}
 		}catch(Exception e){
 			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
