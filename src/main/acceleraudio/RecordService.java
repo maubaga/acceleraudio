@@ -7,6 +7,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.SystemClock;
+import android.widget.Chronometer;
+import android.widget.Toast;
 
 public class RecordService extends IntentService  implements SensorEventListener {
 
@@ -20,6 +23,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 	public static final String SIZE = "size";
 	public static final String NOTIFICATION = "main.acceleraudio.receiver";
 	public static final String INTENT_TYPE = "intent_type";
+	public static final String MAX_RECORD_TIME = "max_record_time";
 	public static final int STOP_SERVICE  = 1;
 	public static final int SENSOR_CHANGE = 0;
 
@@ -28,6 +32,9 @@ public class RecordService extends IntentService  implements SensorEventListener
 	private static RecordContainer record;
 	private static boolean isStart = false;
 	private static boolean isOnPause = false;
+	private static long maxRecordTime;
+	private static Chronometer chrono;
+	private long timeStop = 0;
 
 	public RecordService() {
 		super("MyBackgroundService");
@@ -46,16 +53,24 @@ public class RecordService extends IntentService  implements SensorEventListener
 
 				mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 				mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//				mSensorManager.registerListener(this, mAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
+				//TODO Sostituire SENSOR_DELAY in base alla frequenza di campionamento
 				mSensorManager.registerListener(this, mAccelerometer , SensorManager.SENSOR_DELAY_FASTEST);
-				//TODO Sostituire SEN
 				
+				
+				
+				maxRecordTime = intent.getLongExtra(MAX_RECORD_TIME, 30000); //default time 30 seconds
+				chrono = new Chronometer(getApplicationContext());
+				chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
+				chrono.start();
 				isStart = true;
 			}			
 		}
 		if(PAUSE.equals(intent.getAction())){
 			isStart = false;
 			isOnPause = true;
+			
+			chrono.stop();
+			timeStop = chrono.getBase() - SystemClock.elapsedRealtime();
 		}
 		if (STOP.equals(intent.getAction())){
 			isStart = false;
@@ -82,12 +97,14 @@ public class RecordService extends IntentService  implements SensorEventListener
 			if (!isStart)
 				return;
 			
+			checkMaxDuration(); //control if I reach the max duration of the recording
+			
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
 			{
 				float x = event.values[0];
 				float y = event.values[1];
 				float z = event.values[2];
-
+				
 				publishResults(x, y, z);
 				record.add((byte) (x * 10), (byte) (y * 10), (byte) (z * 10));
 			}
@@ -120,6 +137,16 @@ public class RecordService extends IntentService  implements SensorEventListener
 		intent.putExtra(X_VALUE, x);
 		intent.putExtra(Y_VALUE, y);
 		intent.putExtra(Z_VALUE, z);
+		intent.putExtra(SIZE, record.getSize());
 		sendBroadcast(intent);
+	}
+	
+	private void checkMaxDuration(){
+		if(SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime){
+			isStart = false;
+			mSensorManager.unregisterListener(this);
+			publishFinishResults();
+			Toast.makeText(this,"Raggiunta la durata massima raggiunta di " + (maxRecordTime / 1000) + " secondi.", Toast.LENGTH_LONG).show();
+		}
 	}
 } 
