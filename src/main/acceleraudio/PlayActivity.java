@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -14,14 +16,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlayActivity extends ActionBarActivity {
-	MediaPlayer mp;
+	static MediaPlayer mp;
 	static Intent intent;
 	static String session_name;
 	static String appFileDirectory;
@@ -77,18 +80,19 @@ public class PlayActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_play, container,
 					false);
-			
+
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
-			
+
 			TextView textView = (TextView) rootView.findViewById(R.id.session_name);
 			textView.setText(session_name.toUpperCase());
-			
+
 			return rootView;
 		}
 	}
 
-
+	private int time = 0;
+	private long chrono_time = 0;
 	//read the .wav file
 	public void play(View view){
 		if(mp != null)
@@ -97,31 +101,63 @@ public class PlayActivity extends ActionBarActivity {
 		try{
 			mp = new MediaPlayer();
 			try {
+				Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 				ImageButton play = (ImageButton)findViewById(R.id.play);
 				ImageButton pause = (ImageButton)findViewById(R.id.pause);
 				play.setVisibility(View.GONE);
 				pause.setVisibility(View.VISIBLE);
 				mp.setDataSource(appFileDirectory + session_name + ".wav");
 				mp.prepare();
+				mp.seekTo(time);
 				mp.start();
+				chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
+				chrono.start();
+
 			} catch (IOException e) {
 				Toast.makeText(getBaseContext(),"prepare failed",
 						Toast.LENGTH_SHORT).show();
 			}
-
 
 		}catch(Exception e){
 			Toast.makeText(getBaseContext(),e.toString(),
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	
-	public void stop(View view) {
+
+	public void pause(View view) {
+
+		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		ImageButton play = (ImageButton)findViewById(R.id.play);
+		ImageButton pause = (ImageButton)findViewById(R.id.pause);
+		play.setVisibility(View.VISIBLE);
+		pause.setVisibility(View.GONE);
 		if(mp != null){
-			
-			mp.stop();
+
+			mp.pause();
+			time = mp.getCurrentPosition();
+			chrono.stop();
+			chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
 			mp = null;
-			
+
+		}
+	}
+
+	public void stop(View view) {
+
+		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		ImageButton play = (ImageButton)findViewById(R.id.play);
+		ImageButton pause = (ImageButton)findViewById(R.id.pause);
+		play.setVisibility(View.VISIBLE);
+		pause.setVisibility(View.GONE);
+		if(mp != null){
+
+			mp.stop();
+			time = 0;
+			chrono.setBase(SystemClock.elapsedRealtime());
+			chrono.stop();
+			chrono_time = 0;
+			mp = null;
+
 		}
 	}
 

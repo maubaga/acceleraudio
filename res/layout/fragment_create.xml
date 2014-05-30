@@ -166,9 +166,20 @@
     </LinearLayout>
 
     <Button
-        android:layout_width="wrap_content"
+        android:id="@+id/start_bt"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="songPreview"
-        android:text="Prova" />
+        android:layout_marginTop="8dp"
+        android:onClick="startPreview"
+        android:text="@string/preview" />
+    
+    <Button
+        android:id="@+id/stop_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="stopPreview"
+        android:text="@string/stop_img_description"
+        android:visibility="gone" />
 
 </LinearLayout>
