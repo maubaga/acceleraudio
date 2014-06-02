@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -83,13 +84,32 @@ public class CreateActivity extends ActionBarActivity {
 		pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
 		pref_upsampl = preferences.getInt("sbUpsampling", 100);
 
-
-
 		intent = getIntent();
 		x = intent.getByteArrayExtra(RecordService.X_VALUE);
 		y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 		z = intent.getByteArrayExtra(RecordService.Z_VALUE);
 		size = intent.getIntExtra(RecordService.SIZE, 0);
+	}
+	
+	@Override
+	protected void onPause(){
+		super.onPause();
+		
+		SharedPreferences pref_create = getSharedPreferences("Session_Create", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref_create.edit();
+		
+		EditText etName = (EditText)findViewById(R.id.name);
+		String create_name = etName.getText().toString();
+		TextView tvFirst = (TextView)findViewById(R.id.first_date);
+		String create_first = tvFirst.getText().toString();
+		TextView tvLast = (TextView)findViewById(R.id.last_date);
+		String create_last = tvLast.getText().toString();
+		
+		editor.putString("etNameTrack", create_name);
+		editor.putString("tvFirstDate", create_first);
+		editor.putString("tvLastDate", create_last);
+		
+		editor.commit();
 	}
 
 	/**
@@ -106,10 +126,19 @@ public class CreateActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_create,
 					container, false);
 
+			Context context = getActivity();
+			SharedPreferences pref_create = context.getSharedPreferences("Session_Create", MODE_PRIVATE);
+			String create_name = pref_create.getString("etNameTrack", null);
+			String create_first = pref_create.getString("tvFirstDate", null);
+			String create_last = pref_create.getString("tvLastDate", null);
+			
 			name = (EditText)rootView.findViewById(R.id.name);
+			name.setText(create_name);
 			imageView = (ImageView) rootView.findViewById(R.id.imageView);
 			first_date = (TextView)rootView.findViewById(R.id.first_date);
+			first_date.setText(create_first);
 			last_date = (TextView)rootView.findViewById(R.id.last_date);
+			last_date.setText(create_last);
 			x_axis = (CheckBox)rootView.findViewById(R.id.x);
 			y_axis = (CheckBox)rootView.findViewById(R.id.y);
 			z_axis = (CheckBox)rootView.findViewById(R.id.z);
@@ -136,8 +165,11 @@ public class CreateActivity extends ActionBarActivity {
 			date = dd + "/" + (mm + 1) + "/" + yy;
 			time = hh + ":" + minutes;
 
-			first_date.setText(date + " " + time);
-			last_date.setText(date + " " + time);
+			//controllo se è la prima volta che salvo il file
+			if(first_date.getText().toString().equals(null))
+				first_date.setText(date + " " + time);
+			if(last_date.getText().toString().equals(null))
+				last_date.setText(date + " " + time);
 
 			session_image = createImage();
 			imageView.setImageBitmap(session_image);
