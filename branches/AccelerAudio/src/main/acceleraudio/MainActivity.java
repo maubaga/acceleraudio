@@ -297,24 +297,33 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-
+				byte[] x,y,z;
+				int size;
+				Cursor cursor;
+				
 				switch(which){
 
-				case 0: //TODO set modify action
-					Cursor cursor = getArraysData(name);
+				case 0: //TODO pass the preferences from the database
+					cursor = getArraysData(name);
 					cursor.moveToFirst();
-					byte[] x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
-					byte[] y = cursor.getBlob(cursor.getColumnIndex(Y_VALUES));
-					byte[] z = cursor.getBlob(cursor.getColumnIndex(Z_VALUES));
-					int size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
+					x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
+					y = cursor.getBlob(cursor.getColumnIndex(Y_VALUES));
+					z = cursor.getBlob(cursor.getColumnIndex(Z_VALUES));
+					size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
 					String data = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
 					String time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
 					startModifyActivity(name, data, time, x, y, z, size);
-//					Toast.makeText(getBaseContext(),y.length +"", Toast.LENGTH_SHORT).show();
 
 					break;
 
-				case 1: //TODO set duplicate action
+				case 1: //TODO now duplicate make a new file with the same arrays
+					cursor = getArraysData(name);
+					cursor.moveToFirst();
+					x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
+					y = cursor.getBlob(cursor.getColumnIndex(Y_VALUES));
+					z = cursor.getBlob(cursor.getColumnIndex(Z_VALUES));
+					size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
+					startCreateActivity(x, y, z, size);
 					break;
 
 				case 2:       //delete button
@@ -372,10 +381,9 @@ public class MainActivity extends ActionBarActivity {
 			Cursor cursor = getSessions();
 			showSessions(cursor);
 
-		}
-
-		
+		}	
 	}
+	
 	private void startModifyActivity(String session_name, String data, String time, byte[] x, byte[] y, byte[] z, int size){
 		Intent modifyIntent = new Intent(this, ModifyActivity.class);
 		modifyIntent.putExtra(FIRST_DATE, data);
@@ -387,6 +395,16 @@ public class MainActivity extends ActionBarActivity {
 		modifyIntent.putExtra(DATA_SIZE, size);
 
 		startActivity(modifyIntent);
+	}
+	
+	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
+		Intent createIntent = new Intent(this, CreateActivity.class);
+		createIntent.putExtra(X_VALUES, x);
+		createIntent.putExtra(Y_VALUES, y);
+		createIntent.putExtra(Z_VALUES, z);
+		createIntent.putExtra(DATA_SIZE, size);
+
+		startActivity(createIntent);
 	}
 
 

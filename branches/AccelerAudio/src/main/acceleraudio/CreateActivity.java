@@ -3,7 +3,6 @@
  */
 package main.acceleraudio;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
@@ -15,7 +14,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -27,7 +25,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;

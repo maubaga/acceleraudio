@@ -2,7 +2,6 @@ package main.acceleraudio;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Locale;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
