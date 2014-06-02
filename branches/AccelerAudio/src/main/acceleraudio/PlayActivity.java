@@ -165,7 +165,7 @@ public class PlayActivity extends ActionBarActivity {
 //		}
 		
 		//background
-		Intent stopIntent = new Intent(getApplicationContext(),PlayerService.class); 
+		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 //		stopIntent.putExtra(PlayerService.PLAY_START, true);
 		stopService(stopIntent);
 	}
