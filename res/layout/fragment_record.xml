@@ -123,6 +123,28 @@
             android:background="#888" />
         
     </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/notes"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:visibility="gone"
+        android:gravity="center" >
+        
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/note" />
+        
+        <TextView
+            android:id="@+id/note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp" />
+        
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scroll"
