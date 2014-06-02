@@ -41,7 +41,7 @@ public class PlayerService extends Service{
 
 	private void play() { 
 		if(isPlaying)
-			return; 
+			stop();
 		
 		try {
 			isPlaying = true;
@@ -76,7 +76,6 @@ public class PlayerService extends Service{
 				myPlayer.release(); 
 				myPlayer = null; 
 			} 
-			stopForeground(true); 
 		} 
 	} 
 
