@@ -292,13 +292,13 @@ public class RecordActivity extends ActionBarActivity{
 	}
 
 	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
-		Intent playIntent = new Intent(this, CreateActivity.class);
-		playIntent.putExtra(RecordService.X_VALUE, x);
-		playIntent.putExtra(RecordService.Y_VALUE, y);
-		playIntent.putExtra(RecordService.Z_VALUE, z);
-		playIntent.putExtra(RecordService.SIZE, size);
+		Intent createIntent = new Intent(this, CreateActivity.class);
+		createIntent.putExtra(RecordService.X_VALUE, x);
+		createIntent.putExtra(RecordService.Y_VALUE, y);
+		createIntent.putExtra(RecordService.Z_VALUE, z);
+		createIntent.putExtra(RecordService.SIZE, size);
 
-		startActivity(playIntent);
+		startActivity(createIntent);
 	}
 
 

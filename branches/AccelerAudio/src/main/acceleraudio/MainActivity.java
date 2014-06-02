@@ -399,10 +399,10 @@ public class MainActivity extends ActionBarActivity {
 	
 	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
 		Intent createIntent = new Intent(this, CreateActivity.class);
-		createIntent.putExtra(X_VALUES, x);
-		createIntent.putExtra(Y_VALUES, y);
-		createIntent.putExtra(Z_VALUES, z);
-		createIntent.putExtra(DATA_SIZE, size);
+		createIntent.putExtra(RecordService.X_VALUE, x);
+		createIntent.putExtra(RecordService.Y_VALUE, y);
+		createIntent.putExtra(RecordService.Z_VALUE, z);
+		createIntent.putExtra(RecordService.SIZE, size);
 
 		startActivity(createIntent);
 	}
