@@ -24,6 +24,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 	public static final String NOTIFICATION = "main.acceleraudio.receiver";
 	public static final String INTENT_TYPE = "intent_type";
 	public static final String MAX_RECORD_TIME = "max_record_time";
+	public static final String RATE = "rate";
 	public static final int STOP_SERVICE  = 1;
 	public static final int SENSOR_CHANGE = 0;
 
@@ -33,6 +34,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 	private static boolean isStart = false;
 	private static boolean isOnPause = false;
 	private static long maxRecordTime;
+	private static int rate;
 	private static Chronometer chrono;
 	private long timeStop = 0;
 
@@ -51,10 +53,10 @@ public class RecordService extends IntentService  implements SensorEventListener
 			else{                               //is the first time than I have to create the sensorManager and the RecordContainer
 				record = new RecordContainer();
 
+				rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_NORMAL);
 				mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 				mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-				//TODO Sostituire SENSOR_DELAY in base alla frequenza di campionamento
-				mSensorManager.registerListener(this, mAccelerometer , SensorManager.SENSOR_DELAY_FASTEST);
+				mSensorManager.registerListener(this, mAccelerometer , 1000/rate);
 				
 				
 				
