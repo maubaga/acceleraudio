@@ -54,7 +54,7 @@ public class RecordActivity extends ActionBarActivity{
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
 				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
-//				int size = intent.getIntExtra(RecordService.SIZE, 0); //TODO QUESO È IL NUMERO DI NOTE DA VISUALIZZARE
+				int size = intent.getIntExtra(RecordService.SIZE, 0); //TODO QUESO È IL NUMERO DI NOTE DA VISUALIZZARE
 				
 				TextView xTextView = (TextView) findViewById(R.id.x_axis);
 				TextView yTextView = (TextView) findViewById(R.id.y_axis);
@@ -66,6 +66,8 @@ public class RecordActivity extends ActionBarActivity{
 				View y_bar2 = (View)findViewById(R.id.y_bar2);
 				View z_bar1 = (View)findViewById(R.id.z_bar1);
 				View z_bar2 = (View)findViewById(R.id.z_bar2);
+				LinearLayout notes_container = (LinearLayout)findViewById(R.id.notes);
+				TextView notes = (TextView) findViewById(R.id.note);
 
 				xTextView.setText(x + "");
 				yTextView.setText(y + "");
@@ -86,6 +88,8 @@ public class RecordActivity extends ActionBarActivity{
 				y_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, y_bar_height));
 				z_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));
 				z_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));			
+				notes_container.setVisibility(View.VISIBLE);
+				notes.setText(size + "");
 			}
 
 		}
