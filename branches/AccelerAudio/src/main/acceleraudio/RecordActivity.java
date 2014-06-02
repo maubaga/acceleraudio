@@ -27,6 +27,7 @@ public class RecordActivity extends ActionBarActivity{
 
 	private long timeStop = 0;
 	private static long maxRecordTime;
+	private static int rate;
 	private Chronometer chrono;
 	private boolean isStart = false;
 
@@ -149,6 +150,7 @@ public class RecordActivity extends ActionBarActivity{
 			Context context = getActivity();
 			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); 
 			String pref_maxRec = preferences.getString("eTextMaxRec", getResources().getString(R.string.duration1));
+			String pref_rate = preferences.getString("eTextSampleRate", getResources().getString(R.string.sample_rate1));
 			
 			if (getResources().getString(R.string.duration1).equals(pref_maxRec))
 				maxRecordTime = 30 * 1000;
@@ -158,6 +160,17 @@ public class RecordActivity extends ActionBarActivity{
 				maxRecordTime = 120 * 1000;
 			if (getResources().getString(R.string.duration4).equals(pref_maxRec))
 				maxRecordTime = 300 * 1000;
+			
+			if (getResources().getString(R.string.sample_rate1).equals(pref_rate))
+				rate = 1;
+			if (getResources().getString(R.string.sample_rate2).equals(pref_rate))
+				rate = 2;
+			if (getResources().getString(R.string.sample_rate4).equals(pref_rate))
+				rate = 4;
+			if (getResources().getString(R.string.sample_rate6).equals(pref_rate))
+				rate = 6;
+			if (getResources().getString(R.string.sample_rate8).equals(pref_rate))
+				rate = 8;
 			
 			return rootView;
 		}
@@ -201,6 +214,7 @@ public class RecordActivity extends ActionBarActivity{
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.START);
 		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime);
+		intent.putExtra(RecordService.RATE, rate);
 		startService(intent);
 		isStart = true;
 
