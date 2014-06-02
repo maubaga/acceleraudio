@@ -39,7 +39,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 	private long timeStop = 0;
 
 	public RecordService() {
-		super("MyBackgroundService");
+		super("RecordService");
 	}
 
 	// will be called asynchronously by Android
