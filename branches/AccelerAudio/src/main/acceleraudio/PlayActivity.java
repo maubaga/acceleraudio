@@ -98,29 +98,29 @@ public class PlayActivity extends ActionBarActivity {
 
 		try{
 			mp = new MediaPlayer();
-			try {
+//			try {
 				Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 				ImageButton play = (ImageButton)findViewById(R.id.play);
 				ImageButton pause = (ImageButton)findViewById(R.id.pause);
 				play.setVisibility(View.GONE);
 				pause.setVisibility(View.VISIBLE);
-				mp.setDataSource(appFileDirectory + session_name + ".wav");
-				mp.prepare();
-				mp.seekTo(time);
-				mp.start();
+//				mp.setDataSource(appFileDirectory + session_name + ".wav");
+//				mp.prepare();
+//				mp.seekTo(time);
+//				mp.start();
 				chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
 				chrono.start();
 				
 				//background
-				Intent i = new Intent(getApplicationContext(),PlayerService.class); 
-				i.putExtra(PlayerService.PLAY_START, true);
-				i.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
-				startService(i);
+				Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
+				startIntent.putExtra(PlayerService.PLAY_START, true);
+				startIntent.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
+				startService(startIntent);
 
-			} catch (IOException e) {
-				Toast.makeText(getBaseContext(),"prepare failed",
-						Toast.LENGTH_SHORT).show();
-			}
+//			} catch (IOException e) {
+//				Toast.makeText(getBaseContext(),"prepare failed",
+//						Toast.LENGTH_SHORT).show();
+//			}
 
 		}catch(Exception e){
 			Toast.makeText(getBaseContext(),e.toString(),
@@ -128,7 +128,7 @@ public class PlayActivity extends ActionBarActivity {
 		}
 	}
 
-	public void pause(View view) {
+	public void pause(View view) {//TODO pause must run in background
 
 		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
@@ -153,20 +153,21 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
-		if(mp != null){
-
-			mp.stop();
-			time = 0;
+//		if(mp != null){
+//
+//			mp.stop();
+//			time = 0;
 			chrono.setBase(SystemClock.elapsedRealtime());
 			chrono.stop();
 			chrono_time = 0;
-			mp = null;
-
-		}
+//			mp = null;
+//
+//		}
 		
 		//background
-		Intent i = new Intent(getApplicationContext(),PlayerService.class); 
-		stopService(i);
+		Intent stopIntent = new Intent(getApplicationContext(),PlayerService.class); 
+//		stopIntent.putExtra(PlayerService.PLAY_START, true);
+		stopService(stopIntent);
 	}
 
 }
