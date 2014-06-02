@@ -110,6 +110,12 @@ public class PlayActivity extends ActionBarActivity {
 				mp.start();
 				chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
 				chrono.start();
+				
+				//background
+				Intent i = new Intent(getApplicationContext(),PlayerService.class); 
+				i.putExtra(PlayerService.PLAY_START, true);
+				i.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
+				startService(i);
 
 			} catch (IOException e) {
 				Toast.makeText(getBaseContext(),"prepare failed",
@@ -157,6 +163,10 @@ public class PlayActivity extends ActionBarActivity {
 			mp = null;
 
 		}
+		
+		//background
+		Intent i = new Intent(getApplicationContext(),PlayerService.class); 
+		stopService(i);
 	}
 
 }
