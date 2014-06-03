@@ -1,7 +1,6 @@
 package main.acceleraudio;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -19,7 +18,6 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PlayActivity extends ActionBarActivity {
 	static MediaPlayer mp;
@@ -89,43 +87,25 @@ public class PlayActivity extends ActionBarActivity {
 		}
 	}
 
-	private int time = 0;
 	private long chrono_time = 0;
 	//read the .wav file
 	public void play(View view){
-		if(mp != null)
-			mp.stop();
 
-		try{
-			mp = new MediaPlayer();
-//			try {
-				Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
-				ImageButton play = (ImageButton)findViewById(R.id.play);
-				ImageButton pause = (ImageButton)findViewById(R.id.pause);
-				play.setVisibility(View.GONE);
-				pause.setVisibility(View.VISIBLE);
-//				mp.setDataSource(appFileDirectory + session_name + ".wav");
-//				mp.prepare();
-//				mp.seekTo(time);
-//				mp.start();
-				chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
-				chrono.start();
-				
-				//background
-				Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
-				startIntent.putExtra(PlayerService.PLAY_START, true);
-				startIntent.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
-				startService(startIntent);
+		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+		ImageButton play = (ImageButton)findViewById(R.id.play);
+		ImageButton pause = (ImageButton)findViewById(R.id.pause);
+		play.setVisibility(View.GONE);
+		pause.setVisibility(View.VISIBLE);
 
-//			} catch (IOException e) {
-//				Toast.makeText(getBaseContext(),"prepare failed",
-//						Toast.LENGTH_SHORT).show();
-//			}
+		chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
+		chrono.start();
 
-		}catch(Exception e){
-			Toast.makeText(getBaseContext(),e.toString(),
-					Toast.LENGTH_SHORT).show();
-		}
+		//background
+		Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
+		startIntent.putExtra(PlayerService.PLAY_START, true);
+		startIntent.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
+		startService(startIntent);
+
 	}
 
 	public void pause(View view) {//TODO pause must run in background
@@ -138,7 +118,6 @@ public class PlayActivity extends ActionBarActivity {
 		if(mp != null){
 
 			mp.pause();
-			time = mp.getCurrentPosition();
 			chrono.stop();
 			chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
 			mp = null;
@@ -153,21 +132,26 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
-//		if(mp != null){
-//
-//			mp.stop();
-//			time = 0;
-			chrono.setBase(SystemClock.elapsedRealtime());
-			chrono.stop();
-			chrono_time = 0;
-//			mp = null;
-//
-//		}
-		
+		//		if(mp != null){
+		//
+		//			mp.stop();
+		//			time = 0;
+		chrono.setBase(SystemClock.elapsedRealtime());
+		chrono.stop();
+		chrono_time = 0;
+		//			mp = null;
+		//
+		//		}
+
 		//background
 		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
-//		stopIntent.putExtra(PlayerService.PLAY_START, true);
+		//		stopIntent.putExtra(PlayerService.PLAY_START, true);
 		stopService(stopIntent);
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		play(null);
+	}
 }

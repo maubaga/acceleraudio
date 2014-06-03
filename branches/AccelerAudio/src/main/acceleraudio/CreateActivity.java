@@ -299,7 +299,7 @@ public class CreateActivity extends ActionBarActivity {
 				values.put(DBOpenHelper.FIRST_TIME, time);
 				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
 				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-				values.put(DBOpenHelper.RATE, rate);         //TODO get the rate value
+				values.put(DBOpenHelper.RATE, rate);       
 				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
 				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
 				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
