@@ -13,9 +13,11 @@ import android.widget.Toast;
 
 public class PlayerService extends Service{
 	public static String PLAY_START = "play_start"; 
+	public static String PLAY_PAUSE = "play_pause";
 	public static String PLAY_STOP = "play_stop";
 	public static String PATH = "path_directory";
-	private String sessionPlay;
+	private String sessionToPlay;
+	private String sessionInPlayNow;
 	private MediaPlayer myPlayer = null; 
 	private boolean isPlaying = false; 
 
@@ -28,27 +30,34 @@ public class PlayerService extends Service{
 	@Override 
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{ 
-		if(intent.getBooleanExtra(PLAY_START, false)) {
-			sessionPlay = intent.getStringExtra(PATH);
+		if(PLAY_START.equals(intent.getAction())) {
+			sessionToPlay = intent.getStringExtra(PATH);
 			play(); 
 		}
-		else{
+		if(PLAY_PAUSE.equals(intent.getAction())){
+			pause();
+		}
+		if(PLAY_STOP.equals(intent.getAction())){
 			stop();
 		}
 		return Service.START_STICKY; 
 	}
 
 	private void play() { 
-		if(isPlaying)
+		if(isPlaying && sessionToPlay.equals(sessionInPlayNow))
+			return;
+		
+		if(isPlaying && !sessionToPlay.equals(sessionInPlayNow))
 			stop();
 		
 		try {
 			isPlaying = true;
 			myPlayer = new MediaPlayer(); 
-			myPlayer.setDataSource(sessionPlay);
+			myPlayer.setDataSource(sessionToPlay);
 			myPlayer.prepare();
 			myPlayer.setLooping(true); 
 			myPlayer.start(); 
+			sessionInPlayNow = sessionToPlay.toString();
 
 		} catch (IOException e) {
 			Toast.makeText(getBaseContext(),"prepare failed",
@@ -66,6 +75,13 @@ public class PlayerService extends Service{
 		final int notificationID = 1; // An ID for this notification unique within the app 
 		startForeground(notificationID, notification);
 	}
+	
+	private void pause() { 
+		if (isPlaying) { 
+			isPlaying = false; 
+			myPlayer.pause();
+		} 
+	} 
 
 	private void stop() { 
 		if (isPlaying) 
