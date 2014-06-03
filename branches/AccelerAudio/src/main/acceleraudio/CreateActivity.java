@@ -49,7 +49,7 @@ public class CreateActivity extends ActionBarActivity {
 	private static boolean pref_cbX;
 	private static boolean pref_cbY;
 	private static boolean pref_cbZ;
-
+	private static int rate; 
 	private static int pref_upsampl;
 	private static int seekbar_value;
 
@@ -83,33 +83,25 @@ public class CreateActivity extends ActionBarActivity {
 		pref_cbY = preferences.getBoolean("cBoxSelectY", true);
 		pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
 		pref_upsampl = preferences.getInt("sbUpsampling", 100);
+		String pref_rate = preferences.getString("eTextSampleRate", getResources().getString(R.string.sample_rate1));
+		
+		//This convert the rate in a int
+		if (getResources().getString(R.string.sample_rate1).equals(pref_rate))
+			rate = 1;
+		if (getResources().getString(R.string.sample_rate2).equals(pref_rate))
+			rate = 2;
+		if (getResources().getString(R.string.sample_rate4).equals(pref_rate))
+			rate = 4;
+		if (getResources().getString(R.string.sample_rate6).equals(pref_rate))
+			rate = 6;
+		if (getResources().getString(R.string.sample_rate8).equals(pref_rate))
+			rate = 8;
 
 		intent = getIntent();
 		x = intent.getByteArrayExtra(RecordService.X_VALUE);
 		y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 		z = intent.getByteArrayExtra(RecordService.Z_VALUE);
 		size = intent.getIntExtra(RecordService.SIZE, 0);
-	}
-	
-	@Override
-	protected void onPause(){
-		super.onPause();
-		
-		SharedPreferences pref_create = getSharedPreferences("Session_Create", Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = pref_create.edit();
-		
-		EditText etName = (EditText)findViewById(R.id.name);
-		String create_name = etName.getText().toString();
-		TextView tvFirst = (TextView)findViewById(R.id.first_date);
-		String create_first = tvFirst.getText().toString();
-		TextView tvLast = (TextView)findViewById(R.id.last_date);
-		String create_last = tvLast.getText().toString();
-		
-		editor.putString("etNameTrack", create_name);
-		editor.putString("tvFirstDate", create_first);
-		editor.putString("tvLastDate", create_last);
-		
-		editor.commit();
 	}
 
 	/**
@@ -126,19 +118,21 @@ public class CreateActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_create,
 					container, false);
 
-			Context context = getActivity();
-			SharedPreferences pref_create = context.getSharedPreferences("Session_Create", MODE_PRIVATE);
-			String create_name = pref_create.getString("etNameTrack", null);
-			String create_first = pref_create.getString("tvFirstDate", null);
-			String create_last = pref_create.getString("tvLastDate", null);
+//			Context context = getActivity();
+//			SharedPreferences pref_create = context.getSharedPreferences("Session_Create", MODE_PRIVATE);
+//			String create_name = pref_create.getString("etNameTrack", null);
+//			String create_first = pref_create.getString("tvFirstDate", null);
+//			String create_last = pref_create.getString("tvLastDate", null);
 			
+
+//			//Set the value of the layout
 			name = (EditText)rootView.findViewById(R.id.name);
-			name.setText(create_name);
+//			name.setText(create_name);
 			imageView = (ImageView) rootView.findViewById(R.id.imageView);
 			first_date = (TextView)rootView.findViewById(R.id.first_date);
-			first_date.setText(create_first);
+//			first_date.setText(create_first);
 			last_date = (TextView)rootView.findViewById(R.id.last_date);
-			last_date.setText(create_last);
+//			last_date.setText(create_last);
 			x_axis = (CheckBox)rootView.findViewById(R.id.x);
 			y_axis = (CheckBox)rootView.findViewById(R.id.y);
 			z_axis = (CheckBox)rootView.findViewById(R.id.z);
@@ -149,7 +143,6 @@ public class CreateActivity extends ActionBarActivity {
 			int dd = c.get(Calendar.DAY_OF_MONTH);
 			int hh = c.get(Calendar.HOUR_OF_DAY);
 			int mn = c.get(Calendar.MINUTE);
-			//			int ss = c.get(Calendar.SECOND);
 			String minutes = "";
 
 			if(mn < 10){
@@ -165,10 +158,10 @@ public class CreateActivity extends ActionBarActivity {
 			date = dd + "/" + (mm + 1) + "/" + yy;
 			time = hh + ":" + minutes;
 
-			//controllo se è la prima volta che salvo il file
-			if(first_date.getText().toString().equals(null))
+//			//controllo se è la prima volta che salvo il file
+//			if(first_date.getText().toString().equals(null))
 				first_date.setText(date + " " + time);
-			if(last_date.getText().toString().equals(null))
+//			if(last_date.getText().toString().equals(null))
 				last_date.setText(date + " " + time);
 
 			session_image = createImage();
@@ -177,6 +170,9 @@ public class CreateActivity extends ActionBarActivity {
 			x_axis.setChecked(pref_cbX);
 			y_axis.setChecked(pref_cbY);
 			z_axis.setChecked(pref_cbZ);
+
+
+
 
 			//Checking if at least one axes is selected
 			x_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
@@ -303,7 +299,7 @@ public class CreateActivity extends ActionBarActivity {
 				values.put(DBOpenHelper.FIRST_TIME, time);
 				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
 				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-				values.put(DBOpenHelper.RATE, -1);         //TODO get the rate value
+				values.put(DBOpenHelper.RATE, rate);         //TODO get the rate value
 				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
 				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
 				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
@@ -501,7 +497,7 @@ public class CreateActivity extends ActionBarActivity {
 	 * @param view the button pressed
 	 */
 	public void startPreview(View view){
-		
+
 		//create temporary files
 		boolean isCreated = createWavFile("Temp", x, y, z, size);
 		if(!isCreated){
@@ -519,13 +515,13 @@ public class CreateActivity extends ActionBarActivity {
 		try{
 			mp = new MediaPlayer();
 			try {
-				
+
 				Button play = (Button)findViewById(R.id.start_bt);
 				Button stop = (Button)findViewById(R.id.stop_bt);
-				
+
 				play.setVisibility(View.GONE);
 				stop.setVisibility(View.VISIBLE);
-				
+
 				mp.setDataSource(appFileDirectory + "Temp.wav");
 				mp.prepare();
 				mp.start();
@@ -540,16 +536,16 @@ public class CreateActivity extends ActionBarActivity {
 	public void stopPreview(View view){
 		try{
 			if(mp != null){
-				
+
 				Button play = (Button)findViewById(R.id.start_bt);
 				Button stop = (Button)findViewById(R.id.stop_bt);
-				
+
 				play.setVisibility(View.VISIBLE);
 				stop.setVisibility(View.GONE);
 
 				mp.stop();
 				mp = null;
-				
+
 			}
 		}catch(Exception e){
 			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
