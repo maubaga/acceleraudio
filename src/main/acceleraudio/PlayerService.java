@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ public class PlayerService extends Service{
 	public static String PLAY_PAUSE = "play_pause";
 	public static String PLAY_STOP = "play_stop";
 	public static String PATH = "path_directory";
+	public static String NOTIFICATION = "main.acceleraudio.playerservice";
 	private String sessionToPlay;
 	private String sessionInPlayNow;
 	private MediaPlayer myPlayer = null; 
@@ -56,7 +58,16 @@ public class PlayerService extends Service{
 			myPlayer.setDataSource(sessionToPlay);
 			myPlayer.prepare();
 			myPlayer.setLooping(true); 
-			myPlayer.start(); 
+			myPlayer.start();
+			//TODO rivedere la gestione del loop
+			myPlayer.setOnCompletionListener(new OnCompletionListener() {
+				
+				@Override
+				public void onCompletion(MediaPlayer m) {
+					Intent intent = new Intent(NOTIFICATION);
+					sendBroadcast(intent);
+				}
+			});
 			sessionInPlayNow = sessionToPlay.toString();
 
 		} catch (IOException e) {
