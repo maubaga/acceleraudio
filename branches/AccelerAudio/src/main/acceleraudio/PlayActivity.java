@@ -40,6 +40,7 @@ public class PlayActivity extends ActionBarActivity {
 		intent = getIntent();
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
 		session_name = intent.getStringExtra("session_name");
+	
 	}
 
 	@Override
@@ -102,7 +103,7 @@ public class PlayActivity extends ActionBarActivity {
 
 		//background
 		Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
-		startIntent.putExtra(PlayerService.PLAY_START, true);
+		startIntent.setAction(PlayerService.PLAY_START);
 		startIntent.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
 		startService(startIntent);
 
@@ -115,14 +116,16 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
-		if(mp != null){
-
-			mp.pause();
+//		if(mp != null){
+//
+//			mp.pause();
 			chrono.stop();
 			chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
-			mp = null;
-
-		}
+			Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
+			pauseIntent.setAction(PlayerService.PLAY_PAUSE);
+//			mp = null;
+//
+//		}
 	}
 
 	public void stop(View view) {
@@ -148,10 +151,12 @@ public class PlayActivity extends ActionBarActivity {
 		//		stopIntent.putExtra(PlayerService.PLAY_START, true);
 		stopService(stopIntent);
 	}
-
+	
 	@Override
 	protected void onStart() {
 		super.onStart();
+	
 		play(null);
 	}
+
 }
