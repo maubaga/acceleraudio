@@ -59,14 +59,12 @@ public class RecordActivity extends ActionBarActivity{
 				TextView xTextView = (TextView) findViewById(R.id.x_axis);
 				TextView yTextView = (TextView) findViewById(R.id.y_axis);
 				TextView zTextView = (TextView) findViewById(R.id.z_axis);				
-				LinearLayout bars = (LinearLayout)findViewById(R.id.bars);
 				View x_bar1 = (View)findViewById(R.id.x_bar1);
 				View x_bar2 = (View)findViewById(R.id.x_bar2);
 				View y_bar1 = (View)findViewById(R.id.y_bar1);
 				View y_bar2 = (View)findViewById(R.id.y_bar2);
 				View z_bar1 = (View)findViewById(R.id.z_bar1);
 				View z_bar2 = (View)findViewById(R.id.z_bar2);
-				LinearLayout notes_container = (LinearLayout)findViewById(R.id.notes);
 				TextView notes = (TextView) findViewById(R.id.note);
 
 				xTextView.setText(x + "");
@@ -81,14 +79,12 @@ public class RecordActivity extends ActionBarActivity{
 				//				y_bar_height = Integer.parseInt(yTextView.getText().toString());
 				//				z_bar_height = Integer.parseInt(zTextView.getText().toString());
 
-				bars.setVisibility(View.VISIBLE);
 				x_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, x_bar_height));
 				x_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, x_bar_height));
 				y_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, y_bar_height));
 				y_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, y_bar_height));
 				z_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));
 				z_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, z_bar_height));			
-				notes_container.setVisibility(View.VISIBLE);
 				notes.setText(size + "");
 			}
 
@@ -223,8 +219,12 @@ public class RecordActivity extends ActionBarActivity{
 		isStart = true;
 
 		//This is only for graphical changes
+		TextView start_hint = (TextView)findViewById(R.id.hint);
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
 		LinearLayout mic = (LinearLayout)findViewById(R.id.mic);
+		LinearLayout axis_container = (LinearLayout)findViewById(R.id.axis_container);
+		LinearLayout bars = (LinearLayout)findViewById(R.id.bars);
+		LinearLayout notes_container = (LinearLayout)findViewById(R.id.notes);
 		LinearLayout buttons = (LinearLayout)findViewById(R.id.buttons);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
@@ -233,8 +233,12 @@ public class RecordActivity extends ActionBarActivity{
 		chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
 		chrono.start();
 
+		start_hint.setVisibility(View.GONE);
 		scroll.setVisibility(View.GONE);
 		mic.setVisibility(View.GONE);
+		bars.setVisibility(View.VISIBLE);
+		axis_container.setVisibility(View.VISIBLE);
+		notes_container.setVisibility(View.VISIBLE);
 		buttons.setVisibility(View.VISIBLE);		
 		play.setVisibility(View.GONE);
 		pause.setVisibility(View.VISIBLE);
