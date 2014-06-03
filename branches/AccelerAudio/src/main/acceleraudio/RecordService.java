@@ -83,7 +83,6 @@ public class RecordService extends IntentService  implements SensorEventListener
 			isStart = false;
 			if(mSensorManager != null)
 				mSensorManager.unregisterListener(this);
-			record = null; 
 		}
 	}
 

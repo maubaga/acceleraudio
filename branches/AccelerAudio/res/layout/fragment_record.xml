@@ -6,144 +6,159 @@
     android:padding="8dp" >
 
     <LinearLayout
+        android:id="@+id/axis_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="8dp" >
+        android:orientation="vertical"
+        android:visibility="gone" >
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/asse_x"
-            android:textSize="20sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp" >
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/asse_y"
-            android:textSize="20sp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/asse_x"
+                android:textSize="20sp" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/asse_z"
-            android:textSize="20sp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/asse_y"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/asse_z"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#7A7A7A" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp" >
+
+            <TextView
+                android:id="@+id/x_axis"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/y_axis"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/z_axis"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="18sp" />
+        </LinearLayout>
     </LinearLayout>
 
-    <View
+    <TextView
+        android:id="@+id/hint"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#7A7A7A" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="8dp" >
-
-        <TextView
-            android:id="@+id/x_axis"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/y_axis"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/z_axis"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="18sp" />
-    </LinearLayout>
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textSize="28sp"
+        android:text="@string/start_hint" />
 
     <LinearLayout
         android:id="@+id/bars"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:gravity="bottom|center"
         android:orientation="horizontal"
         android:paddingTop="8dp"
-        android:visibility="gone"
-        android:gravity="bottom|center" >
+        android:visibility="gone" >
 
         <View
             android:id="@+id/x_bar1"
             android:layout_width="10dp"
             android:layout_height="50dp"
-            android:background="#000"
-            android:layout_marginRight="2dp" />
-        
+            android:layout_marginRight="2dp"
+            android:background="#000" />
+
         <View
             android:id="@+id/y_bar1"
             android:layout_width="10dp"
             android:layout_height="50dp"
-            android:background="#888"
-            android:layout_marginRight="2dp" />
-        
+            android:layout_marginRight="2dp"
+            android:background="#888" />
+
         <View
             android:id="@+id/z_bar1"
             android:layout_width="10dp"
             android:layout_height="50dp"
-            android:background="#000"
-            android:layout_marginRight="2dp" />
-        
+            android:layout_marginRight="2dp"
+            android:background="#000" />
+
         <View
             android:id="@+id/y_bar2"
             android:layout_width="10dp"
             android:layout_height="50dp"
-            android:background="#888"
-            android:layout_marginRight="2dp" />
-        
+            android:layout_marginRight="2dp"
+            android:background="#888" />
+
         <View
             android:id="@+id/x_bar2"
             android:layout_width="10dp"
             android:layout_height="50dp"
-            android:background="#000"
-            android:layout_marginRight="2dp" />
-        
+            android:layout_marginRight="2dp"
+            android:background="#000" />
+
         <View
             android:id="@+id/z_bar2"
             android:layout_width="10dp"
             android:layout_height="50dp"
             android:background="#888" />
-        
     </LinearLayout>
-    
+
     <LinearLayout
         android:id="@+id/notes"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:gravity="center"
         android:orientation="horizontal"
         android:paddingTop="8dp"
-        android:visibility="gone"
-        android:gravity="center" >
-        
+        android:visibility="gone" >
+
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/note" />
-        
+
         <TextView
             android:id="@+id/note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
-        
     </LinearLayout>
 
     <ScrollView
@@ -171,10 +186,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="#00000000"
+            android:contentDescription="@string/record_img_description"
             android:onClick="startRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/mic"
-            android:contentDescription="@string/record_img_description" />
+            android:src="@drawable/mic" />
     </LinearLayout>
 
     <LinearLayout
@@ -203,10 +218,10 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#00000000"
+            android:contentDescription="@string/play_img_description"
             android:onClick="startRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_play"
-            android:contentDescription="@string/play_img_description" />
+            android:src="@drawable/media_play" />
 
         <ImageButton
             android:id="@+id/pause"
@@ -215,11 +230,11 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#00000000"
+            android:contentDescription="@string/play_img_description"
             android:onClick="pauseRecord"
             android:scaleType="fitCenter"
             android:src="@drawable/media_pause"
-            android:visibility="gone"
-            android:contentDescription="@string/play_img_description" />
+            android:visibility="gone" />
 
         <ImageButton
             android:layout_width="0dp"
@@ -227,10 +242,10 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#00000000"
+            android:contentDescription="@string/play_img_description"
             android:onClick="stopRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_stop"
-            android:contentDescription="@string/play_img_description" />
+            android:src="@drawable/media_stop" />
     </LinearLayout>
 
 </LinearLayout>
