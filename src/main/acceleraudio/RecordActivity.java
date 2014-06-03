@@ -54,7 +54,7 @@ public class RecordActivity extends ActionBarActivity{
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
 				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
-				int size = intent.getIntExtra(RecordService.SIZE, 0); //TODO QUESO È IL NUMERO DI NOTE DA VISUALIZZARE
+				int size = intent.getIntExtra(RecordService.SIZE, 0);
 				
 				TextView xTextView = (TextView) findViewById(R.id.x_axis);
 				TextView yTextView = (TextView) findViewById(R.id.y_axis);

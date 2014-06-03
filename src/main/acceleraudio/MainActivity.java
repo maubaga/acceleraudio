@@ -232,7 +232,7 @@ public class MainActivity extends ActionBarActivity {
 			//Text of the Details window
 			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_time_date + 
 					"\n\nUltima modifica: " + last_time_date + "\n\nAssi utilizzati: " + used_axes +
-					"\n\nCampionamento: " + rate + "\n\nInterpolazione: " + upsampl;
+					"\n\nCampionamento: " + rate + " Campioni/s" + "\n\nInterpolazione: " + upsampl;
 			session.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
