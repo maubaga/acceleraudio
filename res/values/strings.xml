@@ -19,6 +19,7 @@
     <!-- ****** RECORDACTIVITY ****** -->
 
     <string name="title_activity_record">Registra</string>
+    <string name="start_hint">Tocca per registrare</string>
     <string name="asse_x">Asse X</string>
     <string name="asse_y">Asse Y</string>
     <string name="asse_z">Asse Z</string>
