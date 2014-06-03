@@ -2,15 +2,14 @@ package main.acceleraudio;
 
 import java.io.IOException;
 
-import android.app.PendingIntent; 
-import android.app.Service; 
-import android.app.Notification; 
-import android.support.v4.app.NotificationCompat; 
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
-import android.content.Intent; 
-import android.media.MediaPlayer; 
-import android.net.Uri;
-import android.os.IBinder; 
 
 public class PlayerService extends Service{
 	public static String PLAY_START = "play_start"; 
