@@ -104,7 +104,7 @@ public class MainActivity extends ActionBarActivity {
 	
 	private Cursor getArraysData(String songName) {
 		// Get the three arrays from blob fields in the data base and the dimension of the arrays
-		String[] FROM = { X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME};
+		String[] FROM = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME};
 		String WHERE = NAME + "= '" + songName + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
@@ -303,7 +303,7 @@ public class MainActivity extends ActionBarActivity {
 				
 				switch(which){
 
-				case 0: //TODO pass the preferences from the database
+				case 0: 
 					cursor = getArraysData(name);
 					cursor.moveToFirst();
 					x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
@@ -312,7 +312,11 @@ public class MainActivity extends ActionBarActivity {
 					size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
 					String data = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
 					String time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
-					startModifyActivity(name, data, time, x, y, z, size);
+					boolean xCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(X_CHECK)));
+					boolean yCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Y_CHECK)));
+					boolean zCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Z_CHECK)));
+					int seekValue = cursor.getInt(cursor.getColumnIndex(UPSAMPL));
+					startModifyActivity(name, data, time, x, y, z, size, xCheck, yCheck, zCheck, seekValue);
 
 					break;
 
@@ -384,7 +388,7 @@ public class MainActivity extends ActionBarActivity {
 		}	
 	}
 	
-	private void startModifyActivity(String session_name, String data, String time, byte[] x, byte[] y, byte[] z, int size){
+	private void startModifyActivity(String session_name, String data, String time, byte[] x, byte[] y, byte[] z, int size, boolean xCheck, boolean yCheck, boolean zCheck, int seekValue){
 		Intent modifyIntent = new Intent(this, ModifyActivity.class);
 		modifyIntent.putExtra(FIRST_DATE, data);
 		modifyIntent.putExtra(FIRST_TIME, time);
@@ -393,6 +397,10 @@ public class MainActivity extends ActionBarActivity {
 		modifyIntent.putExtra(Y_VALUES, y);
 		modifyIntent.putExtra(Z_VALUES, z);
 		modifyIntent.putExtra(DATA_SIZE, size);
+		modifyIntent.putExtra(X_CHECK, xCheck);
+		modifyIntent.putExtra(Y_CHECK, yCheck);
+		modifyIntent.putExtra(Z_CHECK, zCheck);
+		modifyIntent.putExtra(UPSAMPL, seekValue);
 
 		startActivity(modifyIntent);
 	}
@@ -405,6 +413,13 @@ public class MainActivity extends ActionBarActivity {
 		createIntent.putExtra(RecordService.SIZE, size);
 
 		startActivity(createIntent);
+	}
+	
+	private boolean intToBoolean(int bool){
+		if(bool != 0)
+			return true;
+		else
+			return false;
 	}
 
 

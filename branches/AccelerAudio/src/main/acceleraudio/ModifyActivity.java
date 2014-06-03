@@ -7,8 +7,12 @@ import static main.acceleraudio.DBOpenHelper.DATA_SIZE;
 import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
 import static main.acceleraudio.DBOpenHelper.FIRST_TIME;
 import static main.acceleraudio.DBOpenHelper.NAME;
+import static main.acceleraudio.DBOpenHelper.UPSAMPL;
+import static main.acceleraudio.DBOpenHelper.X_CHECK;
 import static main.acceleraudio.DBOpenHelper.X_VALUES;
+import static main.acceleraudio.DBOpenHelper.Y_CHECK;
 import static main.acceleraudio.DBOpenHelper.Y_VALUES;
+import static main.acceleraudio.DBOpenHelper.Z_CHECK;
 import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 
 import java.io.File;
@@ -18,7 +22,6 @@ import java.util.Calendar;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -53,11 +56,11 @@ public class ModifyActivity extends ActionBarActivity {
 	private static CheckBox z_axis;
 	private static SeekBar et_upsampl;
 
-	private static boolean pref_cbX;
-	private static boolean pref_cbY;
-	private static boolean pref_cbZ;
+	private static boolean xCheck;
+	private static boolean yCheck;
+	private static boolean zCheck;
 
-	private static int pref_upsampl;
+	private static int seekValue;
 	private static int seekbar_value;
 
 	MediaPlayer mp;
@@ -86,11 +89,7 @@ public class ModifyActivity extends ActionBarActivity {
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 
-		SharedPreferences preferences = this.getSharedPreferences("Session_Preferences", MODE_PRIVATE); 
-		pref_cbX = preferences.getBoolean("cBoxSelectX", true);
-		pref_cbY = preferences.getBoolean("cBoxSelectY", true);
-		pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
-		pref_upsampl = preferences.getInt("sbUpsampling", 100);
+	
 
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/";
 
@@ -102,6 +101,10 @@ public class ModifyActivity extends ActionBarActivity {
 		size = intent.getIntExtra(DATA_SIZE, 0);
 		firstData = intent.getStringExtra(FIRST_DATE);
 		firstTime = intent.getStringExtra(FIRST_TIME);
+		xCheck = intent.getBooleanExtra(X_CHECK, true);
+		yCheck = intent.getBooleanExtra(Y_CHECK, true);
+		zCheck = intent.getBooleanExtra(Z_CHECK, true);
+		seekValue = intent.getIntExtra(UPSAMPL, 50);
 	}
 
 	/**
@@ -151,9 +154,9 @@ public class ModifyActivity extends ActionBarActivity {
 
 			imageView.setImageURI(Uri.parse(appFileDirectory + oldSessionName + ".png"));
 
-			x_axis.setChecked(pref_cbX);
-			y_axis.setChecked(pref_cbY);
-			z_axis.setChecked(pref_cbZ);
+			x_axis.setChecked(xCheck);
+			y_axis.setChecked(yCheck);
+			z_axis.setChecked(zCheck);
 
 			//Checking if at least one axes is selected
 			x_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
@@ -197,9 +200,9 @@ public class ModifyActivity extends ActionBarActivity {
 
 			final TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
 			et_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
-			et_upsampl.setProgress(pref_upsampl);
-			tvProgress.setText(String.valueOf(pref_upsampl));
-			seekbar_value = pref_upsampl;
+			et_upsampl.setProgress(seekValue);
+			tvProgress.setText(String.valueOf(seekValue));
+			seekbar_value = seekValue;
 
 			et_upsampl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
 
@@ -268,12 +271,7 @@ public class ModifyActivity extends ActionBarActivity {
 			boolean isCreated = createWavFile(session_name, x, y, z, size);
 
 			if(isCreated){
-				Intent createIntent = new Intent(this, PlayActivity.class);
-				createIntent.putExtra("session_name", session_name);
-				
 
-				
-				
 				openHelper = new DBOpenHelper(this);
 				SQLiteDatabase db = openHelper.getWritableDatabase();
 				
@@ -281,7 +279,6 @@ public class ModifyActivity extends ActionBarActivity {
 				values.put(DBOpenHelper.NAME, session_name);
 				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
 				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-				values.put(DBOpenHelper.RATE, -1);         //TODO get the rate value
 				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
 				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
 				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
@@ -296,7 +293,6 @@ public class ModifyActivity extends ActionBarActivity {
 					audio.delete();
 				}
 				
-				startActivity(createIntent);
 				finish();
 			}
 			else{
