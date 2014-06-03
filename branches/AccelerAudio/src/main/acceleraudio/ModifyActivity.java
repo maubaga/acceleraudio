@@ -24,6 +24,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -89,7 +90,7 @@ public class ModifyActivity extends ActionBarActivity {
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 
-	
+
 
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/";
 
@@ -274,7 +275,7 @@ public class ModifyActivity extends ActionBarActivity {
 
 				openHelper = new DBOpenHelper(this);
 				SQLiteDatabase db = openHelper.getWritableDatabase();
-				
+
 				ContentValues values = new ContentValues();
 				values.put(DBOpenHelper.NAME, session_name);
 				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
@@ -292,7 +293,7 @@ public class ModifyActivity extends ActionBarActivity {
 					image.renameTo(new File(dir, session_name + ".png"));
 					audio.delete();
 				}
-				
+
 				finish();
 			}
 			else{
@@ -442,7 +443,7 @@ public class ModifyActivity extends ActionBarActivity {
 	 * @param view the button pressed
 	 */
 	public void startPreview(View view){
-		
+
 		//create temporary files
 		boolean isCreated = createWavFile("Temp", x, y, z, size);
 		if(!isCreated){
@@ -460,16 +461,23 @@ public class ModifyActivity extends ActionBarActivity {
 		try{
 			mp = new MediaPlayer();
 			try {
-				
+
 				Button play = (Button)findViewById(R.id.start_bt);
 				Button stop = (Button)findViewById(R.id.stop_bt);
-				
+
 				play.setVisibility(View.GONE);
 				stop.setVisibility(View.VISIBLE);
-				
+
 				mp.setDataSource(appFileDirectory + "Temp.wav");
 				mp.prepare();
 				mp.start();
+				mp.setOnCompletionListener(new OnCompletionListener() {
+
+					@Override
+					public void onCompletion(MediaPlayer m) {
+						stopPreview(null);
+					}
+				});
 			} catch (IOException e) {
 				Toast.makeText(getBaseContext(),"prepare failed", Toast.LENGTH_SHORT).show();
 			}
@@ -481,16 +489,16 @@ public class ModifyActivity extends ActionBarActivity {
 	public void stopPreview(View view){
 		try{
 			if(mp != null){
-				
+
 				Button play = (Button)findViewById(R.id.start_bt);
 				Button stop = (Button)findViewById(R.id.stop_bt);
-				
+
 				play.setVisibility(View.VISIBLE);
 				stop.setVisibility(View.GONE);
 
 				mp.stop();
 				mp = null;
-				
+
 			}
 		}catch(Exception e){
 			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();

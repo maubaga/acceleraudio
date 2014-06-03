@@ -37,8 +37,8 @@ public class PlayActivity extends ActionBarActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
-			chrono.setText(Color.RED);
 			chrono.setBase(SystemClock.elapsedRealtime());
+			play(null);
 
 		}
 	};
