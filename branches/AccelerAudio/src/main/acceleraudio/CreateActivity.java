@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -525,6 +525,13 @@ public class CreateActivity extends ActionBarActivity {
 				mp.setDataSource(appFileDirectory + "Temp.wav");
 				mp.prepare();
 				mp.start();
+				mp.setOnCompletionListener(new OnCompletionListener() {
+					
+					@Override
+					public void onCompletion(MediaPlayer m) {
+						stopPreview(null);
+					}
+				});
 			} catch (IOException e) {
 				Toast.makeText(getBaseContext(),"prepare failed", Toast.LENGTH_SHORT).show();
 			}
