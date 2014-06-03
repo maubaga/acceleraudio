@@ -145,32 +145,40 @@ public class MainActivity extends ActionBarActivity {
 			session.setBackgroundResource(R.drawable.selector_colors);
 
 			ImageView img = new ImageView(this);
+//			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 
+//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()));
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()));
+					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 20);
 			params.gravity = Gravity.CENTER_VERTICAL;
 			img.setImageURI(Uri.parse(folder + cursor.getString(cursor.getColumnIndex(NAME)) + ".png"));
 			img.setLayoutParams(params);
 
 			TextView name = new TextView(this);
+//			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
+//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 117, getResources().getDisplayMetrics()), 
+//					LayoutParams.WRAP_CONTENT);
 			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics()), 
-					LayoutParams.WRAP_CONTENT);
+					0, LayoutParams.WRAP_CONTENT, 55);
 			params2.gravity = Gravity.CENTER_VERTICAL;
 			name.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()), 0, 0, 0);
 			name.setTextSize(16);
 			name.setText(cursor.getString(cursor.getColumnIndex(NAME)));
 			name.setLayoutParams(params2);
+//			name.setBackgroundColor(0xffdc0918);
 
 			TextView date = new TextView(this);
+//			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
+//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), 
+//					LayoutParams.WRAP_CONTENT);
 			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics()), 
-					LayoutParams.WRAP_CONTENT);
+					0, LayoutParams.WRAP_CONTENT, 45);
 			params3.gravity = Gravity.CENTER_VERTICAL;
 			date.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()), 0, 0, 0);
 			date.setTextSize(16);
 			date.setText(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
 			date.setLayoutParams(params3);
+//			date.setBackgroundColor(0xff0e6eb8);
 
 			//Session's name
 			final String session_name = name.getText().toString();
@@ -216,10 +224,16 @@ public class MainActivity extends ActionBarActivity {
 
 
 			ImageButton play = new ImageButton(this);
-			play.setLayoutParams(new LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
+//			play.setLayoutParams(new LayoutParams(
+//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 
+//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
+			LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams(
+					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 20);
 			play.setImageResource(R.drawable.media_play);
 			play.setScaleType(ScaleType.FIT_CENTER);
+			play.setLayoutParams(params4);
 			play.setBackgroundResource(R.drawable.selector_colors);
+//			play.setBackgroundColor(0xffff9900);
 			play.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -276,7 +290,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private void detailsView(View v, String message){
 
-		new AlertDialog.Builder(MainActivity.this)
+		AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
 		.setTitle(R.string.details)
 		.setMessage(message)
 		.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -286,6 +300,9 @@ public class MainActivity extends ActionBarActivity {
 		})
 		.show();
 
+		TextView textView = (TextView) dialog.findViewById(android.R.id.message);
+	    textView.setTextSize(16);
+		
 	}
 
 	private void contextMenu(View v, String session_name){
