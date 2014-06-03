@@ -57,15 +57,14 @@ public class PlayerService extends Service{
 			myPlayer = new MediaPlayer(); 
 			myPlayer.setDataSource(sessionToPlay);
 			myPlayer.prepare();
-			myPlayer.setLooping(true); 
 			myPlayer.start();
-			//TODO rivedere la gestione del loop
 			myPlayer.setOnCompletionListener(new OnCompletionListener() {
 				
 				@Override
 				public void onCompletion(MediaPlayer m) {
 					Intent intent = new Intent(NOTIFICATION);
 					sendBroadcast(intent);
+					isPlaying = false;
 				}
 			});
 			sessionInPlayNow = sessionToPlay.toString();
