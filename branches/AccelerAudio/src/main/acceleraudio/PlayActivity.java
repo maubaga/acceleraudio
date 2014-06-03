@@ -2,7 +2,11 @@ package main.acceleraudio;
 
 import java.io.FileOutputStream;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class PlayActivity extends ActionBarActivity {
@@ -26,6 +31,17 @@ public class PlayActivity extends ActionBarActivity {
 	static String appFileDirectory;
 
 	FileOutputStream fout;
+
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
+			chrono.setText(Color.RED);
+			chrono.setBase(SystemClock.elapsedRealtime());
+
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +56,7 @@ public class PlayActivity extends ActionBarActivity {
 		intent = getIntent();
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
 		session_name = intent.getStringExtra("session_name");
-	
+
 	}
 
 	@Override
@@ -109,23 +125,19 @@ public class PlayActivity extends ActionBarActivity {
 
 	}
 
-	public void pause(View view) {//TODO pause must run in background
+	public void pause(View view) {
 
 		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
-//		if(mp != null){
-//
-//			mp.pause();
-			chrono.stop();
-			chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
-			Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
-			pauseIntent.setAction(PlayerService.PLAY_PAUSE);
-//			mp = null;
-//
-//		}
+
+		chrono.stop();
+		chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
+		Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
+		pauseIntent.setAction(PlayerService.PLAY_PAUSE);
+		startService(pauseIntent);
 	}
 
 	public void stop(View view) {
@@ -135,28 +147,33 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
-		//		if(mp != null){
-		//
-		//			mp.stop();
-		//			time = 0;
+
 		chrono.setBase(SystemClock.elapsedRealtime());
 		chrono.stop();
 		chrono_time = 0;
-		//			mp = null;
-		//
-		//		}
 
 		//background
 		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
-		//		stopIntent.putExtra(PlayerService.PLAY_START, true);
 		stopService(stopIntent);
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-	
+
 		play(null);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		unregisterReceiver(receiver);
 	}
 
 }
