@@ -87,7 +87,7 @@ public class CreateActivity extends ActionBarActivity {
 		pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
 		pref_upsampl = preferences.getInt("sbUpsampling", 100);
 		String pref_rate = preferences.getString("eTextSampleRate", getResources().getString(R.string.sample_rate1));
-		
+
 		//This convert the rate in a int
 		if (getResources().getString(R.string.sample_rate1).equals(pref_rate))
 			rate = 1;
@@ -121,21 +121,21 @@ public class CreateActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_create,
 					container, false);
 
-//			Context context = getActivity();
-//			SharedPreferences pref_create = context.getSharedPreferences("Session_Create", MODE_PRIVATE);
-//			String create_name = pref_create.getString("etNameTrack", null);
-//			String create_first = pref_create.getString("tvFirstDate", null);
-//			String create_last = pref_create.getString("tvLastDate", null);
-			
+			//			Context context = getActivity();
+			//			SharedPreferences pref_create = context.getSharedPreferences("Session_Create", MODE_PRIVATE);
+			//			String create_name = pref_create.getString("etNameTrack", null);
+			//			String create_first = pref_create.getString("tvFirstDate", null);
+			//			String create_last = pref_create.getString("tvLastDate", null);
 
-//			//Set the value of the layout
+
+			//			//Set the value of the layout
 			name = (EditText)rootView.findViewById(R.id.name);
-//			name.setText(create_name);
+			//			name.setText(create_name);
 			imageView = (ImageView) rootView.findViewById(R.id.imageView);
 			first_date = (TextView)rootView.findViewById(R.id.first_date);
-//			first_date.setText(create_first);
+			//			first_date.setText(create_first);
 			last_date = (TextView)rootView.findViewById(R.id.last_date);
-//			last_date.setText(create_last);
+			//			last_date.setText(create_last);
 			x_axis = (CheckBox)rootView.findViewById(R.id.x);
 			y_axis = (CheckBox)rootView.findViewById(R.id.y);
 			z_axis = (CheckBox)rootView.findViewById(R.id.z);
@@ -149,45 +149,29 @@ public class CreateActivity extends ActionBarActivity {
 			String months = "";
 			String days = "";
 			String minutes = "";
-			
-			if(dd < 10){
 
+			if(dd < 10)
 				days = "0" + dd; 
-
-			} else{
-
+			else
 				days = "" + dd;
 
-			}
-			
-			if(mm < 10){
-
+			if(mm < 10)
 				months = "0" + (mm + 1); 
-
-			} else{
-
+			else
 				months = "" + (mm + 1);
 
-			}
-
-			if(mn < 10){
-
+			if(mn < 10)
 				minutes = "0" + mn; 
-
-			} else{
-
+			else
 				minutes = "" + mn;
 
-			}
-
-			date = days + "/" + (months) + "/" + yy;
+			date = days + "/" + months + "/" + yy;
 			time = hh + ":" + minutes;
 
-//			//controllo se è la prima volta che salvo il file
-//			if(first_date.getText().toString().equals(null))
-				first_date.setText(date + " " + time);
-//			if(last_date.getText().toString().equals(null))
-				last_date.setText(date + " " + time);
+
+			first_date.setText(date + " " + time);
+
+			last_date.setText(date + " " + time);
 
 			session_image = createImage();
 			imageView.setImageBitmap(session_image);
@@ -293,24 +277,26 @@ public class CreateActivity extends ActionBarActivity {
 				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
 				return false;
 			}
-
-			if(session_name.contains("  ")){
-				Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
-				return false;
-			}
-
+			
 			if(session_name.substring(0, 1).equals(" ")){
 				Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
 				return false;
 			}
 
+			if(session_name.contains("  ")){
+				Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
+				return false;
+			}			
+
 			if(session_name.length() > 12){
 				session_name = session_name.substring(0, 12);
 			}
 			
+			
+
 			File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
 			if(fileCheck.exists()){
-				
+
 				new AlertDialog.Builder(CreateActivity.this)
 				.setTitle(session_name + " è già presente")
 				.setMessage("Vuoi sovrascrivere il file?")
@@ -326,15 +312,15 @@ public class CreateActivity extends ActionBarActivity {
 					}
 				})
 				.show();
-				
+
 			}
 			else{
 				addTrack(session_name);
 			}
 
-			
 
-//			return true;
+
+			//			return true;
 		}
 
 		if (id == R.id.action_settings) {
@@ -396,7 +382,7 @@ public class CreateActivity extends ActionBarActivity {
 					dataAdded[j] = (byte)(sum_axes / num_axes);
 			}	
 
-			
+
 			FileOutputStream fOut = openFileOutput(file,MODE_PRIVATE);
 
 			long totalAudioLen = dataAdded.length * num_channels * (bits_per_sample / 8);
@@ -543,7 +529,7 @@ public class CreateActivity extends ActionBarActivity {
 				mp.prepare();
 				mp.start();
 				mp.setOnCompletionListener(new OnCompletionListener() {
-					
+
 					@Override
 					public void onCompletion(MediaPlayer m) {
 						stopPreview(null);
@@ -575,15 +561,16 @@ public class CreateActivity extends ActionBarActivity {
 			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+
 	private boolean addTrack(String session_name){
-		
+
 		boolean isSaved = saveImage(session_name);
 		boolean isCreated = createWavFile(session_name, x, y, z, size);
 
 		if(isSaved && isCreated){
-			Intent createIntent = new Intent(this, PlayActivity.class);
-			createIntent.putExtra("session_name", session_name);
+			Intent playIntent = new Intent(this, PlayActivity.class);
+			playIntent.putExtra("session_name", session_name);
+			playIntent.putExtra(PlayActivity.AUTOPLAY, false); //the song doesn't start automatically
 
 			oh = new DBOpenHelper(this);
 			SQLiteDatabase db = oh.getWritableDatabase();
@@ -594,17 +581,17 @@ public class CreateActivity extends ActionBarActivity {
 			values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
 			values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
 			values.put(DBOpenHelper.RATE, rate);       
-			values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
+			values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);       //add seekbar value
 			values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
 			values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
 			values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked());
-			values.put(DBOpenHelper.X_VALUES, x);      //add the three byte array to the database
+			values.put(DBOpenHelper.X_VALUES, x);          //add the three byte array to the database
 			values.put(DBOpenHelper.Y_VALUES, y);
 			values.put(DBOpenHelper.Z_VALUES, z);
-			values.put(DBOpenHelper.DATA_SIZE, size);  //add the number samples to the database
+			values.put(DBOpenHelper.DATA_SIZE, size);        //add the number samples to the database
 			db.insert(DBOpenHelper.TABLE, null, values);
 
-			startActivity(createIntent);
+			startActivity(playIntent);
 			finish();
 			return true;
 		}
