@@ -65,8 +65,9 @@ public class PlayerService extends Service{
 				@Override
 				public void onCompletion(MediaPlayer m) {
 					Intent intent = new Intent(NOTIFICATION);
-					sendBroadcast(intent);
 					isPlaying = false;
+					pos = 0;
+					sendBroadcast(intent);					
 				}
 			});
 			sessionInPlayNow = sessionToPlay.toString();

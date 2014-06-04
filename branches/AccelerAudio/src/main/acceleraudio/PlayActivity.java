@@ -22,9 +22,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PlayActivity extends ActionBarActivity {
-	static Intent intent;
-	static String session_name;
-	static String appFileDirectory;
+	public static final String AUTOPLAY = "autoplay";
+	private static Intent intent;
+	private static String session_name;
+	private static boolean isAutoplayEnabled;
+	private static String appFileDirectory;
 
 	FileOutputStream fout;
 
@@ -52,7 +54,7 @@ public class PlayActivity extends ActionBarActivity {
 		intent = getIntent();
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
 		session_name = intent.getStringExtra("session_name");
-
+		isAutoplayEnabled = intent.getBooleanExtra(AUTOPLAY, false);
 	}
 
 	@Override
@@ -156,8 +158,9 @@ public class PlayActivity extends ActionBarActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-
-		play(null);
+		
+		if(isAutoplayEnabled)
+			play(null);
 	}
 	
 	@Override

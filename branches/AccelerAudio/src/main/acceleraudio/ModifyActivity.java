@@ -138,16 +138,26 @@ public class ModifyActivity extends ActionBarActivity {
 			int dd = c.get(Calendar.DAY_OF_MONTH);
 			int hh = c.get(Calendar.HOUR_OF_DAY);
 			int mn = c.get(Calendar.MINUTE);
-			//			int ss = c.get(Calendar.SECOND);
+			String months = "";
+			String days = "";
 			String minutes = "";
 
-			if(mn < 10){
-				minutes = "0" + mn; 
-			} else{
-				minutes = "" + mn;
-			}
+			if(dd < 10)
+				days = "0" + dd; 
+			else
+				days = "" + dd;
+			
+			if(mm < 10)
+				months = "0" + (mm + 1); 
+			else
+				months = "" + (mm + 1);
 
-			date = dd + "/" + (mm + 1) + "/" + yy;
+			if(mn < 10)
+				minutes = "0" + mn; 
+			else
+				minutes = "" + mn;
+
+			date = days + "/" + months + "/" + yy;
 			time = hh + ":" + minutes;
 
 			first_date.setText(firstData + " " + firstTime);

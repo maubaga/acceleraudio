@@ -282,9 +282,10 @@ public class MainActivity extends ActionBarActivity {
 
 	private void startSession(View view, String name){
 
-		Intent intent = new Intent(this, PlayActivity.class);
-		intent.putExtra("session_name", name);
-		startActivity(intent);
+		Intent playIntent = new Intent(this, PlayActivity.class);
+		playIntent.putExtra("session_name", name);
+		playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
+		startActivity(playIntent);
 
 	}
 
