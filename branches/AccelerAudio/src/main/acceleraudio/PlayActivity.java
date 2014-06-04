@@ -26,13 +26,12 @@ public class PlayActivity extends ActionBarActivity {
 	private static boolean isAutoplayEnabled;
 	private static String appFileDirectory;
 	private long chrono_time = 0;
-
+	private static Chronometer chrono;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 			chrono.setBase(SystemClock.elapsedRealtime());
 			chrono_time = 0;
 			play(null);
@@ -49,6 +48,11 @@ public class PlayActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		else{
+			chrono_time = savedInstanceState.getLong("chronometer_time");
+			chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
+		}
+	
 
 		intent = getIntent();
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
@@ -90,6 +94,8 @@ public class PlayActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_play, container,
 					false);
+			
+			chrono = (Chronometer) rootView.findViewById(R.id.chrono);
 
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
@@ -105,7 +111,6 @@ public class PlayActivity extends ActionBarActivity {
 	//read the .wav file
 	public void play(View view){
 
-		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.GONE);
@@ -124,7 +129,6 @@ public class PlayActivity extends ActionBarActivity {
 
 	public void pause(View view) {
 
-		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
@@ -139,7 +143,6 @@ public class PlayActivity extends ActionBarActivity {
 
 	public void stop(View view) {
 
-		Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 		ImageButton play = (ImageButton)findViewById(R.id.play);
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
@@ -172,6 +175,14 @@ public class PlayActivity extends ActionBarActivity {
 	protected void onPause() {
 		super.onPause();
 		unregisterReceiver(receiver);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	    // Save myVar's value in saveInstanceState bundle
+		chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
+	    savedInstanceState.putLong("chronometer_time", chrono_time);
+	    super.onSaveInstanceState(savedInstanceState);
 	}
 
 }
