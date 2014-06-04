@@ -22,6 +22,7 @@ public class PlayerService extends Service{
 	private String sessionInPlayNow;
 	private MediaPlayer myPlayer = null; 
 	private boolean isPlaying = false; 
+	private int pos = 0;
 
 	@Override 
 	public IBinder onBind(Intent intent) 
@@ -57,6 +58,7 @@ public class PlayerService extends Service{
 			myPlayer = new MediaPlayer(); 
 			myPlayer.setDataSource(sessionToPlay);
 			myPlayer.prepare();
+			myPlayer.seekTo(pos);
 			myPlayer.start();
 			myPlayer.setOnCompletionListener(new OnCompletionListener() {
 				
@@ -90,6 +92,8 @@ public class PlayerService extends Service{
 		if (isPlaying) { 
 			isPlaying = false; 
 			myPlayer.pause();
+			pos = myPlayer.getCurrentPosition();
+			
 		} 
 	} 
 
@@ -99,7 +103,8 @@ public class PlayerService extends Service{
 			isPlaying = false; 
 			if (myPlayer != null) { 
 				myPlayer.release(); 
-				myPlayer = null; 
+				myPlayer = null;
+				pos = 0;
 			} 
 		} 
 	} 
