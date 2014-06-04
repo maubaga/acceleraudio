@@ -3,11 +3,14 @@
  */
 package main.acceleraudio;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -143,7 +146,29 @@ public class CreateActivity extends ActionBarActivity {
 			int dd = c.get(Calendar.DAY_OF_MONTH);
 			int hh = c.get(Calendar.HOUR_OF_DAY);
 			int mn = c.get(Calendar.MINUTE);
+			String months = "";
+			String days = "";
 			String minutes = "";
+			
+			if(dd < 10){
+
+				days = "0" + dd; 
+
+			} else{
+
+				days = "" + dd;
+
+			}
+			
+			if(mm < 10){
+
+				months = "0" + (mm + 1); 
+
+			} else{
+
+				months = "" + (mm + 1);
+
+			}
 
 			if(mn < 10){
 
@@ -155,7 +180,7 @@ public class CreateActivity extends ActionBarActivity {
 
 			}
 
-			date = dd + "/" + (mm + 1) + "/" + yy;
+			date = days + "/" + (months) + "/" + yy;
 			time = hh + ":" + minutes;
 
 //			//controllo se è la prima volta che salvo il file
@@ -282,43 +307,34 @@ public class CreateActivity extends ActionBarActivity {
 			if(session_name.length() > 12){
 				session_name = session_name.substring(0, 12);
 			}
-
-
-			boolean isSaved = saveImage(session_name);
-			boolean isCreated = createWavFile(session_name, x, y, z, size);
-
-			if(isSaved && isCreated){
-				Intent createIntent = new Intent(this, PlayActivity.class);
-				createIntent.putExtra("session_name", session_name);
-
-				oh = new DBOpenHelper(this);
-				SQLiteDatabase db = oh.getWritableDatabase();
-				ContentValues values = new ContentValues();
-				values.put(DBOpenHelper.NAME, session_name);
-				values.put(DBOpenHelper.FIRST_DATE, date);
-				values.put(DBOpenHelper.FIRST_TIME, time);
-				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
-				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-				values.put(DBOpenHelper.RATE, rate);       
-				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
-				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
-				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
-				values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked());
-				values.put(DBOpenHelper.X_VALUES, x);      //add the three byte array to the database
-				values.put(DBOpenHelper.Y_VALUES, y);
-				values.put(DBOpenHelper.Z_VALUES, z);
-				values.put(DBOpenHelper.DATA_SIZE, size);  //add the number samples to the database
-				db.insert(DBOpenHelper.TABLE, null, values);
-
-				startActivity(createIntent);
-				finish();
+			
+			File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
+			if(fileCheck.exists()){
+				
+				new AlertDialog.Builder(CreateActivity.this)
+				.setTitle(session_name + " è già presente")
+				.setMessage("Vuoi sovrascrivere il file?")
+				.setIcon(null)
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) { 
+						addTrack(session_name);
+					}
+				})
+				.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) { 
+						return;
+					}
+				})
+				.show();
+				
 			}
 			else{
-				Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
-				return false;
+				addTrack(session_name);
 			}
 
-			return true;
+			
+
+//			return true;
 		}
 
 		if (id == R.id.action_settings) {
@@ -380,6 +396,7 @@ public class CreateActivity extends ActionBarActivity {
 					dataAdded[j] = (byte)(sum_axes / num_axes);
 			}	
 
+			
 			FileOutputStream fOut = openFileOutput(file,MODE_PRIVATE);
 
 			long totalAudioLen = dataAdded.length * num_channels * (bits_per_sample / 8);
@@ -556,6 +573,44 @@ public class CreateActivity extends ActionBarActivity {
 			}
 		}catch(Exception e){
 			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	private boolean addTrack(String session_name){
+		
+		boolean isSaved = saveImage(session_name);
+		boolean isCreated = createWavFile(session_name, x, y, z, size);
+
+		if(isSaved && isCreated){
+			Intent createIntent = new Intent(this, PlayActivity.class);
+			createIntent.putExtra("session_name", session_name);
+
+			oh = new DBOpenHelper(this);
+			SQLiteDatabase db = oh.getWritableDatabase();
+			ContentValues values = new ContentValues();
+			values.put(DBOpenHelper.NAME, session_name);
+			values.put(DBOpenHelper.FIRST_DATE, date);
+			values.put(DBOpenHelper.FIRST_TIME, time);
+			values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
+			values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
+			values.put(DBOpenHelper.RATE, rate);       
+			values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
+			values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
+			values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
+			values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked());
+			values.put(DBOpenHelper.X_VALUES, x);      //add the three byte array to the database
+			values.put(DBOpenHelper.Y_VALUES, y);
+			values.put(DBOpenHelper.Z_VALUES, z);
+			values.put(DBOpenHelper.DATA_SIZE, size);  //add the number samples to the database
+			db.insert(DBOpenHelper.TABLE, null, values);
+
+			startActivity(createIntent);
+			finish();
+			return true;
+		}
+		else{
+			Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
+			return false;
 		}
 	}
 }
