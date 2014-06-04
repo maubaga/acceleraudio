@@ -1,7 +1,5 @@
 package main.acceleraudio;
 
-import java.io.FileOutputStream;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +25,8 @@ public class PlayActivity extends ActionBarActivity {
 	private static String session_name;
 	private static boolean isAutoplayEnabled;
 	private static String appFileDirectory;
+	private long chrono_time = 0;
 
-	FileOutputStream fout;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -36,6 +34,7 @@ public class PlayActivity extends ActionBarActivity {
 		public void onReceive(Context context, Intent intent) {
 			Chronometer chrono = (Chronometer)findViewById(R.id.chrono);
 			chrono.setBase(SystemClock.elapsedRealtime());
+			chrono_time = 0;
 			play(null);
 
 		}
@@ -102,7 +101,7 @@ public class PlayActivity extends ActionBarActivity {
 		}
 	}
 
-	private long chrono_time = 0;
+
 	//read the .wav file
 	public void play(View view){
 
