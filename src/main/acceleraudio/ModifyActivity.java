@@ -20,7 +20,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
@@ -277,7 +279,14 @@ public class ModifyActivity extends ActionBarActivity {
 			if(session_name.length() > 12){
 				session_name = session_name.substring(0, 12);
 			}
+			
+			File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
+			if(fileCheck.exists() && !session_name.equals(oldSessionName)){
 
+				Toast.makeText(this, session_name + " esiste già!", Toast.LENGTH_SHORT).show();
+				return false;
+
+			}
 
 			boolean isCreated = createWavFile(session_name, x, y, z, size);
 
