@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ public class PlayActivity extends ActionBarActivity {
 	private static String appFileDirectory;
 	private long chrono_time = 0;
 	private static Chronometer chrono;
+	private static boolean isLoop = true;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -34,7 +36,10 @@ public class PlayActivity extends ActionBarActivity {
 		public void onReceive(Context context, Intent intent) {
 			chrono.setBase(SystemClock.elapsedRealtime());
 			chrono_time = 0;
-			play(null);
+			if(isLoop)
+				play(null);
+			else
+				stop(null);
 
 		}
 	};
@@ -102,6 +107,22 @@ public class PlayActivity extends ActionBarActivity {
 
 			TextView textView = (TextView) rootView.findViewById(R.id.session_name);			
 			textView.setText(session_name.toUpperCase());
+			
+			ImageView loop = (ImageView) rootView.findViewById(R.id.loop);
+			loop.setBackgroundColor(0xff00ff00);
+			final ImageView final_loop = loop;
+			loop.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					if(isLoop){
+						isLoop = false;
+						final_loop.setBackgroundColor(0xffdc0918);
+					} else{
+						isLoop=true;
+						final_loop.setBackgroundColor(0xff00ff00);
+					}
+				}
+			});
 
 			return rootView;
 		}

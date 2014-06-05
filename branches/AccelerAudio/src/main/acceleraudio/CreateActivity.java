@@ -317,10 +317,6 @@ public class CreateActivity extends ActionBarActivity {
 			else{
 				addTrack(session_name);
 			}
-
-
-
-			//			return true;
 		}
 
 		if (id == R.id.action_settings) {
