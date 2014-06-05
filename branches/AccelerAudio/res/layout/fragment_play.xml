@@ -21,6 +21,22 @@
         android:contentDescription="@string/session_img_description"
         android:paddingTop="8dp"
         android:scaleType="fitCenter" />
+    
+    
+    <LinearLayout
+        android:id="@+id/progseek"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp" >
+        
+        <SeekBar
+            android:id="@+id/progress_song"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+        
+    </LinearLayout>
 
 
     <LinearLayout
