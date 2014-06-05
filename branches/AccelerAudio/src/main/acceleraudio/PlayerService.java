@@ -6,6 +6,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.IBinder;
@@ -78,13 +80,17 @@ public class PlayerService extends Service{
 		}
 		
 		// Runs this service in the foreground, 
-		// supplying the ongoing notification to be shown to the user 
+		// supplying the ongoing notification to be shown to the user
+		Bitmap icon = BitmapFactory.decodeFile(sessionInPlayNow.substring(0, sessionInPlayNow.length()-4)+".png");
+		//TODO provare a vedere in debug il valore della stringa passata a decode file della Bitmap
 		Intent intent = new Intent(this, PlayActivity.class); 
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0); 
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
+		.setContentTitle("Stai ascoltando: "+sessionInPlayNow.substring(35, sessionInPlayNow.length()-4))
+        .setLargeIcon(icon)
 		.setContentIntent(pi) // Required on Gingerbread and below 
-		.build(); 
+		.build();
 		final int notificationID = 1; // An ID for this notification unique within the app 
 		startForeground(notificationID, notification);
 	}
