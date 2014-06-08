@@ -17,8 +17,12 @@ import static main.acceleraudio.DBOpenHelper.Z_CHECK;
 import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Calendar;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -36,10 +40,10 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -89,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	
+
 
 	private Cursor getSessions() {
 		// Get all of the notes from the database and create the item list
@@ -101,10 +105,10 @@ public class MainActivity extends ActionBarActivity {
 		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
 	}
-	
+
 	private Cursor getArraysData(String songName) {
 		// Get the three arrays from blob fields in the data base and the dimension of the arrays
-		String[] FROM = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME};
+		String[] FROM = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME, RATE};
 		String WHERE = NAME + "= '" + songName + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
@@ -145,9 +149,9 @@ public class MainActivity extends ActionBarActivity {
 			session.setBackgroundResource(R.drawable.selector_colors);
 
 			ImageView img = new ImageView(this);
-//			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 
-//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()));
+			//			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 
+			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()));
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 20);
 			params.gravity = Gravity.CENTER_VERTICAL;
@@ -155,9 +159,9 @@ public class MainActivity extends ActionBarActivity {
 			img.setLayoutParams(params);
 
 			TextView name = new TextView(this);
-//			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
-//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 117, getResources().getDisplayMetrics()), 
-//					LayoutParams.WRAP_CONTENT);
+			//			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
+			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 117, getResources().getDisplayMetrics()), 
+			//					LayoutParams.WRAP_CONTENT);
 			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
 					0, LayoutParams.WRAP_CONTENT, 55);
 			params2.gravity = Gravity.CENTER_VERTICAL;
@@ -165,12 +169,12 @@ public class MainActivity extends ActionBarActivity {
 			name.setTextSize(16);
 			name.setText(cursor.getString(cursor.getColumnIndex(NAME)));
 			name.setLayoutParams(params2);
-//			name.setBackgroundColor(0xffdc0918);
+			//			name.setBackgroundColor(0xffdc0918);
 
 			TextView date = new TextView(this);
-//			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
-//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), 
-//					LayoutParams.WRAP_CONTENT);
+			//			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
+			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), 
+			//					LayoutParams.WRAP_CONTENT);
 			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
 					0, LayoutParams.WRAP_CONTENT, 45);
 			params3.gravity = Gravity.CENTER_VERTICAL;
@@ -178,7 +182,7 @@ public class MainActivity extends ActionBarActivity {
 			date.setTextSize(16);
 			date.setText(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
 			date.setLayoutParams(params3);
-//			date.setBackgroundColor(0xff0e6eb8);
+			//			date.setBackgroundColor(0xff0e6eb8);
 
 			//Session's name
 			final String session_name = name.getText().toString();
@@ -224,25 +228,25 @@ public class MainActivity extends ActionBarActivity {
 
 
 			ImageButton play = new ImageButton(this);
-//			play.setLayoutParams(new LayoutParams(
-//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 
-//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
+			//			play.setLayoutParams(new LayoutParams(
+			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 
+			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
 			LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams(
 					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 20);
 			play.setImageResource(R.drawable.media_play);
 			play.setScaleType(ScaleType.FIT_CENTER);
 			play.setLayoutParams(params4);
 			play.setBackgroundResource(R.drawable.selector_colors);
-//			play.setBackgroundColor(0xffff9900);
+			//			play.setBackgroundColor(0xffff9900);
 			play.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					startSession(arg0, session_name);
+					startSession(session_name);
 				}
 
 			});
-			
-			
+
+
 			//Text of the Details window
 			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_time_date + 
 					"\n\nUltima modifica: " + last_time_date + "\n\nAssi utilizzati: " + used_axes +
@@ -250,7 +254,7 @@ public class MainActivity extends ActionBarActivity {
 			session.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					detailsView(arg0, message);
+					detailsView(message);
 				}
 			});
 
@@ -261,7 +265,7 @@ public class MainActivity extends ActionBarActivity {
 					return true;
 				}
 			});
-			
+
 
 			View line = new View(this);
 			line.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics())));
@@ -280,16 +284,13 @@ public class MainActivity extends ActionBarActivity {
 
 	}
 
-	private void startSession(View view, String name){
 
-		Intent playIntent = new Intent(this, PlayActivity.class);
-		playIntent.putExtra("session_name", name);
-		playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
-		startActivity(playIntent);
 
-	}
-
-	private void detailsView(View v, String message){
+	/**
+	 * AlertDialog that contain the detail of the track.
+	 * @param message The detail to view in string form.
+	 */
+	private void detailsView(String message){
 
 		AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
 		.setTitle(R.string.details)
@@ -302,10 +303,15 @@ public class MainActivity extends ActionBarActivity {
 		.show();
 
 		TextView textView = (TextView) dialog.findViewById(android.R.id.message);
-	    textView.setTextSize(16);
-		
+		textView.setTextSize(16);
+
 	}
 
+	/**
+	 * Contextual menu that appears when it is done long press on a track.
+	 * @param v The view in which it was done long press;
+	 * @param session_name The name of the song.
+	 */
 	private void contextMenu(View v, String session_name){
 
 		final String name = session_name;
@@ -315,40 +321,22 @@ public class MainActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				byte[] x,y,z;
-				int size;
-				Cursor cursor;
-				
+
+
 				switch(which){
 
-				case 0: 
-					cursor = getArraysData(name);
-					cursor.moveToFirst();
-					x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
-					y = cursor.getBlob(cursor.getColumnIndex(Y_VALUES));
-					z = cursor.getBlob(cursor.getColumnIndex(Z_VALUES));
-					size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
-					String data = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
-					String time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
-					boolean xCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(X_CHECK)));
-					boolean yCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Y_CHECK)));
-					boolean zCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Z_CHECK)));
-					int seekValue = cursor.getInt(cursor.getColumnIndex(UPSAMPL));
-					startModifyActivity(name, data, time, x, y, z, size, xCheck, yCheck, zCheck, seekValue);
+				case 0: //modify button
+					modifySession(name);
 
 					break;
 
-				case 1: //TODO now duplicate make a new file with the same arrays
-					cursor = getArraysData(name);
-					cursor.moveToFirst();
-					x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
-					y = cursor.getBlob(cursor.getColumnIndex(Y_VALUES));
-					z = cursor.getBlob(cursor.getColumnIndex(Z_VALUES));
-					size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
-					startCreateActivity(x, y, z, size);
+				case 1: //duplicate button
+					duplicateSession(name);
+					showSessions(getSessions());
+
 					break;
 
-				case 2:       //delete button
+				case 2: //delete button
 					new AlertDialog.Builder(MainActivity.this)
 					.setTitle(name)
 					.setMessage(R.string.confirm_delete)
@@ -356,6 +344,7 @@ public class MainActivity extends ActionBarActivity {
 					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) { 
 							deleteSession(name); //here i delete the session
+							showSessions(getSessions());
 						}
 					})
 					.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -370,21 +359,6 @@ public class MainActivity extends ActionBarActivity {
 
 			}
 		}).show();
-
-	}
-
-	private void deleteSession(String session_name){
-
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		db.delete(TABLE, NAME + "='" + session_name + "'", null);
-
-		File dir = getFilesDir();
-		File image = new File(dir, session_name + ".png");
-		File audio = new File(dir, session_name + ".wav");
-		image.delete();
-		audio.delete();
-
-		showSessions(getSessions());
 
 	}
 
@@ -405,12 +379,63 @@ public class MainActivity extends ActionBarActivity {
 
 		}	
 	}
-	
-	private void startModifyActivity(String session_name, String data, String time, byte[] x, byte[] y, byte[] z, int size, boolean xCheck, boolean yCheck, boolean zCheck, int seekValue){
+
+	/**
+	 * Play the session calling the PlayActivity.
+	 * @param name The name of the session to play.
+	 */
+	private void startSession(String name){
+		Intent playIntent = new Intent(this, PlayActivity.class);
+		playIntent.putExtra("session_name", name);
+		playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
+		startActivity(playIntent);
+	}
+
+	/**
+	 * This method is called when "Elimina" button is pressed and it delete the song.
+	 * @param session_name The name of the song to delete.
+	 */
+	private void deleteSession(String session_name){
+
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		db.delete(TABLE, NAME + "='" + session_name + "'", null);
+
+		File dir = getFilesDir();
+		File image = new File(dir, session_name + ".png");
+		File audio = new File(dir, session_name + ".wav");
+		image.delete();
+		audio.delete();
+
+	}
+
+
+	/**
+	 * This method is called when "Modifica" button is pressed and it call ModifyActivity.
+	 * @param name The name of the session to modify.
+	 */
+	private void modifySession(String name){
+		byte[] x,y,z;
+		int size, seekValue;
+		Cursor cursor;
+		boolean xCheck, yCheck, zCheck;
+
+		cursor = getArraysData(name);
+		cursor.moveToFirst();
+		x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
+		y = cursor.getBlob(cursor.getColumnIndex(Y_VALUES));
+		z = cursor.getBlob(cursor.getColumnIndex(Z_VALUES));
+		size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
+		String data = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
+		String time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
+		xCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(X_CHECK)));
+		yCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Y_CHECK)));
+		zCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Z_CHECK)));
+		seekValue = cursor.getInt(cursor.getColumnIndex(UPSAMPL));
+
 		Intent modifyIntent = new Intent(this, ModifyActivity.class);
 		modifyIntent.putExtra(FIRST_DATE, data);
 		modifyIntent.putExtra(FIRST_TIME, time);
-		modifyIntent.putExtra(NAME, session_name);
+		modifyIntent.putExtra(NAME,name);
 		modifyIntent.putExtra(X_VALUES, x);
 		modifyIntent.putExtra(Y_VALUES, y);
 		modifyIntent.putExtra(Z_VALUES, z);
@@ -422,17 +447,136 @@ public class MainActivity extends ActionBarActivity {
 
 		startActivity(modifyIntent);
 	}
-	
-	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
-		Intent createIntent = new Intent(this, CreateActivity.class);
-		createIntent.putExtra(RecordService.X_VALUE, x);
-		createIntent.putExtra(RecordService.Y_VALUE, y);
-		createIntent.putExtra(RecordService.Z_VALUE, z);
-		createIntent.putExtra(RecordService.SIZE, size);
 
-		startActivity(createIntent);
+
+	/**
+	 * This method duplicates the song and the image associated with it. Return true if duplication is successful, 
+	 * else return false if an error is occurred.
+	 * @param name The name of the song (without ".wav")
+	 * @return true if duplication is successful, false otherwise.
+	 */
+	private boolean duplicateSession(String name){
+		byte[] x,y,z;
+		int size, seekValue, rate;
+		Cursor cursor;
+		boolean xCheck, yCheck, zCheck;
+		int fileIndex = 2;
+
+		//read information from the database
+		cursor = getArraysData(name);
+		cursor.moveToFirst();
+		x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
+		y = cursor.getBlob(cursor.getColumnIndex(Y_VALUES));
+		z = cursor.getBlob(cursor.getColumnIndex(Z_VALUES));
+		size = cursor.getInt(cursor.getColumnIndex(DATA_SIZE));
+		xCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(X_CHECK)));
+		yCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Y_CHECK)));
+		zCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Z_CHECK)));
+		seekValue = cursor.getInt(cursor.getColumnIndex(UPSAMPL));
+		rate = cursor.getInt(cursor.getColumnIndex(RATE));
+
+		try{
+			//duplicate the song
+			File inputFile = new File(folder + name + ".wav");
+			FileInputStream input = new FileInputStream(inputFile);
+
+			while(true){
+				File outputFile = new File(folder + name + "-" + fileIndex +".wav");
+				if (!outputFile.exists())
+					break;
+				else
+					fileIndex++;
+			}
+			FileOutputStream output = openFileOutput(name + "-" + fileIndex +".wav", MODE_PRIVATE);
+
+			byte[] buf = new byte[(int)inputFile.length()]; //numbers of bytes of the song + 44 bytes for the headers
+			int len;
+			while ((len = input.read(buf)) > 0) {
+				output.write(buf, 0, len);
+			}
+
+
+			input.close();
+			output.close();
+
+			//duplicate the image
+			inputFile = new File(folder + name + ".png");
+			input = new FileInputStream(inputFile);
+			output = openFileOutput(name + "-" + fileIndex +".png", MODE_PRIVATE);
+
+
+			buf = new byte[(int)inputFile.length()];
+			while ((len = input.read(buf)) > 0) {
+				output.write(buf, 0, len);
+			}
+
+			input.close();
+			output.close();
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(this, "Non ho copiato i file", Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
+		final Calendar c = Calendar.getInstance();
+		int yy = c.get(Calendar.YEAR);
+		int mm = c.get(Calendar.MONTH);
+		int dd = c.get(Calendar.DAY_OF_MONTH);
+		int hh = c.get(Calendar.HOUR_OF_DAY);
+		int mn = c.get(Calendar.MINUTE);
+		String months = "";
+		String days = "";
+		String minutes = "";
+		String date = "";
+		String time = "";
+
+		if(dd < 10)
+			days = "0" + dd; 
+		else
+			days = "" + dd;
+		if(mm < 10)
+			months = "0" + (mm + 1); 
+		else
+			months = "" + (mm + 1);
+		if(mn < 10)
+			minutes = "0" + mn; 
+		else
+			minutes = "" + mn;
+
+		date = days + "/" + months + "/" + yy;
+		time = hh + ":" + minutes;
+
+
+		//insert the data in the database
+		DBOpenHelper oh = new DBOpenHelper(getApplicationContext());
+		SQLiteDatabase db = oh.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(DBOpenHelper.NAME, name + "-" + fileIndex);
+		values.put(DBOpenHelper.FIRST_DATE, date);
+		values.put(DBOpenHelper.FIRST_TIME, time);
+		values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
+		values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
+		values.put(DBOpenHelper.RATE, rate);       
+		values.put(DBOpenHelper.UPSAMPL, seekValue);       //add seekbar value
+		values.put(DBOpenHelper.X_CHECK, xCheck);
+		values.put(DBOpenHelper.Y_CHECK, yCheck);
+		values.put(DBOpenHelper.Z_CHECK, zCheck);
+		values.put(DBOpenHelper.X_VALUES, x);          //add the three byte array to the database
+		values.put(DBOpenHelper.Y_VALUES, y);
+		values.put(DBOpenHelper.Z_VALUES, z);
+		values.put(DBOpenHelper.DATA_SIZE, size);        //add the number samples to the database
+		db.insert(DBOpenHelper.TABLE, null, values);
+
+		return true;
 	}
-	
+
+	/**
+	 * Change the integer in boolean (0 = false, any other numbers = true)
+	 * @param bool the integer to convert
+	 * @return true if the parameter is different from 0, else otherwise.
+	 */
 	private boolean intToBoolean(int bool){
 		if(bool != 0)
 			return true;
