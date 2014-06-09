@@ -10,7 +10,6 @@ import android.widget.RemoteViews;
 public class ChronometerWidgetIntentReceiver extends BroadcastReceiver {
 
 
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if(intent.getAction().equals(ChronometerWidgetProvider.ACTION_WIDGET_START)){
@@ -36,7 +35,7 @@ public class ChronometerWidgetIntentReceiver extends BroadcastReceiver {
 	private void stopChronometer(Context context) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_chronometer);
 		remoteViews.setTextColor(R.id.chronometer, Color.RED);
-		remoteViews.setChronometer(R.id.chronometer, SystemClock.currentThreadTimeMillis() , null, false);
+		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
 		
 		//REMEMBER TO ALWAYS REFRESH YOUR BUTTON CLICK LISTENERS!!!
 		remoteViews.setOnClickPendingIntent(R.id.start_button, ChronometerWidgetProvider.startButtonPendingIntent(context));
