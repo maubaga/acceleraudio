@@ -161,16 +161,14 @@ public class RecordActivity extends ActionBarActivity{
 			if (getResources().getString(R.string.duration4).equals(pref_maxRec))
 				maxRecordTime = 300 * 1000;
 			
+			if (getResources().getString(R.string.sample_rate0).equals(pref_rate))
+				rate = 0;
 			if (getResources().getString(R.string.sample_rate1).equals(pref_rate))
 				rate = 1;
 			if (getResources().getString(R.string.sample_rate2).equals(pref_rate))
 				rate = 2;
-			if (getResources().getString(R.string.sample_rate4).equals(pref_rate))
-				rate = 4;
-			if (getResources().getString(R.string.sample_rate6).equals(pref_rate))
-				rate = 6;
-			if (getResources().getString(R.string.sample_rate8).equals(pref_rate))
-				rate = 8;
+			if (getResources().getString(R.string.sample_rate3).equals(pref_rate))
+				rate = 3;
 			
 			return rootView;
 		}

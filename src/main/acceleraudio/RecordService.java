@@ -55,11 +55,28 @@ public class RecordService extends IntentService  implements SensorEventListener
 			}
 			else{                               //is the first time than I have to create the sensorManager and the RecordContainer
 				record = new RecordContainer();
-
-				rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_NORMAL);
+				
+				switch(intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_UI)){
+				
+				case 0:
+					rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_NORMAL);
+					break;
+					
+				case 1:
+					rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_UI);
+					break;
+					
+				case 2:
+					rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_GAME);
+					break;
+					
+				case 3:
+					rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_FASTEST);
+					break;
+				}
 				mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 				mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-				mSensorManager.registerListener(this, mAccelerometer , 1000/rate);
+				mSensorManager.registerListener(this, mAccelerometer , rate);
 				
 				
 				
