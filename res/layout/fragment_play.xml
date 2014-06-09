@@ -21,17 +21,7 @@
         android:contentDescription="@string/session_img_description"
         android:paddingTop="8dp"
         android:scaleType="fitCenter" />
-    
-    <ImageView
-        android:id="@+id/loop"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:paddingTop="8dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/loop"
-        android:clickable="true" />
-    
-    
+
     <LinearLayout
         android:id="@+id/progseek"
         android:layout_width="fill_parent"
@@ -39,14 +29,21 @@
         android:orientation="horizontal"
         android:paddingTop="8dp" >
         
+        <Chronometer
+        android:id="@+id/chrono"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:scaleType="fitCenter"
+        android:textSize="38sp" />
+
         <SeekBar
             android:id="@+id/progress_song"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
-        
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/buttons"
@@ -55,20 +52,21 @@
         android:orientation="horizontal"
         android:paddingTop="8dp" >
 
-        <Chronometer
-            android:id="@+id/chrono"
+        <ImageView
+            android:id="@+id/loop"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:layout_gravity="bottom"
-            android:layout_weight="2"
-            android:gravity="center"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="1"
+            android:clickable="true"
             android:scaleType="fitCenter"
-            android:textSize="38sp" />
+            android:src="@drawable/loop2" />
 
         <ImageButton
             android:id="@+id/play"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="68dp"
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#00000000"
@@ -80,26 +78,27 @@
         <ImageButton
             android:id="@+id/pause"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="68dp"
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#00000000"
             android:contentDescription="@string/play_img_description"
             android:onClick="pause"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_pause"
+            android:src="@drawable/media_pause2"
             android:visibility="gone" />
 
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:layout_gravity="bottom"
             android:layout_weight="1"
+            android:layout_marginBottom="6dp"
             android:background="#00000000"
             android:contentDescription="@string/play_img_description"
             android:onClick="stop"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_stop" />
+            android:src="@drawable/media_stop2" />
     </LinearLayout>
 
 </LinearLayout>
