@@ -179,7 +179,9 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
-        android:padding="70dp" >
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp"
+        android:paddingBottom="90dp" >
 
         <ImageButton
             android:layout_width="match_parent"
@@ -189,7 +191,7 @@
             android:contentDescription="@string/record_img_description"
             android:onClick="startRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/mic" />
+            android:src="@drawable/mic2" />
     </LinearLayout>
 
     <LinearLayout
