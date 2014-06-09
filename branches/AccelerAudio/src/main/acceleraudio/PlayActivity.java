@@ -13,12 +13,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 public class PlayActivity extends ActionBarActivity {
 	public static final String AUTOPLAY = "autoplay";
@@ -104,9 +103,6 @@ public class PlayActivity extends ActionBarActivity {
 
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
-
-			TextView textView = (TextView) rootView.findViewById(R.id.session_name);			
-			textView.setText(session_name.toUpperCase());
 			
 			ImageView loop = (ImageView) rootView.findViewById(R.id.loop);
 			final ImageView final_loop = loop;

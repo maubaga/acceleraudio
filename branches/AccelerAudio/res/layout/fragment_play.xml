@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textAllCaps="true" />
 
     <ImageView
         android:id="@+id/thumbnail"
@@ -59,6 +60,7 @@
             android:layout_gravity="bottom"
             android:layout_marginBottom="6dp"
             android:layout_weight="1"
+            android:contentDescription="@string/play_img_description"
             android:clickable="true"
             android:scaleType="fitCenter"
             android:src="@drawable/loop2" />
