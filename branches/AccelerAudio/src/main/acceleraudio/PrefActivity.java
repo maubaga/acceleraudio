@@ -222,28 +222,23 @@ public class PrefActivity extends ActionBarActivity {
 						switch(which){
 						
 						case 0:
+							rate_value = getResources().getString(R.string.sample_rate0);
+							sample_rate_values.setText(R.string.sample_rate0);
+							break;
+							
+						case 1:
 							rate_value = getResources().getString(R.string.sample_rate1);
 							sample_rate_values.setText(R.string.sample_rate1);
 							break;
 							
-						case 1:
+						case 2:
 							rate_value = getResources().getString(R.string.sample_rate2);
 							sample_rate_values.setText(R.string.sample_rate2);
 							break;
 							
-						case 2:
-							rate_value = getResources().getString(R.string.sample_rate4);
-							sample_rate_values.setText(R.string.sample_rate4);
-							break;
-							
 						case 3:
-							rate_value = getResources().getString(R.string.sample_rate6);
-							sample_rate_values.setText(R.string.sample_rate6);
-							break;
-							
-						case 4:
-							rate_value = getResources().getString(R.string.sample_rate8);
-							sample_rate_values.setText(R.string.sample_rate8);
+							rate_value = getResources().getString(R.string.sample_rate3);
+							sample_rate_values.setText(R.string.sample_rate3);
 							break;
 						
 						}
