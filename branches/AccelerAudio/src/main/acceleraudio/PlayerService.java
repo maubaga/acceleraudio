@@ -81,8 +81,9 @@ public class PlayerService extends Service{
 		
 		// Runs this service in the foreground, 
 		// supplying the ongoing notification to be shown to the user
-		Bitmap icon = BitmapFactory.decodeFile(sessionInPlayNow.substring(0, sessionInPlayNow.length()-4)+".png");
-		//TODO provare a vedere in debug il valore della stringa passata a decode file della Bitmap
+		String pathImage = sessionInPlayNow.substring(0, sessionInPlayNow.length()-4);
+		Bitmap icon = BitmapFactory.decodeFile(pathImage+".png");
+		//TODO provare su smartphone
 		Intent intent = new Intent(this, PlayActivity.class); 
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0); 
