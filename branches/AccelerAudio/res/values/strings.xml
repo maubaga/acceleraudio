@@ -43,6 +43,7 @@
     <!-- ****** PLAYACTIVITY ****** -->
 
     <string name="title_activity_play">Lettore musicale</string>
+    <string name="loop_img_description">Loop/No loop</string>
 
     <!-- ****** PREFACTIVITY ****** -->
 
