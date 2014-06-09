@@ -2,11 +2,10 @@
 <resources>
     
     <array name="rates">
+        <item>@string/sample_rate0</item>
         <item>@string/sample_rate1</item>
         <item>@string/sample_rate2</item>
-        <item>@string/sample_rate4</item>
-        <item>@string/sample_rate6</item>
-        <item>@string/sample_rate8</item>
+        <item>@string/sample_rate3</item>
     </array>
     
     <array name="durations">

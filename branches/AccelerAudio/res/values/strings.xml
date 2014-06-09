@@ -51,11 +51,10 @@
     <string name="sample_rate">Frequenza di campionamento</string>
     <string name="max_duration">Durata massima</string>
     <string name="amount_upsampling">Parametro di interpolazione</string>
-    <string name="sample_rate1">1 campione/s</string>
-    <string name="sample_rate2">2 campioni/s</string>
-    <string name="sample_rate4">4 campioni/s</string>
-    <string name="sample_rate6">6 campioni/s</string>
-    <string name="sample_rate8">8 campioni/s</string>
+    <string name="sample_rate0">Lenta</string>
+    <string name="sample_rate1">Normale</string>
+    <string name="sample_rate2">Veloce</string>
+    <string name="sample_rate3">Massima</string>
     <string name="duration1">30 secondi</string>
     <string name="duration2">1 minuto</string>
     <string name="duration3">2 minuti</string>
