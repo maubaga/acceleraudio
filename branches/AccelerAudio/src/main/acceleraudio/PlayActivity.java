@@ -109,17 +109,16 @@ public class PlayActivity extends ActionBarActivity {
 			textView.setText(session_name.toUpperCase());
 			
 			ImageView loop = (ImageView) rootView.findViewById(R.id.loop);
-			loop.setBackgroundColor(0xff00ff00);
 			final ImageView final_loop = loop;
 			loop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
 					if(isLoop){
 						isLoop = false;
-						final_loop.setBackgroundColor(0xffdc0918);
+						final_loop.setImageResource(R.drawable.noloop);
 					} else{
 						isLoop=true;
-						final_loop.setBackgroundColor(0xff00ff00);
+						final_loop.setImageResource(R.drawable.loop2);
 					}
 				}
 			});
