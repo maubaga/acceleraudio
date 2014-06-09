@@ -1,6 +1,8 @@
 package main.acceleraudio;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -8,6 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Chronometer;
 import android.widget.Toast;
 
@@ -65,6 +68,18 @@ public class RecordService extends IntentService  implements SensorEventListener
 				chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
 				chrono.start();
 				isStart = true;
+				
+				//notifica
+				Intent iNotif = new Intent(this, RecordActivity.class); 
+				iNotif.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
+				PendingIntent pi = PendingIntent.getActivity(this, 0, iNotif, 0); 
+				Notification notification = new NotificationCompat.Builder(getApplicationContext())
+				.setContentTitle("Stai registrando")
+		        .setSmallIcon(R.drawable.ic_action_mic)
+				.setContentIntent(pi) 
+				.build();
+				final int notificationID = 102584; //ID for this notification 
+				startForeground(notificationID, notification);
 			}			
 		}
 		if(PAUSE.equals(intent.getAction())){
