@@ -74,7 +74,7 @@ public class ModifyActivity extends ActionBarActivity {
 	//all file parameters
 	private byte bits_per_sample = 8; // 8, 16...
 	private byte num_channels = 1; // 1 = mono, 2 = stereo
-	private long sample_rate = 8000; // 8000, 44100...
+	private int sample_rate = 8000; // 8000, 44100...
 
 	//database
 	private DBOpenHelper openHelper;
@@ -278,6 +278,8 @@ public class ModifyActivity extends ActionBarActivity {
 				session_name = session_name.substring(0, 12);
 			}
 			
+			stopPreview(null); //if the preview still playing I stop it
+			
 			File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
 			if(fileCheck.exists() && !session_name.equals(oldSessionName)){
 
@@ -290,6 +292,8 @@ public class ModifyActivity extends ActionBarActivity {
 
 			if(isCreated){
 
+				int duration = size * (et_upsampl.getProgress() + 1) / sample_rate; //duration of the sound in seconds
+				
 				openHelper = new DBOpenHelper(this);
 				SQLiteDatabase db = openHelper.getWritableDatabase();
 
@@ -297,6 +301,7 @@ public class ModifyActivity extends ActionBarActivity {
 				values.put(DBOpenHelper.NAME, session_name);
 				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
 				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
+				values.put(DBOpenHelper.DURATION, duration); 
 				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
 				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
 				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());

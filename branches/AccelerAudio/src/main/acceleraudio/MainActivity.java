@@ -374,7 +374,7 @@ public class MainActivity extends ActionBarActivity {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
 		cursor.moveToFirst();
-		String duration = cursor.getString(cursor.getColumnIndex(DURATION));
+		int duration = cursor.getInt(cursor.getColumnIndex(DURATION));
 		Intent playIntent = new Intent(this, PlayActivity.class);
 		playIntent.putExtra(PlayActivity.DURATION, duration);
 		playIntent.putExtra("session_name", name);

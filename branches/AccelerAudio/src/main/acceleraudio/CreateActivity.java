@@ -295,8 +295,9 @@ public class CreateActivity extends ActionBarActivity {
 			if(session_name.length() > 12){
 				session_name = session_name.substring(0, 12);
 			}
+			
 
-
+			stopPreview(null); //if the preview still playing I stop it
 
 			File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
 			if(fileCheck.exists()){
@@ -572,8 +573,7 @@ public class CreateActivity extends ActionBarActivity {
 			playIntent.putExtra("session_name", session_name);
 			playIntent.putExtra(PlayActivity.AUTOPLAY, false); //the song doesn't start automatically
 
-			int durationSeconds = size * (et_upsampl.getProgress() + 1) / sample_rate; //duration of the sound in seconds
-			String duration = secondToTime(durationSeconds);
+			int duration = size * (et_upsampl.getProgress() + 1) / sample_rate; //duration of the sound in seconds
 
 			oh = new DBOpenHelper(this);
 			SQLiteDatabase db = oh.getWritableDatabase();
@@ -604,24 +604,5 @@ public class CreateActivity extends ActionBarActivity {
 			Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
 			return false;
 		}
-	}
-	
-	private String secondToTime(int totalSeconds){
-		int minutes = totalSeconds / 60;
-		int seconds = totalSeconds % 60;
-		String secondString = "";
-		String minuteString = "";
-		
-		if(seconds < 10)
-			secondString = "0" + seconds;
-		else 
-			secondString = seconds +"";
-		
-		if(minutes < 10)
-			minuteString = "0" + minutes;
-		else 
-			minuteString = minutes +"";
-		
-		return minuteString + ":" + secondString;
 	}
 }
