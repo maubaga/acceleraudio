@@ -104,7 +104,7 @@ public class CreateActivity extends ActionBarActivity {
 		z = intent.getByteArrayExtra(RecordService.Z_VALUE);
 		size = intent.getIntExtra(RecordService.SIZE, 0);
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		stopPreview(null);
@@ -281,7 +281,7 @@ public class CreateActivity extends ActionBarActivity {
 				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
 				return false;
 			}
-			
+
 			if(session_name.substring(0, 1).equals(" ")){
 				Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
 				return false;
@@ -295,8 +295,8 @@ public class CreateActivity extends ActionBarActivity {
 			if(session_name.length() > 12){
 				session_name = session_name.substring(0, 12);
 			}
-			
-			
+
+
 
 			File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
 			if(fileCheck.exists()){
@@ -572,6 +572,19 @@ public class CreateActivity extends ActionBarActivity {
 			playIntent.putExtra("session_name", session_name);
 			playIntent.putExtra(PlayActivity.AUTOPLAY, false); //the song doesn't start automatically
 
+			int duration = 5;
+			String appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/";
+			try{
+				mp = new MediaPlayer();
+				mp.setDataSource(appFileDirectory + session_name + ".wav");
+				mp.prepare();
+				duration = mp.getDuration();
+				mp = null;
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+
 			oh = new DBOpenHelper(this);
 			SQLiteDatabase db = oh.getWritableDatabase();
 			ContentValues values = new ContentValues();
@@ -580,6 +593,7 @@ public class CreateActivity extends ActionBarActivity {
 			values.put(DBOpenHelper.FIRST_TIME, time);
 			values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
 			values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
+			values.put(DBOpenHelper.DURATION, duration);   
 			values.put(DBOpenHelper.RATE, rate);       
 			values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);       //add seekbar value
 			values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
@@ -591,6 +605,7 @@ public class CreateActivity extends ActionBarActivity {
 			values.put(DBOpenHelper.DATA_SIZE, size);        //add the number samples to the database
 			db.insert(DBOpenHelper.TABLE, null, values);
 
+			playIntent.putExtra(PlayActivity.DURATION, duration);
 			startActivity(playIntent);
 			finish();
 			return true;
