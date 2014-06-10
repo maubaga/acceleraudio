@@ -63,9 +63,9 @@ public class CreateActivity extends ActionBarActivity {
 	private static int size;
 
 	//all file parameters
-	private byte bits_per_sample = 8; // 8, 16...
-	private byte num_channels = 1; // 1 = mono, 2 = stereo
-	private long sample_rate = 8000; // 8000, 44100...
+	private final byte bits_per_sample = 8; // 8, 16...
+	private final byte num_channels = 1; // 1 = mono, 2 = stereo
+	private final int sample_rate = 8000; // 8000, 44100...
 
 	//database
 	private DBOpenHelper oh;
@@ -572,18 +572,8 @@ public class CreateActivity extends ActionBarActivity {
 			playIntent.putExtra("session_name", session_name);
 			playIntent.putExtra(PlayActivity.AUTOPLAY, false); //the song doesn't start automatically
 
-			int duration = 5;
-			String appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/";
-			try{
-				mp = new MediaPlayer();
-				mp.setDataSource(appFileDirectory + session_name + ".wav");
-				mp.prepare();
-				duration = mp.getDuration();
-				mp = null;
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
+			int durationSeconds = size * (et_upsampl.getProgress() + 1) / sample_rate; //duration of the sound in seconds
+			String duration = secondToTime(durationSeconds);
 
 			oh = new DBOpenHelper(this);
 			SQLiteDatabase db = oh.getWritableDatabase();
@@ -614,5 +604,24 @@ public class CreateActivity extends ActionBarActivity {
 			Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
 			return false;
 		}
+	}
+	
+	private String secondToTime(int totalSeconds){
+		int minutes = totalSeconds / 60;
+		int seconds = totalSeconds % 60;
+		String secondString = "";
+		String minuteString = "";
+		
+		if(seconds < 10)
+			secondString = "0" + seconds;
+		else 
+			secondString = seconds +"";
+		
+		if(minutes < 10)
+			minuteString = "0" + minutes;
+		else 
+			minuteString = minutes +"";
+		
+		return minuteString + ":" + secondString;
 	}
 }

@@ -50,7 +50,22 @@ public class MainActivity extends ActionBarActivity {
 		dbHelper = new DBOpenHelper(this);
 		Cursor cursor = getSessions();
 		showSessions(cursor);
+	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		if (!resumeHasRun) {
+			resumeHasRun = true;
+			return;
+		} else{
 
+			folder = getApplicationContext().getFilesDir().getPath() + "/";
+
+			dbHelper = new DBOpenHelper(this);
+			Cursor cursor = getSessions();
+			showSessions(cursor);
+		}	
 	}
 
 	@Override 
@@ -348,23 +363,6 @@ public class MainActivity extends ActionBarActivity {
 
 	}
 
-	@Override
-	protected void onResume(){
-
-		super.onResume();
-		if (!resumeHasRun) {
-			resumeHasRun = true;
-			return;
-		} else{
-
-			folder = getApplicationContext().getFilesDir().getPath() + "/";
-
-			dbHelper = new DBOpenHelper(this);
-			Cursor cursor = getSessions();
-			showSessions(cursor);
-
-		}	
-	}
 
 	/**
 	 * Play the session calling the PlayActivity.
@@ -376,7 +374,7 @@ public class MainActivity extends ActionBarActivity {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
 		cursor.moveToFirst();
-		int duration = cursor.getInt(cursor.getColumnIndex(DURATION));
+		String duration = cursor.getString(cursor.getColumnIndex(DURATION));
 		Intent playIntent = new Intent(this, PlayActivity.class);
 		playIntent.putExtra(PlayActivity.DURATION, duration);
 		playIntent.putExtra("session_name", name);

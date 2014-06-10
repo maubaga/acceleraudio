@@ -38,7 +38,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 					FIRST_TIME + " text not null, " +//vedere formato su doc SQLite
 					LAST_MODIFY_DATE + " text not null, " +
 					LAST_MODIFY_TIME + " text not null, " +
-					DURATION + " integer, " +
+					DURATION + " text, " +
 					RATE + " integer, " +
 					UPSAMPL + " integer, " +
 					X_CHECK + " boolean, " +

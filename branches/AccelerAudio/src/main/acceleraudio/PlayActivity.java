@@ -22,6 +22,7 @@ import android.widget.TextView;
 public class PlayActivity extends ActionBarActivity {
 	public static final String AUTOPLAY = "autoplay";
 	public static final String DURATION = "session_duration";
+	public static final String SESSION_NAME = "session_name";
 	private static Intent intent;
 	private static String session_name;
 	private static boolean isAutoplayEnabled;
@@ -30,7 +31,7 @@ public class PlayActivity extends ActionBarActivity {
 	private static Chronometer chrono;
 	private static boolean isPaused = false;
 	private static boolean isLoop = true;
-	private static int duration;
+	private static String duration;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -61,9 +62,9 @@ public class PlayActivity extends ActionBarActivity {
 
 		intent = getIntent();
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
-		session_name = intent.getStringExtra("session_name");
+		session_name = intent.getStringExtra(SESSION_NAME);
 		isAutoplayEnabled = intent.getBooleanExtra(AUTOPLAY, false);
-		duration = intent.getIntExtra(DURATION, -1);
+		duration = intent.getStringExtra(DURATION);
 	}
 
 	@Override
@@ -110,7 +111,7 @@ public class PlayActivity extends ActionBarActivity {
 			name.setText(session_name);
 			
 			TextView duration_text = (TextView) rootView.findViewById(R.id.duration);
-			duration_text.setText("" + duration);
+			duration_text.setText(duration);
 			
 //			final ImageView final_loop = loop;
 //			loop.setOnClickListener(new OnClickListener() {
