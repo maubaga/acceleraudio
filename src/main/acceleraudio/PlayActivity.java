@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -35,9 +34,7 @@ public class PlayActivity extends ActionBarActivity {
 		public void onReceive(Context context, Intent intent) {
 			chrono.setBase(SystemClock.elapsedRealtime());
 			chrono_time = 0;
-			if(isLoop)
-				play(null);
-			else
+			if(!isLoop)
 				stop(null);
 
 		}
@@ -104,20 +101,23 @@ public class PlayActivity extends ActionBarActivity {
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
 			
-			ImageView loop = (ImageView) rootView.findViewById(R.id.loop);
-			final ImageView final_loop = loop;
-			loop.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					if(isLoop){
-						isLoop = false;
-						final_loop.setImageResource(R.drawable.noloop);
-					} else{
-						isLoop=true;
-						final_loop.setImageResource(R.drawable.loop2);
-					}
-				}
-			});
+//			ImageView loop = (ImageView) rootView.findViewById(R.id.loop);
+//			final ImageView final_loop = loop;
+//			loop.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View arg0) {
+//					if(isLoop){
+//						isLoop = false;
+//						final_loop.setImageResource(R.drawable.noloop);
+//						//TODO PASSARE IN BACKGROUD
+//						//background
+//						
+//					} else{
+//						isLoop=true;
+//						final_loop.setImageResource(R.drawable.loop2);
+//					}
+//				}
+//			});
 
 			return rootView;
 		}
@@ -171,6 +171,24 @@ public class PlayActivity extends ActionBarActivity {
 		//background
 		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 		stopService(stopIntent);
+	}
+	
+	public void setLoop(View view) {
+
+		ImageButton loop = (ImageButton)findViewById(R.id.loop);
+		if(isLoop){
+			isLoop = false;
+			loop.setImageResource(R.drawable.noloop);
+			//TODO PASSARE IN BACKGROUD
+			//background
+			Intent loopIntent = new Intent(getApplicationContext(),PlayerService.class); 
+			loopIntent.setAction(PlayerService.SET_LOOP);
+			startService(loopIntent);
+			
+		} else{
+			isLoop = true;
+			loop.setImageResource(R.drawable.loop2);
+		}
 	}
 
 	@Override
