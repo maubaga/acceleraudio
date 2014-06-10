@@ -17,16 +17,20 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class PlayActivity extends ActionBarActivity {
 	public static final String AUTOPLAY = "autoplay";
+	public static final String DURATION = "session_duration";
 	private static Intent intent;
 	private static String session_name;
 	private static boolean isAutoplayEnabled;
 	private static String appFileDirectory;
 	private long chrono_time = 0;
 	private static Chronometer chrono;
+	private static boolean isPaused = false;
 	private static boolean isLoop = true;
+	private static int duration;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -59,6 +63,7 @@ public class PlayActivity extends ActionBarActivity {
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
 		session_name = intent.getStringExtra("session_name");
 		isAutoplayEnabled = intent.getBooleanExtra(AUTOPLAY, false);
+		duration = intent.getIntExtra(DURATION, -1);
 	}
 
 	@Override
@@ -101,7 +106,12 @@ public class PlayActivity extends ActionBarActivity {
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
 			
-//			ImageView loop = (ImageView) rootView.findViewById(R.id.loop);
+			TextView name = (TextView) rootView.findViewById(R.id.session_name);
+			name.setText(session_name);
+			
+			TextView duration_text = (TextView) rootView.findViewById(R.id.duration);
+			duration_text.setText("" + duration);
+			
 //			final ImageView final_loop = loop;
 //			loop.setOnClickListener(new OnClickListener() {
 //				@Override
@@ -140,6 +150,8 @@ public class PlayActivity extends ActionBarActivity {
 		startIntent.setAction(PlayerService.PLAY_START);
 		startIntent.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
 		startService(startIntent);
+		
+		isPaused = false;
 
 	}
 
@@ -155,6 +167,7 @@ public class PlayActivity extends ActionBarActivity {
 		Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
 		pauseIntent.setAction(PlayerService.PLAY_PAUSE);
 		startService(pauseIntent);
+		isPaused = true;
 	}
 
 	public void stop(View view) {
@@ -171,6 +184,7 @@ public class PlayActivity extends ActionBarActivity {
 		//background
 		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 		stopService(stopIntent);
+		finish();
 	}
 	
 	public void setLoop(View view) {
@@ -195,8 +209,9 @@ public class PlayActivity extends ActionBarActivity {
 	protected void onStart() {
 		super.onStart();
 		
-		if(isAutoplayEnabled)
+		if(isAutoplayEnabled){
 			play(null);
+		}
 	}
 	
 	@Override
