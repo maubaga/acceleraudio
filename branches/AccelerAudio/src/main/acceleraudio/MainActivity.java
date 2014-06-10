@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity {
 		String ORDER_BY = NAME + " ASC";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, null, null, null, null, ORDER_BY);
-		startManagingCursor(cursor);
+//		startManagingCursor(cursor);
 		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
 	}
@@ -112,7 +112,7 @@ public class MainActivity extends ActionBarActivity {
 		String WHERE = NAME + "= '" + songName + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
-		startManagingCursor(cursor);
+//		startManagingCursor(cursor);
 		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
 	}

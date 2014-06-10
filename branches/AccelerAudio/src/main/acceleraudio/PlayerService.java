@@ -18,12 +18,14 @@ public class PlayerService extends Service{
 	public static String PLAY_START = "play_start"; 
 	public static String PLAY_PAUSE = "play_pause";
 	public static String PLAY_STOP = "play_stop";
+	public static String SET_LOOP = "set_loop";
 	public static String PATH = "path_directory";
 	public static String NOTIFICATION = "main.acceleraudio.playerservice";
 	private String sessionToPlay;
 	private String sessionInPlayNow;
 	private MediaPlayer myPlayer = null; 
-	private boolean isPlaying = false; 
+	private boolean isPlaying = false;
+	private boolean isLoop = true;
 	private int pos = 0;
 
 	@Override 
@@ -44,6 +46,10 @@ public class PlayerService extends Service{
 		}
 		if(PLAY_STOP.equals(intent.getAction())){
 			stop();
+		}
+		
+		if(SET_LOOP.equals(intent.getAction())){
+			setLoop();
 		}
 		return Service.START_STICKY; 
 	}
@@ -67,9 +73,13 @@ public class PlayerService extends Service{
 				@Override
 				public void onCompletion(MediaPlayer m) {
 					Intent intent = new Intent(NOTIFICATION);
-					isPlaying = false;
 					pos = 0;
-					sendBroadcast(intent);					
+					isPlaying = false;
+					sendBroadcast(intent);	
+					if(isLoop)
+						play();
+					else
+						stopSelf();		//FIXME stop doesn't work
 				}
 			});
 			sessionInPlayNow = sessionToPlay.toString();
@@ -114,6 +124,15 @@ public class PlayerService extends Service{
 				myPlayer = null;
 				pos = 0;
 			} 
+		} 
+	} 
+	
+	private void setLoop() { 
+		if(isLoop){
+			isLoop = false;
+			
+		} else{
+			isLoop = true;
 		} 
 	} 
 

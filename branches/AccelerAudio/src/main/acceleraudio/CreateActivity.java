@@ -104,6 +104,12 @@ public class CreateActivity extends ActionBarActivity {
 		z = intent.getByteArrayExtra(RecordService.Z_VALUE);
 		size = intent.getIntExtra(RecordService.SIZE, 0);
 	}
+	
+	@Override
+	public void onBackPressed() {
+		stopPreview(null);
+		finish(); 
+	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -533,7 +539,7 @@ public class CreateActivity extends ActionBarActivity {
 				Toast.makeText(getBaseContext(),"prepare failed", Toast.LENGTH_SHORT).show();
 			}
 		}catch(Exception e){
-			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
 		}
 	}
 
@@ -552,7 +558,7 @@ public class CreateActivity extends ActionBarActivity {
 
 			}
 		}catch(Exception e){
-			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
 		}
 	}
 
