@@ -31,7 +31,7 @@ public class PlayActivity extends ActionBarActivity {
 	private static Chronometer chrono;
 	private static boolean isPaused = false;
 	private static boolean isLoop = true;
-	private static String duration;
+	private static int duration;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -64,7 +64,7 @@ public class PlayActivity extends ActionBarActivity {
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
 		session_name = intent.getStringExtra(SESSION_NAME);
 		isAutoplayEnabled = intent.getBooleanExtra(AUTOPLAY, false);
-		duration = intent.getStringExtra(DURATION);
+		duration = intent.getIntExtra(DURATION, -1);
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class PlayActivity extends ActionBarActivity {
 			name.setText(session_name);
 			
 			TextView duration_text = (TextView) rootView.findViewById(R.id.duration);
-			duration_text.setText(duration);
+			duration_text.setText(secondToTime(duration));
 			
 //			final ImageView final_loop = loop;
 //			loop.setOnClickListener(new OnClickListener() {
@@ -234,5 +234,25 @@ public class PlayActivity extends ActionBarActivity {
 	    savedInstanceState.putLong("chronometer_time", chrono_time);
 	    super.onSaveInstanceState(savedInstanceState);
 	}
-
+	
+	
+	
+	public static String secondToTime(int totalSeconds){
+		int minutes = totalSeconds / 60;
+		int seconds = totalSeconds % 60;
+		String secondString = "";
+		String minuteString = "";
+		
+		if(seconds < 10)
+			secondString = "0" + seconds;
+		else 
+			secondString = seconds +"";
+		
+		if(minutes < 10)
+			minuteString = "0" + minutes;
+		else 
+			minuteString = minutes +"";
+		
+		return minuteString + ":" + secondString;
+	}
 }
