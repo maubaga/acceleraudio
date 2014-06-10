@@ -1,20 +1,6 @@
 package main.acceleraudio;
 
-import static main.acceleraudio.DBOpenHelper.DATA_SIZE;
-import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
-import static main.acceleraudio.DBOpenHelper.FIRST_TIME;
-import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
-import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_TIME;
-import static main.acceleraudio.DBOpenHelper.NAME;
-import static main.acceleraudio.DBOpenHelper.RATE;
-import static main.acceleraudio.DBOpenHelper.TABLE;
-import static main.acceleraudio.DBOpenHelper.UPSAMPL;
-import static main.acceleraudio.DBOpenHelper.X_CHECK;
-import static main.acceleraudio.DBOpenHelper.X_VALUES;
-import static main.acceleraudio.DBOpenHelper.Y_CHECK;
-import static main.acceleraudio.DBOpenHelper.Y_VALUES;
-import static main.acceleraudio.DBOpenHelper.Z_CHECK;
-import static main.acceleraudio.DBOpenHelper.Z_VALUES;
+import static main.acceleraudio.DBOpenHelper.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -385,7 +371,14 @@ public class MainActivity extends ActionBarActivity {
 	 * @param name The name of the session to play.
 	 */
 	private void startSession(String name){
+		String[] FROM = { NAME, DURATION};
+		String WHERE = NAME + " = '" + name +"'";
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
+		cursor.moveToFirst();
+		int duration = cursor.getInt(cursor.getColumnIndex(DURATION));
 		Intent playIntent = new Intent(this, PlayActivity.class);
+		playIntent.putExtra(PlayActivity.DURATION, duration);
 		playIntent.putExtra("session_name", name);
 		playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
 		startActivity(playIntent);

@@ -14,6 +14,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 	public static final String FIRST_TIME = "ora";
 	public static final String LAST_MODIFY_DATE = "ultima_modifica_data";
 	public static final String LAST_MODIFY_TIME = "ultima_modifica_ora";
+	public static final String DURATION = "duration";
 	public static final String RATE = "bit_rate";
 	public static final String UPSAMPL = "interpolazione";
 	public static final String X_CHECK = "asse_x";
@@ -37,6 +38,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 					FIRST_TIME + " text not null, " +//vedere formato su doc SQLite
 					LAST_MODIFY_DATE + " text not null, " +
 					LAST_MODIFY_TIME + " text not null, " +
+					DURATION + " integer, " +
 					RATE + " integer, " +
 					UPSAMPL + " integer, " +
 					X_CHECK + " boolean, " +

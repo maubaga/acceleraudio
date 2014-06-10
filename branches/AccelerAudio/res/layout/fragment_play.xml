@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textAllCaps="true" />
+        android:textAllCaps="true"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/thumbnail"
@@ -29,15 +29,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="8dp" >
-        
+
         <Chronometer
-        android:id="@+id/chrono"
-        android:layout_width="100dp"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom"
-        android:gravity="center"
-        android:scaleType="fitCenter"
-        android:textSize="38sp" />
+            android:id="@+id/chrono"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:scaleType="fitCenter"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp" />
 
         <SeekBar
             android:id="@+id/progress_song"
@@ -95,8 +101,8 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_gravity="bottom"
-            android:layout_weight="1"
             android:layout_marginBottom="6dp"
+            android:layout_weight="1"
             android:background="#00000000"
             android:contentDescription="@string/play_img_description"
             android:onClick="stop"
