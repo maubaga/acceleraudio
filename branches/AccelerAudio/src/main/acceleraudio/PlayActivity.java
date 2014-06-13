@@ -29,8 +29,8 @@ public class PlayActivity extends ActionBarActivity {
 	private static String appFileDirectory;
 	private long chrono_time = 0;
 	private static Chronometer chrono;
-	private static boolean isPaused = false;
-	private static boolean isLoop = true;
+	private static ImageButton loop;
+	private boolean isLoop = true;
 	private static int duration;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -56,7 +56,8 @@ public class PlayActivity extends ActionBarActivity {
 		}
 		else{
 			chrono_time = savedInstanceState.getLong("chronometer_time");
-			chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
+			chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);			
+			isLoop = savedInstanceState.getBoolean("is_loop_on");
 		}
 	
 
@@ -103,6 +104,7 @@ public class PlayActivity extends ActionBarActivity {
 					false);
 			
 			chrono = (Chronometer) rootView.findViewById(R.id.chrono);
+			loop = (ImageButton) rootView.findViewById(R.id.loop);
 
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
@@ -112,23 +114,6 @@ public class PlayActivity extends ActionBarActivity {
 			
 			TextView duration_text = (TextView) rootView.findViewById(R.id.duration);
 			duration_text.setText(secondToTime(duration));
-			
-//			final ImageView final_loop = loop;
-//			loop.setOnClickListener(new OnClickListener() {
-//				@Override
-//				public void onClick(View arg0) {
-//					if(isLoop){
-//						isLoop = false;
-//						final_loop.setImageResource(R.drawable.noloop);
-//						//TODO PASSARE IN BACKGROUD
-//						//background
-//						
-//					} else{
-//						isLoop=true;
-//						final_loop.setImageResource(R.drawable.loop2);
-//					}
-//				}
-//			});
 
 			return rootView;
 		}
@@ -151,8 +136,6 @@ public class PlayActivity extends ActionBarActivity {
 		startIntent.setAction(PlayerService.PLAY_START);
 		startIntent.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
 		startService(startIntent);
-		
-		isPaused = false;
 
 	}
 
@@ -168,7 +151,6 @@ public class PlayActivity extends ActionBarActivity {
 		Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
 		pauseIntent.setAction(PlayerService.PLAY_PAUSE);
 		startService(pauseIntent);
-		isPaused = true;
 	}
 
 	public void stop(View view) {
@@ -190,11 +172,9 @@ public class PlayActivity extends ActionBarActivity {
 	
 	public void setLoop(View view) {
 
-		ImageButton loop = (ImageButton)findViewById(R.id.loop);
 		if(isLoop){
 			isLoop = false;
 			loop.setImageResource(R.drawable.noloop);
-			//TODO PASSARE IN BACKGROUD
 			//background
 			Intent loopIntent = new Intent(getApplicationContext(),PlayerService.class); 
 			loopIntent.setAction(PlayerService.SET_LOOP);
@@ -219,6 +199,10 @@ public class PlayActivity extends ActionBarActivity {
 	protected void onResume() {
 		super.onResume();
 		registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
+		if(isLoop)
+			loop.setImageResource(R.drawable.loop2);
+		else
+			loop.setImageResource(R.drawable.noloop);
 	}
 	
 	@Override
@@ -232,6 +216,7 @@ public class PlayActivity extends ActionBarActivity {
 	    // Save myVar's value in saveInstanceState bundle
 		chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
 	    savedInstanceState.putLong("chronometer_time", chrono_time);
+	    savedInstanceState.putBoolean("is_loop_on", isLoop);
 	    super.onSaveInstanceState(savedInstanceState);
 	}
 	
@@ -255,4 +240,5 @@ public class PlayActivity extends ActionBarActivity {
 		
 		return minuteString + ":" + secondString;
 	}
+	
 }
