@@ -79,7 +79,7 @@ public class PlayerService extends Service{
 					if(isLoop)
 						play();
 					else
-						stopSelf();		//FIXME stop doesn't work
+						stopSelf();	
 				}
 			});
 			sessionInPlayNow = sessionToPlay.toString();
