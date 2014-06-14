@@ -1,6 +1,21 @@
 package main.acceleraudio;
 
-import static main.acceleraudio.DBOpenHelper.*;
+import static main.acceleraudio.DBOpenHelper.DATA_SIZE;
+import static main.acceleraudio.DBOpenHelper.DURATION;
+import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
+import static main.acceleraudio.DBOpenHelper.FIRST_TIME;
+import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_DATE;
+import static main.acceleraudio.DBOpenHelper.LAST_MODIFY_TIME;
+import static main.acceleraudio.DBOpenHelper.NAME;
+import static main.acceleraudio.DBOpenHelper.RATE;
+import static main.acceleraudio.DBOpenHelper.TABLE;
+import static main.acceleraudio.DBOpenHelper.UPSAMPL;
+import static main.acceleraudio.DBOpenHelper.X_CHECK;
+import static main.acceleraudio.DBOpenHelper.X_VALUES;
+import static main.acceleraudio.DBOpenHelper.Y_CHECK;
+import static main.acceleraudio.DBOpenHelper.Y_VALUES;
+import static main.acceleraudio.DBOpenHelper.Z_CHECK;
+import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +39,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -51,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
 		Cursor cursor = getSessions();
 		showSessions(cursor);
 	}
-	
+
 	@Override
 	protected void onResume(){
 		super.onResume();
@@ -102,7 +118,7 @@ public class MainActivity extends ActionBarActivity {
 		String ORDER_BY = NAME + " ASC";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, null, null, null, null, ORDER_BY);
-//		startManagingCursor(cursor);
+		//		startManagingCursor(cursor);
 		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
 	}
@@ -113,7 +129,7 @@ public class MainActivity extends ActionBarActivity {
 		String WHERE = NAME + "= '" + songName + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
-//		startManagingCursor(cursor);
+		//		startManagingCursor(cursor);
 		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
 	}
@@ -168,6 +184,7 @@ public class MainActivity extends ActionBarActivity {
 			params2.gravity = Gravity.CENTER_VERTICAL;
 			name.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()), 0, 0, 0);
 			name.setTextSize(16);
+			name.setMaxLines(1);
 			name.setText(cursor.getString(cursor.getColumnIndex(NAME)));
 			name.setLayoutParams(params2);
 			//			name.setBackgroundColor(0xffdc0918);
@@ -326,18 +343,20 @@ public class MainActivity extends ActionBarActivity {
 
 				switch(which){
 
-				case 0: //modify button
-					modifySession(name);
-
+				case 0: //rename button
+					renameSession(name);
 					break;
 
-				case 1: //duplicate button
+				case 1: //modify button
+					modifySession(name);
+					break;
+
+				case 2: //duplicate button
 					duplicateSession(name);
 					showSessions(getSessions());
-
 					break;
 
-				case 2: //delete button
+				case 3: //delete button
 					new AlertDialog.Builder(MainActivity.this)
 					.setTitle(name)
 					.setMessage(R.string.confirm_delete)
@@ -383,7 +402,54 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * This method is called when "Elimina" button is pressed and it delete the song.
+	 * This method is called when the "Rinomina" button is pressed and it deletes the song.
+	 * @param session_name The name of the song to delete.
+	 */
+	private void renameSession(String session_name){
+		
+		final String name = session_name;
+
+		final EditText input = new EditText(MainActivity.this);  
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT);
+		input.setLayoutParams(lp);
+		input.setText(name);
+
+		new AlertDialog.Builder(MainActivity.this)
+		.setTitle(R.string.rename)
+		.setView(input)
+		.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) { 
+							
+							String new_name = input.getText().toString();
+							
+							dbHelper = new DBOpenHelper(MainActivity.this);
+							SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+							ContentValues values = new ContentValues();
+							values.put(DBOpenHelper.NAME, new_name);
+							db.update(DBOpenHelper.TABLE, values, NAME +"= '" + name + "'",null);
+							File dir = getFilesDir();
+							File image = new File(dir, name + ".png");
+							File audio = new File(dir, name + ".wav");
+							image.renameTo(new File(dir, new_name + ".png"));
+							audio.renameTo(new File(dir, new_name + ".wav"));
+							showSessions(getSessions());
+							
+						}
+					})
+		.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) { 
+				return;
+			}
+		})
+		.show();
+
+	}
+
+	/**
+	 * This method is called when the "Elimina" button is pressed and it deletes the song.
 	 * @param session_name The name of the song to delete.
 	 */
 	private void deleteSession(String session_name){
@@ -401,7 +467,7 @@ public class MainActivity extends ActionBarActivity {
 
 
 	/**
-	 * This method is called when "Modifica" button is pressed and it call ModifyActivity.
+	 * This method is called when the "Modifica" button is pressed and it calls ModifyActivity.
 	 * @param name The name of the session to modify.
 	 */
 	private void modifySession(String name){
@@ -564,7 +630,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * Change the integer in boolean (0 = false, any other numbers = true)
+	 * Change from integer to boolean (0 = false, any other numbers = true)
 	 * @param bool the integer to convert
 	 * @return true if the parameter is different from 0, else otherwise.
 	 */
@@ -576,21 +642,21 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 
-	//	/**
-	//	 * A placeholder fragment containing a simple view.
-	//	 */
-	//	public static class PlaceholderFragment extends Fragment {
-	//
-	//		public PlaceholderFragment() {
-	//		}
-	//
-	//		@Override
-	//		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	//				Bundle savedInstanceState) {
-	//			View rootView = inflater.inflate(R.layout.fragment_main, container,
-	//					false);
-	//			return rootView;
-	//		}
-	//	}
+//		/**
+//		 * A placeholder fragment containing a simple view.
+//		 */
+//		public static class PlaceholderFragment extends Fragment {
+//	
+//			public PlaceholderFragment() {
+//			}
+//	
+//			@Override
+//			public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//					Bundle savedInstanceState) {
+//				View rootView = inflater.inflate(R.layout.fragment_main, container,
+//						false);
+//				return rootView;
+//			}
+//		}
 
 }
