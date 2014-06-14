@@ -11,6 +11,7 @@
     <string name="date_h1"><b>DATA</b></string>
     <string name="details">Dettagli</string>
     <string name="close">Chiudi</string>
+    <string name="rename">Rinomina</string>
     <string name="modify">Modifica</string>
     <string name="duplicate">Duplica</string>
     <string name="delete">Elimina</string>
