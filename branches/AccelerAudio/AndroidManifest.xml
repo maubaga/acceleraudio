@@ -54,6 +54,31 @@
             android:name="main.acceleraudio.ModifyActivity"
             android:label="@string/title_activity_modify" >
         </activity>
+        
+        
+        
+                    <receiver android:name="BigWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
+        </receiver>
+        <receiver
+            android:name="BigWidgetIntentReceiver"
+            android:label="widgetBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="mau.baga.chronometer.START" />
+                <action android:name="mau.baga.chronometer.STOP" />
+                <action android:name="main.acceleraudio.receiver" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
+        </receiver>
     </application>
 
 </manifest>

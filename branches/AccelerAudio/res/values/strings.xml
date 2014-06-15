@@ -61,6 +61,12 @@
     <string name="duration2">1 minuto</string>
     <string name="duration3">2 minuti</string>
     <string name="duration4">5 minuti</string>
+    
+    
+    <!-- ****** WIDGET ****** -->
+    <string name="initial_time">00:00</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 
     <!-- ****** ALTRO ****** -->
     <string name="app_name">AccelerAudio</string>
