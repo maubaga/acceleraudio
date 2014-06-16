@@ -31,6 +31,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -403,17 +404,18 @@ public class MainActivity extends ActionBarActivity {
 
 	/**
 	 * This method is called when the "Rinomina" button is pressed and it deletes the song.
-	 * @param session_name The name of the song to delete.
+	 * @param new_name The name of the song to delete.
 	 */
-	private void renameSession(String session_name){
+	private void renameSession(String new_name){
 		
-		final String name = session_name;
+		final String name = new_name;
 
 		final EditText input = new EditText(MainActivity.this);  
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.MATCH_PARENT);
 		input.setLayoutParams(lp);
+		input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 		input.setText(name);
 
 		new AlertDialog.Builder(MainActivity.this)
@@ -424,18 +426,47 @@ public class MainActivity extends ActionBarActivity {
 							
 							String new_name = input.getText().toString();
 							
-							dbHelper = new DBOpenHelper(MainActivity.this);
-							SQLiteDatabase db = dbHelper.getWritableDatabase();
+							if(new_name.equals("")){
+								Toast.makeText(MainActivity.this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
+								return;
+							}
 
-							ContentValues values = new ContentValues();
-							values.put(DBOpenHelper.NAME, new_name);
-							db.update(DBOpenHelper.TABLE, values, NAME +"= '" + name + "'",null);
-							File dir = getFilesDir();
-							File image = new File(dir, name + ".png");
-							File audio = new File(dir, name + ".wav");
-							image.renameTo(new File(dir, new_name + ".png"));
-							audio.renameTo(new File(dir, new_name + ".wav"));
-							showSessions(getSessions());
+							if(new_name.contains("  ")){
+								Toast.makeText(MainActivity.this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
+								return;
+							}
+
+							if(new_name.substring(0, 1).equals(" ")){
+								Toast.makeText(MainActivity.this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
+								return;
+							}
+
+							if(new_name.length() > 12){
+								new_name = new_name.substring(0, 12);
+							}
+							
+							File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + new_name + ".wav");
+							if(fileCheck.exists() && !new_name.equals(name)){
+
+								Toast.makeText(MainActivity.this, new_name + " esiste già!", Toast.LENGTH_SHORT).show();
+								return;
+
+							} else{
+								
+								dbHelper = new DBOpenHelper(MainActivity.this);
+								SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+								ContentValues values = new ContentValues();
+								values.put(DBOpenHelper.NAME, new_name);
+								db.update(DBOpenHelper.TABLE, values, NAME +"= '" + name + "'",null);
+								File dir = getFilesDir();
+								File image = new File(dir, name + ".png");
+								File audio = new File(dir, name + ".wav");
+								image.renameTo(new File(dir, new_name + ".png"));
+								audio.renameTo(new File(dir, new_name + ".wav"));
+								showSessions(getSessions());
+								
+							}
 							
 						}
 					})
