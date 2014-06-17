@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class PlayActivity extends ActionBarActivity {
@@ -30,6 +32,7 @@ public class PlayActivity extends ActionBarActivity {
 	private long chrono_time = 0;
 	private static Chronometer chrono;
 	private static ImageButton loop;
+	private static SeekBar soundProgress;
 	private boolean isLoop = true;
 	private static int duration;
 
@@ -37,11 +40,16 @@ public class PlayActivity extends ActionBarActivity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			chrono.setBase(SystemClock.elapsedRealtime());
-			chrono_time = 0;
-			if(!isLoop)
-				stop(null);
-
+			if(intent.getAction().equals(PlayerService.NOTIFICATION)){
+				chrono.setBase(SystemClock.elapsedRealtime());
+				chrono_time = 0;
+				if(!isLoop)
+					stop(null);
+				soundProgress.setProgress(0);
+			}
+			if(intent.getAction().equals(PlayerService.CHANGE)){
+				soundProgress.setProgress(intent.getIntExtra("current_progress", -1));
+			}
 		}
 	};
 
@@ -114,6 +122,8 @@ public class PlayActivity extends ActionBarActivity {
 			
 			TextView duration_text = (TextView) rootView.findViewById(R.id.duration);
 			duration_text.setText(secondToTime(duration));
+			
+			soundProgress = (SeekBar) rootView.findViewById(R.id.progress_song);
 
 			return rootView;
 		}
@@ -130,6 +140,7 @@ public class PlayActivity extends ActionBarActivity {
 
 		chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
 		chrono.start();
+		
 
 		//background
 		Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
@@ -240,5 +251,7 @@ public class PlayActivity extends ActionBarActivity {
 		
 		return minuteString + ":" + secondString;
 	}
+	
+ 
 	
 }
