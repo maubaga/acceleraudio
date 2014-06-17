@@ -36,18 +36,18 @@ public class RecordActivity extends ActionBarActivity{
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.STOP_SERVICE){ //The recording is over!
-				byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
-				byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
-				byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
-				int size = intent.getIntExtra(RecordService.SIZE, 0);
-
-				//				String results = "";
-				//				for (int i = 0; i < size; i++)
-				//					results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
-				//				TextView textView = (TextView) findViewById(R.id.show_results);
-				//				textView.setText(results);
-
-				startCreateActivity(x, y, z, size);	
+//				byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
+//				byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
+//				byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
+//				int size = intent.getIntExtra(RecordService.SIZE, 0);
+//
+//				//				String results = "";
+//				//				for (int i = 0; i < size; i++)
+//				//					results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
+//				//				TextView textView = (TextView) findViewById(R.id.show_results);
+//				//				textView.setText(results);
+//
+//				startCreateActivity(x, y, z, size);	
 				finish();
 			}
 			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.SENSOR_CHANGE){ //The values of the sensor are changed

@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,10 +46,11 @@ public class PlayActivity extends ActionBarActivity {
 				chrono_time = 0;
 				if(!isLoop)
 					stop(null);
-				soundProgress.setProgress(0);
+				soundProgress.setProgress(50);
 			}
 			if(intent.getAction().equals(PlayerService.CHANGE)){
 				soundProgress.setProgress(intent.getIntExtra("current_progress", -1));
+				Log.d("progress", "update progress");
 			}
 		}
 	};
@@ -210,6 +212,7 @@ public class PlayActivity extends ActionBarActivity {
 	protected void onResume() {
 		super.onResume();
 		registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
+		registerReceiver(receiver, new IntentFilter(PlayerService.CHANGE));
 		if(isLoop)
 			loop.setImageResource(R.drawable.loop2);
 		else
