@@ -34,6 +34,11 @@ public class BigWidgetIntentReceiver extends BroadcastReceiver {
 			createIntent.putExtra(RecordService.SIZE, size);
 			createIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(createIntent);
+			
+			
+			//Stop the chronometer in the widget
+			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_chronometer);
+			remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
 		}
 	}
 	private void startChronometer(Context context) {

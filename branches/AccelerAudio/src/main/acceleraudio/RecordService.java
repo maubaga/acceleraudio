@@ -86,16 +86,18 @@ public class RecordService extends IntentService  implements SensorEventListener
 				chrono.start();
 				isStart = true;
 				
-				//notifica
-				Intent iNotif = new Intent(this, RecordActivity.class); 
-				iNotif.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
-				PendingIntent pi = PendingIntent.getActivity(this, 0, iNotif, 0); 
+				Intent notificationIntent = new Intent(this, RecordActivity.class); 
+				notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
+//				intent.putExtra("session_name", sessionInPlayNow.substring(35, sessionInPlayNow.length()-4));
+//				intent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
+				PendingIntent pi = PendingIntent.getActivity(this, 0, notificationIntent, 0); 
 				Notification notification = new NotificationCompat.Builder(getApplicationContext())
 				.setContentTitle("Stai registrando")
-		        .setSmallIcon(R.drawable.ic_action_mic)
-				.setContentIntent(pi) 
+				.setContentText("Premi per fermare la registrazione.")
+		        .setSmallIcon(R.drawable.abc_ic_go)
+				.setContentIntent(pi) // Required on Gingerbread and below 
 				.build();
-				final int notificationID = 102584; //ID for this notification 
+				final int notificationID = 2; // An ID for this notification unique within the app 
 				startForeground(notificationID, notification);
 			}			
 		}
