@@ -10,7 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -21,12 +23,14 @@ public class PlayerService extends Service{
 	public static String SET_LOOP = "set_loop";
 	public static String PATH = "path_directory";
 	public static String NOTIFICATION = "main.acceleraudio.playerservice";
+	public static String CHANGE = "change";
 	private String sessionToPlay;
 	private String sessionInPlayNow;
 	private MediaPlayer myPlayer = null; 
 	private boolean isPlaying = false;
 	private boolean isLoop = true;
 	private int pos = 0;
+	private Handler mHandler;
 
 	@Override 
 	public IBinder onBind(Intent intent) 
@@ -140,4 +144,27 @@ public class PlayerService extends Service{
 	public void onDestroy() {
 		stop();
 	}
+	
+	public void updateProgressBar() {
+        mHandler.postDelayed(mUpdateTimeTask, 100);
+    }   
+	
+	   /**
+     * Background Runnable thread
+     * */
+    private Runnable mUpdateTimeTask = new Runnable() {
+           public void run() {
+               long totalDuration = myPlayer.getDuration();
+               int currentDuration = myPlayer.getCurrentPosition();
+ 
+               // Updating progress bar
+               int progress = (int)((currentDuration/totalDuration)*100);
+               Intent changeProgress = new Intent(CHANGE);
+               changeProgress.putExtra("current_progress", progress);
+               sendBroadcast(changeProgress);
+ 
+               // Running this thread after 100 milliseconds
+               mHandler.postDelayed(this, 100);
+           }
+        };
 }
