@@ -397,7 +397,7 @@ public class MainActivity extends ActionBarActivity {
 		int duration = cursor.getInt(cursor.getColumnIndex(DURATION));
 		Intent playIntent = new Intent(this, PlayActivity.class);
 		playIntent.putExtra(PlayActivity.DURATION, duration);
-		playIntent.putExtra("session_name", name);
+		playIntent.putExtra(PlayActivity.SESSION_NAME, name);
 		playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
 		startActivity(playIntent);
 	}
