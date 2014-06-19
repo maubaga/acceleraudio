@@ -2,7 +2,7 @@ package main.acceleraudio;
 
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.PendingIntent;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -11,6 +11,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Chronometer;
 import android.widget.Toast;
 
@@ -86,19 +87,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 				chrono.start();
 				isStart = true;
 				
-				Intent notificationIntent = new Intent(this, RecordActivity.class); 
-				notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
-//				intent.putExtra("session_name", sessionInPlayNow.substring(35, sessionInPlayNow.length()-4));
-//				intent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
-				PendingIntent pi = PendingIntent.getActivity(this, 0, notificationIntent, 0); 
-				Notification notification = new NotificationCompat.Builder(getApplicationContext())
-				.setContentTitle("Stai registrando")
-				.setContentText("Premi per fermare la registrazione.")
-		        .setSmallIcon(R.drawable.abc_ic_go)
-				.setContentIntent(pi) // Required on Gingerbread and below 
-				.build();
-				final int notificationID = 2; // An ID for this notification unique within the app 
-				startForeground(notificationID, notification);
+				displayNotification();
 			}			
 		}
 		if(PAUSE.equals(intent.getAction())){
@@ -112,11 +101,23 @@ public class RecordService extends IntentService  implements SensorEventListener
 			isStart = false;
 			mSensorManager.unregisterListener(this);
 			publishFinishResults(); 
+			//TODO SISTEMARE
+			NotificationManager mNotificationManager =
+				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				// mId allows you to update the notification later on.
+				mNotificationManager.cancel(2);
+			stopSelf();
 		}
 		if (CANCEL.equals(intent.getAction())){
 			isStart = false;
 			if(mSensorManager != null)
 				mSensorManager.unregisterListener(this);
+			//TODO SISTEMARE
+			NotificationManager mNotificationManager =
+				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				// mId allows you to update the notification later on.
+				mNotificationManager.cancel(2);
+			stopSelf();
 		}
 	}
 
@@ -183,5 +184,21 @@ public class RecordService extends IntentService  implements SensorEventListener
 			publishFinishResults();
 			Toast.makeText(this,"Raggiunta la durata massima raggiunta di " + (maxRecordTime / 1000) + " secondi.", Toast.LENGTH_LONG).show();
 		}
+	}
+	
+	private void displayNotification(){
+		Notification notification = new NotificationCompat.Builder(getApplicationContext())
+		.setContentTitle("Stai ascoltando: ")
+		.setContentText("Premi per fermare la riproduzione.")
+        .setSmallIcon(R.drawable.abc_ic_voice_search)
+		.build();
+		
+		NotificationManager mNotificationManager =
+		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// mId allows you to update the notification later on.
+		mNotificationManager.notify(2, notification);
+//		final int notificationID = 2; // An ID for this notification unique within the app 
+//		startForeground(notificationID, notification);
+		Log.d("notification", "create notification");
 	}
 } 
