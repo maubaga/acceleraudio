@@ -96,9 +96,10 @@ public class PlayerService extends Service{
 		//TODO provare su smartphone
 		Intent intent = new Intent(this, PlayActivity.class); 
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
-		intent.putExtra("session_name", sessionInPlayNow.substring(35, sessionInPlayNow.length()-4));
+		intent.putExtra(PlayActivity.SESSION_NAME, sessionInPlayNow.substring(35, sessionInPlayNow.length()-4));
 		intent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
-		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0); 
+		intent.putExtra(PlayActivity.DURATION, myPlayer.getDuration() / 1000);
+		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); 
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
 		.setContentTitle("Stai ascoltando: "+sessionInPlayNow.substring(35, sessionInPlayNow.length()-4))
 		.setContentText("Premi per fermare la riproduzione.")
