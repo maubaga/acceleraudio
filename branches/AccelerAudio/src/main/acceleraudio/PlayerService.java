@@ -8,7 +8,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -28,7 +27,6 @@ public class PlayerService extends Service{
 	private boolean isPlaying = false;
 	private boolean isLoop = true;
 	private int pos = 0;
-	private Handler mHandler;
 
 	@Override 
 	public IBinder onBind(Intent intent) 
@@ -70,8 +68,7 @@ public class PlayerService extends Service{
 			myPlayer.prepare();
 			myPlayer.seekTo(pos);
 			myPlayer.start();
-			myPlayer.setOnCompletionListener(new OnCompletionListener() {
-				
+			myPlayer.setOnCompletionListener(new OnCompletionListener() {				
 				@Override
 				public void onCompletion(MediaPlayer m) {
 					Intent intent = new Intent(NOTIFICATION);
@@ -85,6 +82,31 @@ public class PlayerService extends Service{
 				}
 			});
 			sessionInPlayNow = sessionToPlay.toString();
+			
+			//Thread to update the seekbar
+			new Thread(
+				    new Runnable() {
+				        @Override
+				        public void run() {
+				            while(myPlayer != null && myPlayer.isPlaying()) {
+				                 // Updating progress bar
+				                 int progress =  myPlayer.getCurrentPosition();
+				                 Intent changeProgress = new Intent(CHANGE);
+				                 changeProgress.putExtra("current_progress", progress);
+				                 sendBroadcast(changeProgress);
+				            	
+				                        try {
+				                            // Sleep for 5 seconds
+				                            Thread.sleep(100);
+				                        } catch (InterruptedException e) {
+				                            Log.d("Sleep seekbar", "sleep failure");
+				                        }
+				            }
+
+				        }
+				    }
+				// Starts the thread by calling the run() method in its Runnable
+				).start();
 
 		} catch (IOException e) {
 			Toast.makeText(getBaseContext(),"prepare failed",
@@ -93,7 +115,6 @@ public class PlayerService extends Service{
 		
 		// Runs this service in the foreground, 
 		// supplying the ongoing notification to be shown to the user
-		//TODO provare su smartphone
 		Intent intent = new Intent(this, PlayActivity.class); 
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
 		intent.putExtra(PlayActivity.SESSION_NAME, sessionInPlayNow.substring(35, sessionInPlayNow.length()-4));
@@ -146,29 +167,6 @@ public class PlayerService extends Service{
 	public void onDestroy() {
 		stop();
 	}
-	
-/**
-  * Background Runnable thread
-  * */
- private Runnable mUpdateTimeTask = new Runnable() {
-        public void run() {
-            long totalDuration = myPlayer.getDuration();
-            int currentDuration = myPlayer.getCurrentPosition();
-
-            // Updating progress bar
-            int progress = (int)((currentDuration/totalDuration)*100);
-            Intent changeProgress = new Intent(CHANGE);
-            changeProgress.putExtra("current_progress", progress);
-            sendBroadcast(changeProgress);
-
-            // Running this thread after 100 milliseconds
-            mHandler.postDelayed(this, 100);
-        }
-     };
-	
-	public void updateProgressBar() {
-        mHandler.postDelayed(mUpdateTimeTask, 100);
-    }   
 	
 
 }

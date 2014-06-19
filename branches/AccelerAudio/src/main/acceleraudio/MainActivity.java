@@ -126,7 +126,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private Cursor getArraysData(String songName) {
 		// Get the three arrays from blob fields in the data base and the dimension of the arrays
-		String[] FROM = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME, RATE};
+		String[] FROM = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME, RATE, DURATION};
 		String WHERE = NAME + "= '" + songName + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
@@ -545,7 +545,7 @@ public class MainActivity extends ActionBarActivity {
 	 */
 	private boolean duplicateSession(String name){
 		byte[] x,y,z;
-		int size, seekValue, rate;
+		int size, seekValue, rate, duration;
 		Cursor cursor;
 		boolean xCheck, yCheck, zCheck;
 		int fileIndex = 2;
@@ -562,6 +562,7 @@ public class MainActivity extends ActionBarActivity {
 		zCheck = intToBoolean(cursor.getInt(cursor.getColumnIndex(Z_CHECK)));
 		seekValue = cursor.getInt(cursor.getColumnIndex(UPSAMPL));
 		rate = cursor.getInt(cursor.getColumnIndex(RATE));
+		duration = cursor.getInt(cursor.getColumnIndex(DURATION));
 
 		try{
 			//duplicate the song
@@ -646,7 +647,8 @@ public class MainActivity extends ActionBarActivity {
 		values.put(DBOpenHelper.FIRST_TIME, time);
 		values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
 		values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-		values.put(DBOpenHelper.RATE, rate);       
+		values.put(DBOpenHelper.RATE, rate);     
+		values.put(DBOpenHelper.DURATION, duration);     
 		values.put(DBOpenHelper.UPSAMPL, seekValue);       //add seekbar value
 		values.put(DBOpenHelper.X_CHECK, xCheck);
 		values.put(DBOpenHelper.Y_CHECK, yCheck);

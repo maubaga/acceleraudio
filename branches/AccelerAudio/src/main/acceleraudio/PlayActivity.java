@@ -45,7 +45,6 @@ public class PlayActivity extends ActionBarActivity {
 				chrono_time = 0;
 				if(!isLoop)
 					stop(null);
-				soundProgress.setProgress(50);
 			}
 			if(intent.getAction().equals(PlayerService.CHANGE)){
 				soundProgress.setProgress(intent.getIntExtra("current_progress", -1));
@@ -125,6 +124,7 @@ public class PlayActivity extends ActionBarActivity {
 			duration_text.setText(secondToTime(duration));
 			
 			soundProgress = (SeekBar) rootView.findViewById(R.id.progress_song);
+			soundProgress.setMax(duration * 1000);
 
 			return rootView;
 		}
