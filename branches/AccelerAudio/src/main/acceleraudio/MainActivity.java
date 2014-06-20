@@ -115,7 +115,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private Cursor getSessions() {
 		// Get all of the notes from the database and create the item list
-		String[] FROM = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK };
+		String[] FROM = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK, DURATION};
 		String ORDER_BY = NAME + " ASC";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, null, null, null, null, ORDER_BY);
@@ -213,12 +213,9 @@ public class MainActivity extends ActionBarActivity {
 			String last_time = cursor.getString(cursor.getColumnIndex(LAST_MODIFY_TIME));
 			final String first_time_date = first_date + " " + first_time;
 			final String last_time_date = last_date + " " + last_time;
-
-			//Rate value
-			final String rate = cursor.getString(cursor.getColumnIndex(RATE));
-
-			//Upsampling value
-			final String upsampl = cursor.getString(cursor.getColumnIndex(UPSAMPL));
+			final String rate = cursor.getString(cursor.getColumnIndex(RATE)); //Rate value			
+			final String upsampl = cursor.getString(cursor.getColumnIndex(UPSAMPL)); //Upsampling value
+			final String duration = PlayActivity.secondToTime(cursor.getInt(cursor.getColumnIndex(DURATION)));
 
 			//Used axes
 			String temp_used_axes = "";
@@ -269,7 +266,8 @@ public class MainActivity extends ActionBarActivity {
 			//Text of the Details window
 			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_time_date + 
 					"\n\nUltima modifica: " + last_time_date + "\n\nAssi utilizzati: " + used_axes +
-					"\n\nCampionamento: " + rate + " Campioni/s" + "\n\nInterpolazione: " + upsampl;
+					"\n\nCampionamento: " + rate + " Campioni/s" + "\n\nInterpolazione: " + upsampl + 
+					"\n\nDurata: " + duration;
 			session.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
