@@ -124,7 +124,7 @@ public class PlayActivity extends ActionBarActivity {
 			duration_text.setText(secondToTime(duration));
 			
 			soundProgress = (SeekBar) rootView.findViewById(R.id.progress_song);
-			soundProgress.setMax(duration * 1000);
+			soundProgress.setMax(duration);
 
 			return rootView;
 		}
@@ -235,9 +235,10 @@ public class PlayActivity extends ActionBarActivity {
 	
 	
 	
-	public static String secondToTime(int totalSeconds){
-		int minutes = totalSeconds / 60;
-		int seconds = totalSeconds % 60;
+	public static String secondToTime(int totalMilliSeconds){
+		int totalSeconds = totalMilliSeconds / 1000; //convert to milliseconds to seconds
+		int minutes = totalSeconds / 60;             //get the minutes
+		int seconds = totalSeconds % 60;    		 //get the seconds
 		String secondString = "";
 		String minuteString = "";
 		

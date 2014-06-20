@@ -573,7 +573,7 @@ public class CreateActivity extends ActionBarActivity {
 			playIntent.putExtra("session_name", session_name);
 			playIntent.putExtra(PlayActivity.AUTOPLAY, false); //the song doesn't start automatically
 
-			int duration = size * (et_upsampl.getProgress() + 1) / sample_rate; //duration of the sound in seconds
+			int duration = size * (et_upsampl.getProgress() + 1) * 1000 / sample_rate; //duration of the sound in milliSeconds
 
 			oh = new DBOpenHelper(this);
 			SQLiteDatabase db = oh.getWritableDatabase();

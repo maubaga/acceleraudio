@@ -11,7 +11,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Chronometer;
 import android.widget.Toast;
 
@@ -188,8 +187,8 @@ public class RecordService extends IntentService  implements SensorEventListener
 	
 	private void displayNotification(){
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
-		.setContentTitle("Stai ascoltando: ")
-		.setContentText("Premi per fermare la riproduzione.")
+		.setContentTitle("Registrazione AccelerAudio")
+		.setContentText("Premi per fermare la registrazione.")
         .setSmallIcon(R.drawable.abc_ic_voice_search)
 		.build();
 		
@@ -199,6 +198,5 @@ public class RecordService extends IntentService  implements SensorEventListener
 		mNotificationManager.notify(2, notification);
 //		final int notificationID = 2; // An ID for this notification unique within the app 
 //		startForeground(notificationID, notification);
-		Log.d("notification", "create notification");
 	}
 } 

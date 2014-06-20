@@ -292,7 +292,7 @@ public class ModifyActivity extends ActionBarActivity {
 
 			if(isCreated){
 
-				int duration = size * (et_upsampl.getProgress() + 1) / sample_rate; //duration of the sound in seconds
+				int duration = size * (et_upsampl.getProgress() + 1) * 1000 / sample_rate; //duration of the sound in milliSeconds
 				
 				openHelper = new DBOpenHelper(this);
 				SQLiteDatabase db = openHelper.getWritableDatabase();
