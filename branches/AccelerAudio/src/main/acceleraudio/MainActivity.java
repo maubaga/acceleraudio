@@ -50,7 +50,7 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
-	private boolean resumeHasRun = false;
+
 	private DBOpenHelper dbHelper;
 	private static String folder;
 
@@ -62,27 +62,17 @@ public class MainActivity extends ActionBarActivity {
 		//			getSupportFragmentManager().beginTransaction()
 		//					.add(R.id.container, new PlaceholderFragment()).commit();
 		//		}
-		folder = getApplicationContext().getFilesDir().getPath() + "/";
 
-		dbHelper = new DBOpenHelper(this);
-		Cursor cursor = getSessions();
-		showSessions(cursor);
 	}
 
 	@Override
 	protected void onResume(){
 		super.onResume();
-		if (!resumeHasRun) {
-			resumeHasRun = true;
-			return;
-		} else{
 
-			folder = getApplicationContext().getFilesDir().getPath() + "/";
-
-			dbHelper = new DBOpenHelper(this);
-			Cursor cursor = getSessions();
-			showSessions(cursor);
-		}	
+		folder = getApplicationContext().getFilesDir().getPath() + "/";
+		dbHelper = new DBOpenHelper(this);
+		Cursor cursor = getSessions();
+		showSessions(cursor);
 	}
 
 	@Override 
@@ -405,7 +395,7 @@ public class MainActivity extends ActionBarActivity {
 	 * @param new_name The name of the song to delete.
 	 */
 	private void renameSession(String new_name){
-		
+
 		final String name = new_name;
 
 		final EditText input = new EditText(MainActivity.this);  
@@ -420,54 +410,54 @@ public class MainActivity extends ActionBarActivity {
 		.setTitle(R.string.rename)
 		.setView(input)
 		.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) { 
-							
-							String new_name = input.getText().toString();
-							
-							if(new_name.equals("")){
-								Toast.makeText(MainActivity.this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
-								return;
-							}
+			public void onClick(DialogInterface dialog, int which) { 
 
-							if(new_name.contains("  ")){
-								Toast.makeText(MainActivity.this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
-								return;
-							}
+				String new_name = input.getText().toString();
 
-							if(new_name.substring(0, 1).equals(" ")){
-								Toast.makeText(MainActivity.this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
-								return;
-							}
+				if(new_name.equals("")){
+					Toast.makeText(MainActivity.this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
+					return;
+				}
 
-							if(new_name.length() > 12){
-								new_name = new_name.substring(0, 12);
-							}
-							
-							File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + new_name + ".wav");
-							if(fileCheck.exists() && !new_name.equals(name)){
+				if(new_name.contains("  ")){
+					Toast.makeText(MainActivity.this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
+					return;
+				}
 
-								Toast.makeText(MainActivity.this, new_name + " esiste già!", Toast.LENGTH_SHORT).show();
-								return;
+				if(new_name.substring(0, 1).equals(" ")){
+					Toast.makeText(MainActivity.this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
+					return;
+				}
 
-							} else{
-								
-								dbHelper = new DBOpenHelper(MainActivity.this);
-								SQLiteDatabase db = dbHelper.getWritableDatabase();
+				if(new_name.length() > 12){
+					new_name = new_name.substring(0, 12);
+				}
 
-								ContentValues values = new ContentValues();
-								values.put(DBOpenHelper.NAME, new_name);
-								db.update(DBOpenHelper.TABLE, values, NAME +"= '" + name + "'",null);
-								File dir = getFilesDir();
-								File image = new File(dir, name + ".png");
-								File audio = new File(dir, name + ".wav");
-								image.renameTo(new File(dir, new_name + ".png"));
-								audio.renameTo(new File(dir, new_name + ".wav"));
-								showSessions(getSessions());
-								
-							}
-							
-						}
-					})
+				File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + new_name + ".wav");
+				if(fileCheck.exists() && !new_name.equals(name)){
+
+					Toast.makeText(MainActivity.this, new_name + " esiste già!", Toast.LENGTH_SHORT).show();
+					return;
+
+				} else{
+
+					dbHelper = new DBOpenHelper(MainActivity.this);
+					SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+					ContentValues values = new ContentValues();
+					values.put(DBOpenHelper.NAME, new_name);
+					db.update(DBOpenHelper.TABLE, values, NAME +"= '" + name + "'",null);
+					File dir = getFilesDir();
+					File image = new File(dir, name + ".png");
+					File audio = new File(dir, name + ".wav");
+					image.renameTo(new File(dir, new_name + ".png"));
+					audio.renameTo(new File(dir, new_name + ".wav"));
+					showSessions(getSessions());
+
+				}
+
+			}
+		})
 		.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) { 
 				return;
@@ -673,21 +663,21 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 
-//		/**
-//		 * A placeholder fragment containing a simple view.
-//		 */
-//		public static class PlaceholderFragment extends Fragment {
-//	
-//			public PlaceholderFragment() {
-//			}
-//	
-//			@Override
-//			public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//					Bundle savedInstanceState) {
-//				View rootView = inflater.inflate(R.layout.fragment_main, container,
-//						false);
-//				return rootView;
-//			}
-//		}
+	//		/**
+	//		 * A placeholder fragment containing a simple view.
+	//		 */
+	//		public static class PlaceholderFragment extends Fragment {
+	//	
+	//			public PlaceholderFragment() {
+	//			}
+	//	
+	//			@Override
+	//			public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	//					Bundle savedInstanceState) {
+	//				View rootView = inflater.inflate(R.layout.fragment_main, container,
+	//						false);
+	//				return rootView;
+	//			}
+	//		}
 
 }
