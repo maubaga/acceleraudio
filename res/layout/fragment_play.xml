@@ -41,13 +41,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-            <Chronometer
-                android:id="@+id/chrono"
+            <TextView
+                android:id="@+id/text_time_passed"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:gravity="left"
                 android:scaleType="fitCenter"
+                android:text="@string/initial_time"
                 android:textSize="24sp" />
 
             <TextView
