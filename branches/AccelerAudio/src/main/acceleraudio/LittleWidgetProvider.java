@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-public class BigWidgetProvider extends AppWidgetProvider {
+public class LittleWidgetProvider extends AppWidgetProvider {
 
 	// our actions for our buttons
 	public static final String ACTION_WIDGET_START = "mau.baga.chronometer.START";
@@ -20,7 +20,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		
 		//Definisco il layout del widget e mi salvo la sua istanza in remoteViews
-		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
 		
@@ -44,7 +44,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	}
 
 	public static void pushWidgetUpdate(Context context, RemoteViews remoteViews) {
-		ComponentName myWidget = new ComponentName(context, BigWidgetProvider.class);
+		ComponentName myWidget = new ComponentName(context, LittleWidgetProvider.class);
 	    AppWidgetManager manager = AppWidgetManager.getInstance(context);
 	    manager.updateAppWidget(myWidget, remoteViews);		
 	}

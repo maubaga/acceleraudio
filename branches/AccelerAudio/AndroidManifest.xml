@@ -57,17 +57,28 @@
         
         
         
-                    <receiver android:name="BigWidgetProvider" >
+        <receiver android:name="LittleWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_provider" />
+                android:resource="@xml/little_widget_provider" />
+        </receiver>   
+                        
+        <receiver android:name="BigWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/big_widget_provider" />
         </receiver>
+        
         <receiver
-            android:name="BigWidgetIntentReceiver"
+            android:name="WidgetIntentReceiver"
             android:label="widgetBroadcastReceiver" >
             <intent-filter>
                 <action android:name="mau.baga.chronometer.START" />
@@ -77,7 +88,7 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_provider" />
+                android:resource="@xml/little_widget_provider" />
         </receiver>
     </application>
 
