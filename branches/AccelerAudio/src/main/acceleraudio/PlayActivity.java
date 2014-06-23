@@ -34,7 +34,9 @@ public class PlayActivity extends ActionBarActivity {
 	private static ImageButton loop;
 	private static SeekBar soundProgress;
 	private boolean isLoop = true;
+	private boolean isPause;
 	private static int duration;
+	private static int playOnce = 0;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -64,10 +66,11 @@ public class PlayActivity extends ActionBarActivity {
 		}
 		else{
 			chrono_time = savedInstanceState.getLong("chronometer_time");
-			chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);			
+			chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
 			isLoop = savedInstanceState.getBoolean("is_loop_on");
+			isPause = savedInstanceState.getBoolean("is_paused");
 		}
-	
+
 
 		intent = getIntent();
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
@@ -110,19 +113,19 @@ public class PlayActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_play, container,
 					false);
-			
+
 			chrono = (Chronometer) rootView.findViewById(R.id.chrono);
 			loop = (ImageButton) rootView.findViewById(R.id.loop);
 
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
 			imageView.setImageURI(Uri.parse(appFileDirectory + session_name + ".png"));
-			
+
 			TextView name = (TextView) rootView.findViewById(R.id.session_name);
 			name.setText(session_name);
-			
+
 			TextView duration_text = (TextView) rootView.findViewById(R.id.duration);
 			duration_text.setText(secondToTime(duration));
-			
+
 			soundProgress = (SeekBar) rootView.findViewById(R.id.progress_song);
 			soundProgress.setMax(duration);
 
@@ -141,7 +144,8 @@ public class PlayActivity extends ActionBarActivity {
 
 		chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
 		chrono.start();
-		
+		isPause = false;
+
 
 		//background
 		Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
@@ -158,6 +162,7 @@ public class PlayActivity extends ActionBarActivity {
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
 
+		isPause = true;
 		chrono.stop();
 		chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
 		Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
@@ -181,7 +186,7 @@ public class PlayActivity extends ActionBarActivity {
 		stopService(stopIntent);
 		finish();
 	}
-	
+
 	public void setLoop(View view) {
 
 		if(isLoop){
@@ -191,7 +196,7 @@ public class PlayActivity extends ActionBarActivity {
 			Intent loopIntent = new Intent(getApplicationContext(),PlayerService.class); 
 			loopIntent.setAction(PlayerService.SET_LOOP);
 			startService(loopIntent);
-			
+
 		} else{
 			isLoop = true;
 			loop.setImageResource(R.drawable.loop2);
@@ -201,60 +206,73 @@ public class PlayActivity extends ActionBarActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		
-		if(isAutoplayEnabled){
+
+		if(isAutoplayEnabled && playOnce == 0){
 			play(null);
+			playOnce++;
 		}
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
 		registerReceiver(receiver, new IntentFilter(PlayerService.CHANGE));
+		ImageButton play = (ImageButton)findViewById(R.id.play);
+		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		if(isLoop)
 			loop.setImageResource(R.drawable.loop2);
 		else
 			loop.setImageResource(R.drawable.noloop);
+
+		if(isPause){
+			play.setVisibility(View.VISIBLE);
+			pause.setVisibility(View.GONE);
+		}
+		else{
+			play.setVisibility(View.GONE);
+			pause.setVisibility(View.VISIBLE);
+		}
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
 		unregisterReceiver(receiver);
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-	    // Save myVar's value in saveInstanceState bundle
+		// Save myVar's value in saveInstanceState bundle
 		chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
-	    savedInstanceState.putLong("chronometer_time", chrono_time);
-	    savedInstanceState.putBoolean("is_loop_on", isLoop);
-	    super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putLong("chronometer_time", chrono_time);
+		savedInstanceState.putBoolean("is_loop_on", isLoop);
+		savedInstanceState.putBoolean("is_paused", isPause);
+		super.onSaveInstanceState(savedInstanceState);
 	}
-	
-	
-	
+
+
+
 	public static String secondToTime(int totalMilliSeconds){
 		int totalSeconds = totalMilliSeconds / 1000; //convert to milliseconds to seconds
 		int minutes = totalSeconds / 60;             //get the minutes
 		int seconds = totalSeconds % 60;    		 //get the seconds
 		String secondString = "";
 		String minuteString = "";
-		
+
 		if(seconds < 10)
 			secondString = "0" + seconds;
 		else 
 			secondString = seconds +"";
-		
+
 		if(minutes < 10)
 			minuteString = "0" + minutes;
 		else 
 			minuteString = minutes +"";
-		
+
 		return minuteString + ":" + secondString;
 	}
-	
- 
-	
+
+
+
 }
