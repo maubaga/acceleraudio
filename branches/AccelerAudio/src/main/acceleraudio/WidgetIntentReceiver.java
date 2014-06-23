@@ -8,16 +8,16 @@ import android.os.SystemClock;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-public class BigWidgetIntentReceiver extends BroadcastReceiver {
+public class WidgetIntentReceiver extends BroadcastReceiver {
 
 
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if(intent.getAction().equals(BigWidgetProvider.ACTION_WIDGET_START)){
+		if(intent.getAction().equals(LittleWidgetProvider.ACTION_WIDGET_START)){
 			startChronometer(context);
 		}
-		if(intent.getAction().equals(BigWidgetProvider.ACTION_WIDGET_STOP)){
+		if(intent.getAction().equals(LittleWidgetProvider.ACTION_WIDGET_STOP)){
 			stopChronometer(context);
 		}
 
@@ -37,12 +37,12 @@ public class BigWidgetIntentReceiver extends BroadcastReceiver {
 			
 			
 			//Stop the chronometer in the widget
-			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_chronometer);
+			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 			remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
 		}
 	}
 	private void startChronometer(Context context) {
-		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_chronometer);
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		remoteViews.setTextColor(R.id.chronometer, Color.GREEN);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
 
@@ -54,14 +54,14 @@ public class BigWidgetIntentReceiver extends BroadcastReceiver {
 		Toast.makeText(context,"Registrazione in background iniziata", Toast.LENGTH_SHORT).show();
 
 		//REMEMBER TO ALWAYS REFRESH YOUR BUTTON CLICK LISTENERS!!!
-		remoteViews.setOnClickPendingIntent(R.id.start_button, BigWidgetProvider.startButtonPendingIntent(context));
-		remoteViews.setOnClickPendingIntent(R.id.stop_button, BigWidgetProvider.stopButtonPendingIntent(context));
+		remoteViews.setOnClickPendingIntent(R.id.start_button, LittleWidgetProvider.startButtonPendingIntent(context));
+		remoteViews.setOnClickPendingIntent(R.id.stop_button, LittleWidgetProvider.stopButtonPendingIntent(context));
 
-		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
 	}
 
 	private void stopChronometer(Context context) {
-		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_chronometer);
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		remoteViews.setTextColor(R.id.chronometer, Color.MAGENTA);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
 
@@ -72,10 +72,10 @@ public class BigWidgetIntentReceiver extends BroadcastReceiver {
 		Toast.makeText(context,"Registrazione finita", Toast.LENGTH_SHORT).show();
 		
 		//REMEMBER TO ALWAYS REFRESH YOUR BUTTON CLICK LISTENERS!!!
-		remoteViews.setOnClickPendingIntent(R.id.start_button, BigWidgetProvider.startButtonPendingIntent(context));
-		remoteViews.setOnClickPendingIntent(R.id.stop_button, BigWidgetProvider.stopButtonPendingIntent(context));
+		remoteViews.setOnClickPendingIntent(R.id.start_button, LittleWidgetProvider.startButtonPendingIntent(context));
+		remoteViews.setOnClickPendingIntent(R.id.stop_button, LittleWidgetProvider.stopButtonPendingIntent(context));
 
-		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
 	}
 
 
