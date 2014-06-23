@@ -6,16 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -29,28 +26,25 @@ public class PlayActivity extends ActionBarActivity {
 	private static String session_name;
 	private static boolean isAutoplayEnabled;
 	private static String appFileDirectory;
-	private long chrono_time = 0;
-	private static Chronometer chrono;
 	private static ImageButton loop;
 	private static SeekBar soundProgress;
+	private static TextView text_time_passed;
 	private boolean isLoop = true;
-	private boolean isPause;
+	private static boolean isOnPause = false;
 	private static int duration;
-	private static int playOnce = 0;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(intent.getAction().equals(PlayerService.NOTIFICATION)){
-				chrono.setBase(SystemClock.elapsedRealtime());
-				chrono_time = 0;
 				if(!isLoop)
 					stop(null);
 			}
 			if(intent.getAction().equals(PlayerService.CHANGE)){
-				soundProgress.setProgress(intent.getIntExtra("current_progress", -1));
-				Log.d("progress", "update progress");
+				int currentProgress = intent.getIntExtra("current_progress", -1);
+				soundProgress.setProgress(currentProgress);                    //update the seekbar
+				text_time_passed.setText(secondToTime(currentProgress));       //update my "chronometer"
 			}
 		}
 	};
@@ -65,10 +59,7 @@ public class PlayActivity extends ActionBarActivity {
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		else{
-			chrono_time = savedInstanceState.getLong("chronometer_time");
-			chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
 			isLoop = savedInstanceState.getBoolean("is_loop_on");
-			isPause = savedInstanceState.getBoolean("is_paused");
 		}
 
 
@@ -114,7 +105,6 @@ public class PlayActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_play, container,
 					false);
 
-			chrono = (Chronometer) rootView.findViewById(R.id.chrono);
 			loop = (ImageButton) rootView.findViewById(R.id.loop);
 
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail);
@@ -128,6 +118,8 @@ public class PlayActivity extends ActionBarActivity {
 
 			soundProgress = (SeekBar) rootView.findViewById(R.id.progress_song);
 			soundProgress.setMax(duration);
+			
+			text_time_passed = (TextView) rootView.findViewById(R.id.text_time_passed);
 
 			return rootView;
 		}
@@ -142,10 +134,7 @@ public class PlayActivity extends ActionBarActivity {
 		play.setVisibility(View.GONE);
 		pause.setVisibility(View.VISIBLE);
 
-		chrono.setBase(SystemClock.elapsedRealtime() + chrono_time);
-		chrono.start();
-		isPause = false;
-
+		isOnPause = false;
 
 		//background
 		Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
@@ -161,10 +150,9 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
+		
+		isOnPause = true;
 
-		isPause = true;
-		chrono.stop();
-		chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
 		Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
 		pauseIntent.setAction(PlayerService.PLAY_PAUSE);
 		startService(pauseIntent);
@@ -176,10 +164,6 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
-
-		chrono.setBase(SystemClock.elapsedRealtime());
-		chrono.stop();
-		chrono_time = 0;
 
 		//background
 		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
@@ -207,9 +191,10 @@ public class PlayActivity extends ActionBarActivity {
 	protected void onStart() {
 		super.onStart();
 
-		if(isAutoplayEnabled && playOnce == 0){
+		text_time_passed.setText(secondToTime(soundProgress.getProgress()));
+		
+		if(isAutoplayEnabled && !isOnPause){
 			play(null);
-			playOnce++;
 		}
 	}
 
@@ -218,21 +203,12 @@ public class PlayActivity extends ActionBarActivity {
 		super.onResume();
 		registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
 		registerReceiver(receiver, new IntentFilter(PlayerService.CHANGE));
-		ImageButton play = (ImageButton)findViewById(R.id.play);
-		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		if(isLoop)
 			loop.setImageResource(R.drawable.loop2);
 		else
 			loop.setImageResource(R.drawable.noloop);
 
-		if(isPause){
-			play.setVisibility(View.VISIBLE);
-			pause.setVisibility(View.GONE);
-		}
-		else{
-			play.setVisibility(View.GONE);
-			pause.setVisibility(View.VISIBLE);
-		}
+
 	}
 
 	@Override
@@ -244,15 +220,16 @@ public class PlayActivity extends ActionBarActivity {
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		// Save myVar's value in saveInstanceState bundle
-		chrono_time = chrono.getBase() - SystemClock.elapsedRealtime();
-		savedInstanceState.putLong("chronometer_time", chrono_time);
 		savedInstanceState.putBoolean("is_loop_on", isLoop);
-		savedInstanceState.putBoolean("is_paused", isPause);
 		super.onSaveInstanceState(savedInstanceState);
 	}
 
 
-
+	/**
+	 * This method convert milliseconds into minutes an seconds in the format mm:ss
+	 * @param totalMilliSeconds the milliseconds to convert
+	 * @return A String that represent the time format mm:ss
+	 */
 	public static String secondToTime(int totalMilliSeconds){
 		int totalSeconds = totalMilliSeconds / 1000; //convert to milliseconds to seconds
 		int minutes = totalSeconds / 60;             //get the minutes
