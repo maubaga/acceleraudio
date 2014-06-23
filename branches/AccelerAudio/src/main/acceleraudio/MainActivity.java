@@ -1,3 +1,6 @@
+/**
+ * @author Matteo Franzosi
+ */
 package main.acceleraudio;
 
 import static main.acceleraudio.DBOpenHelper.DATA_SIZE;
