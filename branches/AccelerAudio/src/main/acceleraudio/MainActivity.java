@@ -111,10 +111,10 @@ public class MainActivity extends ActionBarActivity {
 
 	private Cursor getSessions() {
 		// Get all of the notes from the database and create the item list
-		String[] FROM = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK, DURATION};
-		String ORDER_BY = NAME + " ASC";
+		String[] select = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK, DURATION};
+		String order_by = NAME + " ASC";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.query(TABLE, FROM, null, null, null, null, ORDER_BY);
+		Cursor cursor = db.query(TABLE, select, null, null, null, null, order_by);
 		//		startManagingCursor(cursor);
 		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
@@ -122,10 +122,10 @@ public class MainActivity extends ActionBarActivity {
 
 	private Cursor getArraysData(String songName) {
 		// Get the three arrays from blob fields in the data base and the dimension of the arrays
-		String[] FROM = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME, RATE, DURATION};
-		String WHERE = NAME + "= '" + songName + "'";
+		String[] select = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME, RATE, DURATION};
+		String where = NAME + "= '" + songName + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
+		Cursor cursor = db.query(TABLE, select, where, null, null, null, null);
 		//		startManagingCursor(cursor);
 		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
