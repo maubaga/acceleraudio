@@ -115,11 +115,14 @@ public class PlayActivity extends ActionBarActivity {
 
 			TextView duration_text = (TextView) rootView.findViewById(R.id.duration);
 			duration_text.setText(secondToTime(duration));
+			
+			text_time_passed = (TextView) rootView.findViewById(R.id.text_time_passed);
 
 			soundProgress = (SeekBar) rootView.findViewById(R.id.progress_song);
 			soundProgress.setMax(duration);
 			
-			text_time_passed = (TextView) rootView.findViewById(R.id.text_time_passed);
+			
+			
 
 			return rootView;
 		}
@@ -186,6 +189,13 @@ public class PlayActivity extends ActionBarActivity {
 			loop.setImageResource(R.drawable.loop2);
 		}
 	}
+	
+	private void seekTo(int milliseconds){
+		   Intent seekIntent = new Intent(getApplicationContext(),PlayerService.class);
+		   seekIntent.setAction(PlayerService.SEEK_TO);
+		   seekIntent.putExtra(PlayerService.TIME_TO_SEEK, milliseconds);
+		   startService(seekIntent);
+	}
 
 	@Override
 	protected void onStart() {
@@ -196,6 +206,24 @@ public class PlayActivity extends ActionBarActivity {
 		if(isAutoplayEnabled && !isOnPause){
 			play(null);
 		}
+		
+		soundProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
+
+			   @Override 
+			   public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { 
+				   text_time_passed.setText(secondToTime(progress)); 
+			   } 
+
+			   @Override 
+			   public void onStartTrackingTouch(SeekBar seekBar) { 
+				   //no need to use this
+			   } 
+
+			   @Override 
+			   public void onStopTrackingTouch(SeekBar seekBar) {
+				   seekTo(soundProgress.getProgress());					   
+			   } 
+		});
 	}
 
 	@Override
