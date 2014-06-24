@@ -14,13 +14,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class PlayerService extends Service{
-	public static String PLAY_START = "play_start"; 
-	public static String PLAY_PAUSE = "play_pause";
-	public static String PLAY_STOP = "play_stop";
-	public static String SET_LOOP = "set_loop";
-	public static String PATH = "path_directory";
-	public static String NOTIFICATION = "main.acceleraudio.playerservice";
-	public static String CHANGE = "main.acceleraudio.change";
+	public final static String PLAY_START = "play_start"; 
+	public final static String PLAY_PAUSE = "play_pause";
+	public final static String PLAY_STOP = "play_stop";
+	public final static String SEEK_TO = "seek_to";
+	public final static String TIME_TO_SEEK = "time_to_seek";
+	public final static String SET_LOOP = "set_loop";
+	public final static String PATH = "path_directory";
+	public final static String NOTIFICATION = "main.acceleraudio.playerservice";
+	public final static String CHANGE = "main.acceleraudio.change";
 	private String sessionToPlay;
 	private String sessionInPlayNow;
 	private MediaPlayer myPlayer = null; 
@@ -51,6 +53,12 @@ public class PlayerService extends Service{
 		if(SET_LOOP.equals(intent.getAction())){
 			setLoop();
 		}
+		
+		if(SEEK_TO.equals(intent.getAction())) {
+			int timeToSeek = intent.getIntExtra(TIME_TO_SEEK, 0);
+			seekTo(timeToSeek); 
+		}
+		
 		return Service.START_STICKY; 
 	}
 
@@ -152,6 +160,12 @@ public class PlayerService extends Service{
 				pos = 0;
 			} 
 		} 
+	} 
+	
+	private void seekTo(int millisecond) { 
+			pos = millisecond;
+			if (myPlayer != null)
+				myPlayer.seekTo(pos);
 	} 
 	
 	private void setLoop() { 
