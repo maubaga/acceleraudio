@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -40,6 +41,7 @@ public class RecordService extends IntentService  implements SensorEventListener
 	private static int rate;
 	private static Chronometer chrono;
 	private long timeStop = 0;
+	private final int aSecond = 1000000;
 
 	public RecordService() {
 		super("RecordService");
@@ -55,28 +57,12 @@ public class RecordService extends IntentService  implements SensorEventListener
 			}
 			else{                               //is the first time than I have to create the sensorManager and the RecordContainer
 				record = new RecordContainer();
-				
-				switch(intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_UI)){
-				
-				case 0:
-					rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_NORMAL);
-					break;
-					
-				case 1:
-					rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_UI);
-					break;
-					
-				case 2:
-					rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_GAME);
-					break;
-					
-				case 3:
-					rate = intent.getIntExtra(RATE, SensorManager.SENSOR_DELAY_FASTEST);
-					break;
-				}
+
+				SharedPreferences preferences = getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);
+				rate = preferences.getInt("sbRate", 1);
 				mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 				mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-				mSensorManager.registerListener(this, mAccelerometer , rate);
+				mSensorManager.registerListener(this, mAccelerometer , aSecond/rate);
 				
 				
 				

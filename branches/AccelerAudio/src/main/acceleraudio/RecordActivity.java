@@ -75,10 +75,6 @@ public class RecordActivity extends ActionBarActivity{
 				int y_bar_height = Math.abs((int) y) * 10;
 				int z_bar_height = Math.abs((int) z) * 10;
 
-				//				x_bar_height = Math.abs(Integer.parseInt(xTextView.getText().toString()));
-				//				y_bar_height = Integer.parseInt(yTextView.getText().toString());
-				//				z_bar_height = Integer.parseInt(zTextView.getText().toString());
-
 				x_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, x_bar_height));
 				x_bar2.setLayoutParams(new LinearLayout.LayoutParams(50, x_bar_height));
 				y_bar1.setLayoutParams(new LinearLayout.LayoutParams(50, y_bar_height));
@@ -293,15 +289,15 @@ public class RecordActivity extends ActionBarActivity{
 		startService(intent);
 	}
 
-	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
-		Intent createIntent = new Intent(this, CreateActivity.class);
-		createIntent.putExtra(RecordService.X_VALUE, x);
-		createIntent.putExtra(RecordService.Y_VALUE, y);
-		createIntent.putExtra(RecordService.Z_VALUE, z);
-		createIntent.putExtra(RecordService.SIZE, size);
-
-		startActivity(createIntent);
-	}
+//	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
+//		Intent createIntent = new Intent(this, CreateActivity.class);
+//		createIntent.putExtra(RecordService.X_VALUE, x);
+//		createIntent.putExtra(RecordService.Y_VALUE, y);
+//		createIntent.putExtra(RecordService.Z_VALUE, z);
+//		createIntent.putExtra(RecordService.SIZE, size);
+//
+//		startActivity(createIntent);
+//	}
 
 
 }
