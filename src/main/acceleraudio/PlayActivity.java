@@ -167,6 +167,7 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
+		isOnPause = false;
 
 		//background
 		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
@@ -195,6 +196,13 @@ public class PlayActivity extends ActionBarActivity {
 		   seekIntent.setAction(PlayerService.SEEK_TO);
 		   seekIntent.putExtra(PlayerService.TIME_TO_SEEK, milliseconds);
 		   startService(seekIntent);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		//This intent delete the background recording
+		isOnPause = false;
+		finish(); 
 	}
 
 	@Override
