@@ -37,7 +37,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, SELECT, null, null, null, null, ORDER_BY);
 		if(cursor.getCount() == 0){
-			remoteViews.setTextViewText(R.id.widget_text_view, "Non sono ancora presenti tracce. Premi su start per iniziare.");
+			remoteViews.setTextViewText(R.id.widget_text_view, "Premi start per iniziare.");
 		} else{
 			cursor.moveToFirst();
 			String name = cursor.getString(cursor.getColumnIndex(NAME));
@@ -47,7 +47,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 			playIntent.putExtra(PlayActivity.DURATION, duration);
 			playIntent.putExtra(PlayActivity.SESSION_NAME, name);
 			playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
-			PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, playIntent, 0);
+			PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, playIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
 			remoteViews.setOnClickPendingIntent(R.id.widget_text_view, pendingIntent);
 		}
 		

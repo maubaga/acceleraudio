@@ -157,7 +157,7 @@ public class ModifyActivity extends ActionBarActivity {
 			else
 				minutes = "" + mn;
 
-			date = days + "/" + months + "/" + yy;
+			date = yy + "-" + months + "-" + days;
 			time = hh + ":" + minutes;
 
 			first_date.setText(firstData + " " + firstTime);
