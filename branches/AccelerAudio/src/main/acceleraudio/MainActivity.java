@@ -64,11 +64,17 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-				if (savedInstanceState == null) {
-					getSupportFragmentManager().beginTransaction()
-							.add(R.id.container, new PlaceholderFragment()).commit();
-				}
+		if (savedInstanceState == null) {
+			getSupportFragmentManager().beginTransaction()
+			.add(R.id.container, new PlaceholderFragment()).commit();
+		}
 
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		dbHelper.close();
 	}
 
 	@Override
@@ -115,8 +121,6 @@ public class MainActivity extends ActionBarActivity {
 		String order_by = NAME + " ASC";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, select, null, null, null, null, order_by);
-		//		startManagingCursor(cursor);
-		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
 	}
 
@@ -126,8 +130,6 @@ public class MainActivity extends ActionBarActivity {
 		String where = NAME + "= '" + songName + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, select, where, null, null, null, null);
-		//		startManagingCursor(cursor);
-		//TODO Trovare un metodo alternativo che non sia deprecato
 		return cursor;
 	}
 
@@ -163,9 +165,6 @@ public class MainActivity extends ActionBarActivity {
 			session.setBackgroundResource(R.drawable.selector_colors);
 
 			ImageView img = new ImageView(this);
-			//			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 
-			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()));
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 20);
 			params.gravity = Gravity.CENTER_VERTICAL;
@@ -173,9 +172,6 @@ public class MainActivity extends ActionBarActivity {
 			img.setLayoutParams(params);
 
 			TextView name = new TextView(this);
-			//			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
-			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 117, getResources().getDisplayMetrics()), 
-			//					LayoutParams.WRAP_CONTENT);
 			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
 					0, LayoutParams.WRAP_CONTENT, 55);
 			params2.gravity = Gravity.CENTER_VERTICAL;
@@ -184,12 +180,8 @@ public class MainActivity extends ActionBarActivity {
 			name.setMaxLines(1);
 			name.setText(cursor.getString(cursor.getColumnIndex(NAME)));
 			name.setLayoutParams(params2);
-			//			name.setBackgroundColor(0xffdc0918);
 
 			TextView date = new TextView(this);
-			//			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
-			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()), 
-			//					LayoutParams.WRAP_CONTENT);
 			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
 					0, LayoutParams.WRAP_CONTENT, 45);
 			params3.gravity = Gravity.CENTER_VERTICAL;
@@ -197,7 +189,6 @@ public class MainActivity extends ActionBarActivity {
 			date.setTextSize(16);
 			date.setText(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
 			date.setLayoutParams(params3);
-			//			date.setBackgroundColor(0xff0e6eb8);
 
 			//Session's name
 			final String session_name = name.getText().toString();
@@ -240,16 +231,12 @@ public class MainActivity extends ActionBarActivity {
 
 
 			ImageButton play = new ImageButton(this);
-			//			play.setLayoutParams(new LayoutParams(
-			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 
-			//					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
 			LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams(
 					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 20);
 			play.setImageResource(R.drawable.media_play);
 			play.setScaleType(ScaleType.FIT_CENTER);
 			play.setLayoutParams(params4);
 			play.setBackgroundResource(R.drawable.selector_colors);
-			//			play.setBackgroundColor(0xffff9900);
 			play.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -431,7 +418,7 @@ public class MainActivity extends ActionBarActivity {
 				}
 
 				if(new_name.substring(0, 1).equals(" ")){
-					Toast.makeText(MainActivity.this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this,"Il nome non puï¿½ iniziare con uno spazio", Toast.LENGTH_LONG).show();
 					return;
 				}
 
@@ -442,7 +429,7 @@ public class MainActivity extends ActionBarActivity {
 				File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + new_name + ".wav");
 				if(fileCheck.exists() && !new_name.equals(name)){
 
-					Toast.makeText(MainActivity.this, new_name + " esiste già!", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, new_name + " esiste giï¿½!", Toast.LENGTH_SHORT).show();
 					return;
 
 				} else{
@@ -669,21 +656,21 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 
-			/**
-			 * A placeholder fragment containing a simple view.
-			 */
-			public static class PlaceholderFragment extends Fragment {
-		
-				public PlaceholderFragment() {
-				}
-		
-				@Override
-				public View onCreateView(LayoutInflater inflater, ViewGroup container,
-						Bundle savedInstanceState) {
-					View rootView = inflater.inflate(R.layout.fragment_main, container,
-							false);
-					return rootView;
-				}
-			}
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
+	public static class PlaceholderFragment extends Fragment {
+
+		public PlaceholderFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main, container,
+					false);
+			return rootView;
+		}
+	}
 
 }

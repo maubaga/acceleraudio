@@ -84,7 +84,7 @@ public class PrefActivity extends ActionBarActivity {
 			boolean pref_cbX = preferences.getBoolean("cBoxSelectX", true);
 			boolean pref_cbY = preferences.getBoolean("cBoxSelectY", true);
 			boolean pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
-			String pref_rate = preferences.getString("eTextSampleRate", getResources().getString(R.string.sample_rate1));
+			int pref_rate = preferences.getInt("sbRate", 1);
 			String pref_maxRec = preferences.getString("eTextMaxRec", getResources().getString(R.string.duration1));
 			int pref_upsampl = preferences.getInt("sbUpsampling", 100);
 			
@@ -136,14 +136,32 @@ public class PrefActivity extends ActionBarActivity {
 				   } 
 				       });
 			
-//			EditText et_rate = (EditText)rootView.findViewById(R.id.max_rec);
-//			et_rate.setText(pref_rate);
-			
-			sample_rate_values = (TextView)rootView.findViewById(R.id.sample_rate_value);
-			sample_rate_values.setText(pref_rate);
 			
 			max_duration_values = (TextView)rootView.findViewById(R.id.max_duration_value);
 			max_duration_values.setText(pref_maxRec);
+			
+			final TextView tvProgress_rate=(TextView)rootView.findViewById(R.id.progress_seekbar_rate);
+			SeekBar sb_rate = (SeekBar)rootView.findViewById(R.id.v_sample_rate);
+			sb_rate.setProgress(pref_rate);
+			tvProgress_rate.setText(String.valueOf(pref_rate)); 
+			
+			sb_rate.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
+
+				   @Override 
+				   public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { 
+					   tvProgress_rate.setText(String.valueOf(progress + 1)); 
+				   } 
+
+				   @Override 
+				   public void onStartTrackingTouch(SeekBar seekBar) { 
+					   //no need to use this
+				   } 
+
+				   @Override 
+				   public void onStopTrackingTouch(SeekBar seekBar) {
+					   //no need to use this
+				   } 
+				       });
 			
 			final TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
 			SeekBar et_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
@@ -188,65 +206,27 @@ public class PrefActivity extends ActionBarActivity {
 		boolean pref_cbZ = cbZ.isChecked();
 		
 		//stato del box di testo numerico relativo alla freq. di campionamento
-		String pref_rate = rate_value;
+		TextView tvProgress_rate=(TextView)findViewById(R.id.progress_seekbar_rate);
+		int pref_rate = Integer.parseInt(tvProgress_rate.getText().toString());
 		
 		//stato del box di testo numerico relativo alla massima durata della registrazione
 		String pref_maxRec = duration_value;
 		
 		//stato del box di testo numerico relativo al parametro di interpolazione
 		TextView tvProgress=(TextView)findViewById(R.id.progress_seekbar);
-		int seekbar_value = Integer.parseInt(tvProgress.getText().toString());
-		int pref_upsampl = (seekbar_value);
+		int pref_upsampl = Integer.parseInt(tvProgress.getText().toString());
 		
 		//salvo lo stato
 		editor.putBoolean("cBoxSelectX", pref_cbX);
 		editor.putBoolean("cBoxSelectY", pref_cbY);
 		editor.putBoolean("cBoxSelectZ", pref_cbZ);
-		editor.putString("eTextSampleRate", pref_rate);
+		editor.putInt("sbRate", pref_rate);
 		editor.putString("eTextMaxRec", pref_maxRec);
 		editor.putInt("sbUpsampling", pref_upsampl);
 		
 		editor.commit();
 	}
 	
-	public void sampleRateChooser(View view){
-		
-		new AlertDialog.Builder(this).setTitle(R.string.sample_rate).setItems(R.array.rates,
-				new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						
-						sample_rate_values = (TextView)findViewById(R.id.sample_rate_value);
-						
-						switch(which){
-						
-						case 0:
-							rate_value = getResources().getString(R.string.sample_rate0);
-							sample_rate_values.setText(R.string.sample_rate0);
-							break;
-							
-						case 1:
-							rate_value = getResources().getString(R.string.sample_rate1);
-							sample_rate_values.setText(R.string.sample_rate1);
-							break;
-							
-						case 2:
-							rate_value = getResources().getString(R.string.sample_rate2);
-							sample_rate_values.setText(R.string.sample_rate2);
-							break;
-							
-						case 3:
-							rate_value = getResources().getString(R.string.sample_rate3);
-							sample_rate_values.setText(R.string.sample_rate3);
-							break;
-						
-						}
-						
-					}
-				}).show();
-		
-	}
 	
 public void durationChooser(View view){
 		
