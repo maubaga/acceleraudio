@@ -52,24 +52,20 @@
                     android:text="@string/asse_z"
                     android:textSize="16sp" />
             </LinearLayout>
-            
         </LinearLayout>
-        
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:paddingTop="8dp"
-            android:background="#7a7a7a" />
-        
+            android:background="#7a7a7a"
+            android:paddingTop="8dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:clickable="true"
-            android:onClick="sampleRateChooser"
+            android:layout_height="72dp"
             android:orientation="vertical"
             android:paddingLeft="4dp"
-            android:paddingTop="4dp"
-            android:background="@drawable/selector_colors" >
+            android:paddingTop="4dp" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -78,31 +74,45 @@
                 android:text="@string/sample_rate"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/sample_rate_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textColor="#7a7a7a" />
-            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal" >
+
+                <SeekBar
+                    android:id="@+id/v_sample_rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="9"
+                    android:max="49"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/progress_seekbar_rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:paddingTop="8dp"
+                    android:textSize="18sp" />
+            </LinearLayout>
         </LinearLayout>
-        
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:paddingTop="8dp"
-            android:background="#7a7a7a" />
-        
+            android:background="#7a7a7a"
+            android:paddingTop="8dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:background="@drawable/selector_colors"
             android:clickable="true"
             android:onClick="durationChooser"
             android:orientation="vertical"
             android:paddingLeft="4dp"
-            android:paddingTop="4dp"
-            android:background="@drawable/selector_colors" >
+            android:paddingTop="4dp" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -116,17 +126,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="16sp"
-                android:textColor="#7a7a7a" />
-            
+                android:textColor="#7a7a7a"
+                android:textSize="16sp" />
         </LinearLayout>
-        
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:paddingTop="4dp"
-            android:background="#7a7a7a" />
-
+            android:background="#7a7a7a"
+            android:paddingTop="4dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -135,20 +143,28 @@
             android:text="@string/amount_upsampling"
             android:textSize="18sp" />
 
-        <SeekBar
-            android:id="@+id/v_upsamping"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:max="99"
-            android:progress="99" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal" >
 
-        <TextView
-            android:id="@+id/progress_seekbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingTop="8dp"
-            android:textSize="18sp" />
+            <SeekBar
+                android:id="@+id/v_upsamping"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="9"
+                android:max="99"
+                android:progress="99" />
+
+            <TextView
+                android:id="@+id/progress_seekbar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:paddingTop="8dp"
+                android:textSize="18sp" />
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>
