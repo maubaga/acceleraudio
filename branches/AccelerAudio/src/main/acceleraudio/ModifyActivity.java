@@ -160,8 +160,8 @@ public class ModifyActivity extends ActionBarActivity {
 			date = yy + "-" + months + "-" + days;
 			time = hh + ":" + minutes;
 
-			first_date.setText(firstData + " " + firstTime);
-			last_date.setText(date + " " + time);
+			first_date.setText(MainActivity.dateConverter(firstData) + " " + firstTime);
+			last_date.setText(MainActivity.dateConverter(date) + " " + time);
 
 			imageView.setImageURI(Uri.parse(appFileDirectory + oldSessionName + ".png"));
 

@@ -96,7 +96,7 @@ public class PlayerService extends Service{
 				    new Runnable() {
 				        @Override
 				        public void run() {
-				            while(myPlayer != null && myPlayer.isPlaying()) {
+				            while(myPlayer != null && isPlaying) {
 				                 // Updating progress bar
 				                 int progress =  myPlayer.getCurrentPosition();
 				                 Intent changeProgress = new Intent(CHANGE);

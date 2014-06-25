@@ -187,16 +187,16 @@ public class MainActivity extends ActionBarActivity {
 			params3.gravity = Gravity.CENTER_VERTICAL;
 			date.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()), 0, 0, 0);
 			date.setTextSize(16);
-			date.setText(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
+			date.setText(dateConverter(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE))));
 			date.setLayoutParams(params3);
 
 			//Session's name
 			final String session_name = name.getText().toString();
 
 			//First and last date
-			String first_date = cursor.getString(cursor.getColumnIndex(FIRST_DATE));
+			String first_date = dateConverter(cursor.getString(cursor.getColumnIndex(FIRST_DATE)));
 			String first_time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
-			String last_date = cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE));
+			String last_date = dateConverter(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
 			String last_time = cursor.getString(cursor.getColumnIndex(LAST_MODIFY_TIME));
 			final String first_time_date = first_date + " " + first_time;
 			final String last_time_date = last_date + " " + last_time;
@@ -671,6 +671,14 @@ public class MainActivity extends ActionBarActivity {
 					false);
 			return rootView;
 		}
+	}
+	
+	public static String dateConverter(String inputDate){
+		String yy = inputDate.substring(0, 4);
+		String mm = inputDate.substring(5, 7);
+		String dd = inputDate.substring(8, 10);
+		String outputDate = dd + "/" + mm + "/" + yy;
+		return outputDate;
 	}
 
 }
