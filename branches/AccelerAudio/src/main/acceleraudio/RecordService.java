@@ -1,8 +1,7 @@
 package main.acceleraudio;
 
-import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,12 +9,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Chronometer;
 import android.widget.Toast;
 
-public class RecordService extends IntentService  implements SensorEventListener {
+public class RecordService extends Service  implements SensorEventListener {
 
 	public static final String START = "start";
 	public static final String STOP = "stop";
@@ -43,13 +43,14 @@ public class RecordService extends IntentService  implements SensorEventListener
 	private long timeStop = 0;
 	private final int aSecond = 1000000;
 
-	public RecordService() {
-		super("RecordService");
-	}
+	@Override 
+	public IBinder onBind(Intent intent) 
+	{ 
+		return null; // Clients can not bind to this service 
+	} 
 
-	// will be called asynchronously by Android
-	@Override
-	protected void onHandleIntent(Intent intent) {
+	@Override 
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (START.equals(intent.getAction())){ //the button start is pressed.
 			if (isOnPause){                     //isn't the first time, i don't need to create the sensorManager and the RecordContainer
 				isStart = true;
@@ -86,24 +87,15 @@ public class RecordService extends IntentService  implements SensorEventListener
 			isStart = false;
 			mSensorManager.unregisterListener(this);
 			publishFinishResults(); 
-			//TODO SISTEMARE
-			NotificationManager mNotificationManager =
-				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				// mId allows you to update the notification later on.
-				mNotificationManager.cancel(2);
 			stopSelf();
 		}
 		if (CANCEL.equals(intent.getAction())){
 			isStart = false;
 			if(mSensorManager != null)
 				mSensorManager.unregisterListener(this);
-			//TODO SISTEMARE
-			NotificationManager mNotificationManager =
-				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				// mId allows you to update the notification later on.
-				mNotificationManager.cancel(2);
 			stopSelf();
 		}
+		return Service.START_STICKY; 
 	}
 
 	@Override
@@ -162,27 +154,40 @@ public class RecordService extends IntentService  implements SensorEventListener
 		sendBroadcast(intent);
 	}
 	
+	/**
+	 * This method check if the max duration set in the preference is reached. If the time is over it stop the recording.
+	 */
 	private void checkMaxDuration(){
 		if(SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime){
 			isStart = false;
 			mSensorManager.unregisterListener(this);
 			publishFinishResults();
 			Toast.makeText(this,"Raggiunta la durata massima raggiunta di " + (maxRecordTime / 1000) + " secondi.", Toast.LENGTH_LONG).show();
+			stopSelf();
 		}
 	}
 	
+	/**
+	 * Display a simple notification that show that the recording is running in background.
+	 */
 	private void displayNotification(){
+//		Notification notification = new NotificationCompat.Builder(getApplicationContext())
+//		.setContentTitle("Registrazione AccelerAudio")
+//		.setContentText("Premi per fermare la registrazione.")
+//        .setSmallIcon(R.drawable.abc_ic_voice_search)
+//		.build();
+//		
+//		NotificationManager mNotificationManager =
+//		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//		mNotificationManager.notify(2, notification);
+
+		
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
 		.setContentTitle("Registrazione AccelerAudio")
 		.setContentText("Premi per fermare la registrazione.")
         .setSmallIcon(R.drawable.abc_ic_voice_search)
 		.build();
-		
-		NotificationManager mNotificationManager =
-		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		mNotificationManager.notify(2, notification);
-//		final int notificationID = 2; // An ID for this notification unique within the app 
-//		startForeground(notificationID, notification);
+		final int notificationID = 2; // An ID for this notification unique within the app 
+		startForeground(notificationID, notification);
 	}
 } 
