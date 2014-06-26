@@ -615,7 +615,7 @@ public class MainActivity extends ActionBarActivity {
 		else
 			minutes = "" + mn;
 
-		date = days + "/" + months + "/" + yy;
+		date = yy + "-" + months + "-" + days;
 		time = hh + ":" + minutes;
 
 
