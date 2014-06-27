@@ -422,9 +422,9 @@ public class MainActivity extends ActionBarActivity {
 					return;
 				}
 
-				if(new_name.length() > 12){
-					new_name = new_name.substring(0, 12);
-				}
+//				if(new_name.length() > 12){
+//					new_name = new_name.substring(0, 12);
+//				}
 
 				File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + new_name + ".wav");
 				if(fileCheck.exists() && !new_name.equals(name)){

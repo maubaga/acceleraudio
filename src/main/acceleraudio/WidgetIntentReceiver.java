@@ -13,6 +13,7 @@ import static main.acceleraudio.DBOpenHelper.Y_VALUES;
 import static main.acceleraudio.DBOpenHelper.Z_CHECK;
 import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
@@ -105,11 +106,22 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		if (context.getResources().getString(R.string.duration4).equals(pref_maxRec))
 			maxRecordTime = 300 * 1000;
 		
+		String folder = context.getApplicationContext().getFilesDir().getPath() + "/";
+		int fileIndex = 1;
+		String name = "Widget";
+		while(true){
+			File outputFile = new File(folder + name + "-" + fileIndex +".wav");
+			if (!outputFile.exists())
+				break;
+			else
+				fileIndex++;
+		}
+		
 		Intent intent = new Intent(context, RecordService.class);
 		intent.setAction(RecordService.START);
 		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime); 
 		intent.putExtra(RecordService.RATE, rate);
-		intent.putExtra(RecordService.SESSION_NAME, "Da widget"); //TODO mettere un nome sequenziale sennò la sovrascrive sempre
+		intent.putExtra(RecordService.SESSION_NAME, name + "-" + fileIndex); 
 		context.startService(intent);
 		Toast.makeText(context,"Registrazione in background iniziata", Toast.LENGTH_SHORT).show();
 
