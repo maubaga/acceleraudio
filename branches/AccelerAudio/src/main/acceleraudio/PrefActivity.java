@@ -80,11 +80,11 @@ public class PrefActivity extends ActionBarActivity {
 			
 //			recupero gli stati dei componenti utilizzando SharedPreferences
 			Context context = getActivity();
-			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); 
+			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); //TODO mettere le stringhe in costanti
 			boolean pref_cbX = preferences.getBoolean("cBoxSelectX", true);
 			boolean pref_cbY = preferences.getBoolean("cBoxSelectY", true);
 			boolean pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
-			int pref_rate = preferences.getInt("sbRate", 1);
+			int pref_rate = preferences.getInt("sbRate", 50);
 			String pref_maxRec = preferences.getString("eTextMaxRec", getResources().getString(R.string.duration1));
 			int pref_upsampl = preferences.getInt("sbUpsampling", 100);
 			
