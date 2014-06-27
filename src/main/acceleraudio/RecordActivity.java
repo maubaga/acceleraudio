@@ -35,7 +35,7 @@ public class RecordActivity extends ActionBarActivity{
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.STOP_SERVICE){ //The recording is over!
+			if(intent.getAction().equals(RecordService.STOP_SERVICE)){ //The recording is over!
 //				byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
 //				byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 //				byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
@@ -50,7 +50,7 @@ public class RecordActivity extends ActionBarActivity{
 //				startCreateActivity(x, y, z, size);	
 				finish();
 			}
-			if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.SENSOR_CHANGE){ //The values of the sensor are changed
+			if(intent.getAction().equals(RecordService.SENSOR_CHANGE)){ //The values of the sensor are changed
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
 				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
@@ -173,7 +173,8 @@ public class RecordActivity extends ActionBarActivity{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		registerReceiver(receiver, new IntentFilter(RecordService.NOTIFICATION));
+		registerReceiver(receiver, new IntentFilter(RecordService.SENSOR_CHANGE));
+		registerReceiver(receiver, new IntentFilter(RecordService.STOP_SERVICE));
 		//The recording is already stopped in background, this permits to change activity
 		if(isStart && (SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime))
 		stopRecord(null);

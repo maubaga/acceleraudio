@@ -83,7 +83,7 @@
             <intent-filter>
                 <action android:name="mau.baga.chronometer.START" />
                 <action android:name="mau.baga.chronometer.STOP" />
-                <action android:name="main.acceleraudio.receiver" />
+                <action android:name="main.acceleraudio.stop_service" />
             </intent-filter>
 
             <meta-data
