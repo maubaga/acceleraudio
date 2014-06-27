@@ -14,16 +14,16 @@ import android.widget.Toast;
 
 
 public class AccelerAudioUtilities extends Activity{
-	private static Bitmap session_image;
-	private static byte[] x, y, z;
-	private static int size;
+	private Bitmap session_image;
+	private byte[] x, y, z;
+	private int size;
 	
-	private static boolean pref_cbX;
-	private static boolean pref_cbY;
-	private static boolean pref_cbZ;
-	private static int rate; 
-	private static int pref_upsampl;
-	private static int seekbar_value;
+	private boolean pref_cbX;
+	private boolean pref_cbY;
+	private boolean pref_cbZ;
+	private int rate; 
+	private int pref_upsampl;
+	private int seekbar_value;
 
 	//all file parameters
 	private final byte BITS_PER_SAMPLE = 8; // 8, 16...
