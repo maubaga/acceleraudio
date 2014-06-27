@@ -107,6 +107,12 @@ public class ModifyActivity extends ActionBarActivity {
 		zCheck = intent.getBooleanExtra(Z_CHECK, true);
 		seekValue = intent.getIntExtra(UPSAMPL, 50);
 	}
+	
+	@Override
+	public void onBackPressed() {
+		stopPreview(null);
+		finish(); 
+	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
