@@ -3,6 +3,7 @@ package main.acceleraudio;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.SystemClock;
 import android.widget.RemoteViews;
@@ -39,17 +40,31 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			//Stop the chronometer in the widget
 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 			remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
+			LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
 		}
 	}
 	private void startChronometer(Context context) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		remoteViews.setTextColor(R.id.chronometer, Color.GREEN);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
-
+		
+		SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);  //TODO prendere le stringhe dalle costanti
+		String pref_maxRec = preferences.getString("eTextMaxRec", context.getResources().getString(R.string.duration1));
+		int rate = preferences.getInt("sbRate", 50);
+		long maxRecordTime = 0;
+		if (context.getResources().getString(R.string.duration1).equals(pref_maxRec))
+			maxRecordTime = 30 * 1000;
+		if (context.getResources().getString(R.string.duration2).equals(pref_maxRec))
+			maxRecordTime = 60 * 1000;
+		if (context.getResources().getString(R.string.duration3).equals(pref_maxRec))
+			maxRecordTime = 120 * 1000;
+		if (context.getResources().getString(R.string.duration4).equals(pref_maxRec))
+			maxRecordTime = 300 * 1000;
+		
 		Intent intent = new Intent(context, RecordService.class);
 		intent.setAction(RecordService.START);
-		intent.putExtra(RecordService.MAX_RECORD_TIME, 30000); //TODO Get by preferences
-		intent.putExtra(RecordService.RATE, 1);
+		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime); 
+		intent.putExtra(RecordService.RATE, rate);
 		context.startService(intent);
 		Toast.makeText(context,"Registrazione in background iniziata", Toast.LENGTH_SHORT).show();
 
