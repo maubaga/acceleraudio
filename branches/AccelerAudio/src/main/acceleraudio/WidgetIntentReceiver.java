@@ -4,6 +4,7 @@ import static main.acceleraudio.DBOpenHelper.DATA_SIZE;
 import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
 import static main.acceleraudio.DBOpenHelper.FIRST_TIME;
 import static main.acceleraudio.DBOpenHelper.NAME;
+import static main.acceleraudio.DBOpenHelper.TABLE;
 import static main.acceleraudio.DBOpenHelper.UPSAMPL;
 import static main.acceleraudio.DBOpenHelper.X_CHECK;
 import static main.acceleraudio.DBOpenHelper.X_VALUES;
@@ -60,6 +61,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 			z = intent.getByteArrayExtra(RecordService.Z_VALUE);
 			size = intent.getIntExtra(RecordService.SIZE, 0);
+			String name = intent.getStringExtra(RecordService.SESSION_NAME);
 
 //			Intent createIntent = new Intent(context, CreateActivity.class);
 //			createIntent.putExtra(RecordService.X_VALUE, x);
@@ -76,7 +78,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			pref_upsampl = preferences.getInt("sbUpsampling", 100);
 			rate = preferences.getInt("sbRate", 50);
 			
-			addTrack(context, "AutoGenerata"); //TODO get name from TextView in RecordActivity
+			addTrack(context, name); 
 			
 			
 			//Stop the chronometer in the widget
@@ -107,6 +109,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		intent.setAction(RecordService.START);
 		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime); 
 		intent.putExtra(RecordService.RATE, rate);
+		intent.putExtra(RecordService.SESSION_NAME, "Da widget"); //TODO mettere un nome sequenziale sennò la sovrascrive sempre
 		context.startService(intent);
 		Toast.makeText(context,"Registrazione in background iniziata", Toast.LENGTH_SHORT).show();
 
@@ -345,8 +348,9 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			String time = hh + ":" + minutes;
 
 			//database
-			DBOpenHelper oh = new DBOpenHelper(context);
-			SQLiteDatabase db = oh.getWritableDatabase();
+			DBOpenHelper openHelper = new DBOpenHelper(context);
+			SQLiteDatabase db = openHelper.getWritableDatabase();
+			db.delete(TABLE, NAME + "='" + session_name + "'", null);
 			ContentValues values = new ContentValues();
 			values.put(DBOpenHelper.NAME, session_name);
 			values.put(DBOpenHelper.FIRST_DATE, date);
