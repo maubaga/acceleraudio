@@ -1,7 +1,11 @@
 package main.acceleraudio;
 
+import java.io.File;
+
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -22,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RecordActivity extends ActionBarActivity{
 
@@ -30,26 +35,16 @@ public class RecordActivity extends ActionBarActivity{
 	private static int rate;
 	private Chronometer chrono;
 	private boolean isStart = false;
+	private String session_name;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(intent.getAction().equals(RecordService.STOP_SERVICE)){ //The recording is over!
-//				byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
-//				byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
-//				byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
-//				int size = intent.getIntExtra(RecordService.SIZE, 0);
-//
-//				//				String results = "";
-//				//				for (int i = 0; i < size; i++)
-//				//					results = results +" X = " + x[i] + "   Y = " + y[i] + "  Z = " + z[i] +"\n";
-//				//				TextView textView = (TextView) findViewById(R.id.show_results);
-//				//				textView.setText(results);
-//
-//				startCreateActivity(x, y, z, size);	
 				finish();
 			}
+			
 			if(intent.getAction().equals(RecordService.SENSOR_CHANGE)){ //The values of the sensor are changed
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
@@ -94,6 +89,7 @@ public class RecordActivity extends ActionBarActivity{
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.CANCEL);
 		startService(intent);
+		Toast.makeText(this,"Registrazione annullata", Toast.LENGTH_SHORT).show();
 		finish(); 
 	}
 
@@ -176,6 +172,55 @@ public class RecordActivity extends ActionBarActivity{
 		super.onPause();
 		unregisterReceiver(receiver);
 	}
+	
+	
+	
+	
+	public void preStartRecord(View view){
+		TextView name = (TextView) findViewById(R.id.intial_name);
+		session_name = name.getText().toString();
+		//Check if a name is given
+		if(session_name.equals("")){
+			Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		if(session_name.substring(0, 1).equals(" ")){
+			Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		if(session_name.contains("  ")){
+			Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
+			return;
+		}	
+		
+		File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
+		if(fileCheck.exists()){
+
+			new AlertDialog.Builder(this)
+			.setTitle(session_name + " è già presente")
+			.setMessage("Vuoi sovrascrivere il file?")
+			.setIcon(null)
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) { 
+					startRecord(null);
+				}
+			})
+			.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) { 
+					return;
+				}
+			})
+			.show();
+
+		}
+		else{
+			startRecord(view);
+		}
+		
+		
+	}
 
 
 	/**
@@ -202,6 +247,7 @@ public class RecordActivity extends ActionBarActivity{
 		intent.setAction(RecordService.START);
 		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime);
 		intent.putExtra(RecordService.RATE, rate);
+		intent.putExtra(RecordService.SESSION_NAME, session_name);
 		startService(intent);
 		isStart = true;
 
@@ -281,16 +327,5 @@ public class RecordActivity extends ActionBarActivity{
 		intent.setAction(RecordService.STOP);
 		startService(intent);
 	}
-
-//	private void startCreateActivity(byte[] x, byte[] y, byte[] z, int size){
-//		Intent createIntent = new Intent(this, CreateActivity.class);
-//		createIntent.putExtra(RecordService.X_VALUE, x);
-//		createIntent.putExtra(RecordService.Y_VALUE, y);
-//		createIntent.putExtra(RecordService.Z_VALUE, z);
-//		createIntent.putExtra(RecordService.SIZE, size);
-//
-//		startActivity(createIntent);
-//	}
-
 
 }
