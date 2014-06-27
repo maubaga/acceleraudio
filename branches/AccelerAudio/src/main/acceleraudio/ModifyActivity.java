@@ -279,10 +279,6 @@ public class ModifyActivity extends ActionBarActivity {
 				Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
 				return false;
 			}
-
-			if(session_name.length() > 12){
-				session_name = session_name.substring(0, 12);
-			}
 			
 			stopPreview(null); //if the preview still playing I stop it
 			
@@ -321,8 +317,14 @@ public class ModifyActivity extends ActionBarActivity {
 					image.renameTo(new File(dir, session_name + ".png"));
 					audio.delete();
 				}
-
-				finish();
+				
+				Intent playIntent = new Intent(this, PlayActivity.class);
+				playIntent.putExtra("session_name", session_name);
+				playIntent.putExtra(PlayActivity.AUTOPLAY, false); //the song doesn't start automatically
+				playIntent.putExtra(PlayActivity.DURATION, duration);
+				startActivity(playIntent);
+				
+				finish(); 
 			}
 			else{
 				Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
