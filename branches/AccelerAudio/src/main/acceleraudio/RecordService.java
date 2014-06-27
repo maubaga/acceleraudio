@@ -25,6 +25,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	public static final String Y_VALUE = "y_value";
 	public static final String Z_VALUE = "z_value";
 	public static final String SIZE = "size";
+	public static final String SESSION_NAME = "session_name";
 	public static final String STOP_SERVICE  = "main.acceleraudio.stop_service";
 	public static final String SENSOR_CHANGE = "main.acceleraudio.sensor_change";
 	public static final String MAX_RECORD_TIME = "max_record_time";
@@ -40,6 +41,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	private static Chronometer chrono;
 	private long timeStop = 0;
 	private final int aSecond = 1000000;
+	private String session_name;
 
 	@Override 
 	public IBinder onBind(Intent intent) 
@@ -66,6 +68,7 @@ public class RecordService extends Service  implements SensorEventListener {
 				
 				
 				maxRecordTime = intent.getLongExtra(MAX_RECORD_TIME, 30000); //default time 30 seconds
+				session_name = intent.getStringExtra(SESSION_NAME);
 				chrono = new Chronometer(getApplicationContext());
 				chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
 				chrono.start();
@@ -132,6 +135,7 @@ public class RecordService extends Service  implements SensorEventListener {
 		intent.putExtra(Y_VALUE, record.getYarray());
 		intent.putExtra(Z_VALUE, record.getZarray());
 		intent.putExtra(SIZE, record.getSize());
+		intent.putExtra(SESSION_NAME, session_name);
 		sendBroadcast(intent);
 	}
 
