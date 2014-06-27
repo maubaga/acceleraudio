@@ -21,7 +21,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			stopChronometer(context);
 		}
 
-		if(intent.getIntExtra(RecordService.INTENT_TYPE, -1) == RecordService.STOP_SERVICE){ //The recording is over!
+		if(intent.getAction().equals(RecordService.STOP_SERVICE)){ //The recording is over!
 			byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
 			byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 			byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);

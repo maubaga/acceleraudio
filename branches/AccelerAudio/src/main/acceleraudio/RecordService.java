@@ -25,12 +25,10 @@ public class RecordService extends Service  implements SensorEventListener {
 	public static final String Y_VALUE = "y_value";
 	public static final String Z_VALUE = "z_value";
 	public static final String SIZE = "size";
-	public static final String NOTIFICATION = "main.acceleraudio.receiver";
-	public static final String INTENT_TYPE = "intent_type";
+	public static final String STOP_SERVICE  = "main.acceleraudio.stop_service";
+	public static final String SENSOR_CHANGE = "main.acceleraudio.sensor_change";
 	public static final String MAX_RECORD_TIME = "max_record_time";
 	public static final String RATE = "rate";
-	public static final int STOP_SERVICE  = 1;
-	public static final int SENSOR_CHANGE = 0;
 
 	private static SensorManager mSensorManager;
 	private Sensor mAccelerometer;
@@ -129,8 +127,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	 * Called when the button stop is pressed. This method send the value of the three array and the number of samples.
 	 */
 	private void publishFinishResults() {		
-		Intent intent = new Intent(NOTIFICATION);
-		intent.putExtra(INTENT_TYPE, STOP_SERVICE);
+		Intent intent = new Intent(STOP_SERVICE);
 		intent.putExtra(X_VALUE, record.getXarray());
 		intent.putExtra(Y_VALUE, record.getYarray());
 		intent.putExtra(Z_VALUE, record.getZarray());
@@ -145,8 +142,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	 * @param z the value of z axis.
 	 */
 	private void publishResults(float x, float y, float z) {
-		Intent intent = new Intent(NOTIFICATION);
-		intent.putExtra(INTENT_TYPE, SENSOR_CHANGE);
+		Intent intent = new Intent(SENSOR_CHANGE);
 		intent.putExtra(X_VALUE, x);
 		intent.putExtra(Y_VALUE, y);
 		intent.putExtra(Z_VALUE, z);
