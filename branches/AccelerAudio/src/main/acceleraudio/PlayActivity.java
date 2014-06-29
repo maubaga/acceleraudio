@@ -71,6 +71,52 @@ public class PlayActivity extends ActionBarActivity {
 	}
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+
+		text_time_passed.setText(secondToTime(soundProgress.getProgress()));
+
+		if(isAutoplayEnabled && !isOnPause){
+			play(null);
+		}
+
+		soundProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
+
+			@Override 
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {  //update the current time
+				text_time_passed.setText(secondToTime(progress)); 
+			} 
+
+			@Override 
+			public void onStartTrackingTouch(SeekBar seekBar) { 
+				//no need to use this
+			} 
+
+			@Override 
+			public void onStopTrackingTouch(SeekBar seekBar) {  
+				seekTo(soundProgress.getProgress());					   
+			} 
+		});
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
+		registerReceiver(receiver, new IntentFilter(PlayerService.CHANGE));
+		if(isLoop)
+			loop.setImageResource(R.drawable.loop2);
+		else
+			loop.setImageResource(R.drawable.noloop);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		unregisterReceiver(receiver);
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -90,6 +136,20 @@ public class PlayActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	@Override
+	public void onBackPressed() {
+		isOnPause = false;
+		finish(); 
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		// Save isLoop value in saveInstanceState bundle
+		savedInstanceState.putBoolean("is_loop_on", isLoop);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -115,21 +175,24 @@ public class PlayActivity extends ActionBarActivity {
 
 			TextView duration_text = (TextView) rootView.findViewById(R.id.duration);
 			duration_text.setText(secondToTime(duration));
-			
+
 			text_time_passed = (TextView) rootView.findViewById(R.id.text_time_passed);
 
 			soundProgress = (SeekBar) rootView.findViewById(R.id.progress_song);
 			soundProgress.setMax(duration);
-			
-			
-			
 
+			
 			return rootView;
 		}
 	}
 
+	
+	
 
-	//read the .wav file
+	/**
+	 * This method is called when the button "Play" is pressed. It start the PlayService.
+	 * @param view the button pressed.
+	 */
 	public void play(View view){
 
 		ImageButton play = (ImageButton)findViewById(R.id.play);
@@ -139,10 +202,10 @@ public class PlayActivity extends ActionBarActivity {
 
 		isOnPause = false;
 
-		//background
+		//Start the background play
 		Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
 		startIntent.setAction(PlayerService.PLAY_START);
-		startIntent.putExtra(PlayerService.PATH, appFileDirectory + session_name + ".wav");
+		startIntent.putExtra(PlayerService.SONG_TO_PLAY, appFileDirectory + session_name + ".wav");
 		startService(startIntent);
 
 	}
@@ -153,7 +216,7 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
-		
+
 		isOnPause = true;
 
 		Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
@@ -169,9 +232,10 @@ public class PlayActivity extends ActionBarActivity {
 		pause.setVisibility(View.GONE);
 		isOnPause = false;
 
-		//background
+		//Stop the song in background
 		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 		stopService(stopIntent);
+
 		finish();
 	}
 
@@ -180,84 +244,28 @@ public class PlayActivity extends ActionBarActivity {
 		if(isLoop){
 			isLoop = false;
 			loop.setImageResource(R.drawable.noloop);
-			//background
-			Intent loopIntent = new Intent(getApplicationContext(),PlayerService.class); 
-			loopIntent.setAction(PlayerService.SET_LOOP);
-			startService(loopIntent);
 
 		} else{
 			isLoop = true;
-			loop.setImageResource(R.drawable.loop2);
+			loop.setImageResource(R.drawable.loop2);			
 		}
+
+		//I notify the PlayService that the loop button is pressed
+		Intent loopIntent = new Intent(getApplicationContext(), PlayerService.class); 
+		loopIntent.setAction(PlayerService.SET_LOOP);
+		startService(loopIntent);
 	}
-	
+
+
+	/**
+	 * This pass the time in milliseconds to the PlayService.
+	 * @param milliseconds time to seek in milliseconds.
+	 */
 	private void seekTo(int milliseconds){
-		   Intent seekIntent = new Intent(getApplicationContext(),PlayerService.class);
-		   seekIntent.setAction(PlayerService.SEEK_TO);
-		   seekIntent.putExtra(PlayerService.TIME_TO_SEEK, milliseconds);
-		   startService(seekIntent);
-	}
-	
-	@Override
-	public void onBackPressed() {
-		//This intent delete the background recording
-		isOnPause = false;
-		finish(); 
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		text_time_passed.setText(secondToTime(soundProgress.getProgress()));
-		
-		if(isAutoplayEnabled && !isOnPause){
-			play(null);
-		}
-		
-		soundProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
-
-			   @Override 
-			   public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { 
-				   text_time_passed.setText(secondToTime(progress)); 
-			   } 
-
-			   @Override 
-			   public void onStartTrackingTouch(SeekBar seekBar) { 
-				   //no need to use this
-			   } 
-
-			   @Override 
-			   public void onStopTrackingTouch(SeekBar seekBar) {
-				   seekTo(soundProgress.getProgress());					   
-			   } 
-		});
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
-		registerReceiver(receiver, new IntentFilter(PlayerService.CHANGE));
-		if(isLoop)
-			loop.setImageResource(R.drawable.loop2);
-		else
-			loop.setImageResource(R.drawable.noloop);
-
-
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		unregisterReceiver(receiver);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		// Save myVar's value in saveInstanceState bundle
-		savedInstanceState.putBoolean("is_loop_on", isLoop);
-		super.onSaveInstanceState(savedInstanceState);
+		Intent seekIntent = new Intent(getApplicationContext(),PlayerService.class);
+		seekIntent.setAction(PlayerService.SEEK_TO);
+		seekIntent.putExtra(PlayerService.TIME_TO_SEEK, milliseconds);
+		startService(seekIntent);
 	}
 
 

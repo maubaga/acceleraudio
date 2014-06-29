@@ -20,7 +20,7 @@ public class PlayerService extends Service{
 	public final static String SEEK_TO = "seek_to";
 	public final static String TIME_TO_SEEK = "time_to_seek";
 	public final static String SET_LOOP = "set_loop";
-	public final static String PATH = "path_directory";
+	public final static String SONG_TO_PLAY = "song_to_play";
 	public final static String NOTIFICATION = "main.acceleraudio.playerservice";
 	public final static String CHANGE = "main.acceleraudio.change";
 	private String sessionToPlay;
@@ -40,7 +40,7 @@ public class PlayerService extends Service{
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{ 
 		if(PLAY_START.equals(intent.getAction())) {
-			sessionToPlay = intent.getStringExtra(PATH);
+			sessionToPlay = intent.getStringExtra(SONG_TO_PLAY);
 			play(); 
 		}
 		if(PLAY_PAUSE.equals(intent.getAction())){
@@ -137,7 +137,6 @@ public class PlayerService extends Service{
 		.build();
 		final int notificationID = 1; // An ID for this notification unique within the app 
 		startForeground(notificationID, notification);
-		Log.d("notification", "create notification");
 		
 	}
 	
