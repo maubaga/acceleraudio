@@ -31,10 +31,11 @@ import android.widget.Toast;
 public class RecordActivity extends ActionBarActivity{
 
 	private long timeStop = 0;
+	private static long baseChronometer = 0;
 	private static long maxRecordTime;
 	private static int rate;
 	private Chronometer chrono;
-	private boolean isStart = false;
+	private static boolean isStart = false;
 	private String session_name;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -42,15 +43,16 @@ public class RecordActivity extends ActionBarActivity{
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(intent.getAction().equals(RecordService.STOP_SERVICE)){ //The recording is over!
+				isStart = false;
 				finish();
 			}
-			
+
 			if(intent.getAction().equals(RecordService.SENSOR_CHANGE)){ //The values of the sensor are changed
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
 				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
 				int size = intent.getIntExtra(RecordService.SIZE, 0);
-				
+
 				TextView xTextView = (TextView) findViewById(R.id.x_axis);
 				TextView yTextView = (TextView) findViewById(R.id.y_axis);
 				TextView zTextView = (TextView) findViewById(R.id.z_axis);				
@@ -84,12 +86,15 @@ public class RecordActivity extends ActionBarActivity{
 
 
 	@Override
-	public void onBackPressed() {
-		//This intent delete the background recording
-		Intent intent = new Intent(this, RecordService.class);
-		intent.setAction(RecordService.CANCEL);
-		startService(intent);
-		Toast.makeText(this,"Registrazione annullata", Toast.LENGTH_SHORT).show();
+	public void onBackPressed() {		
+		if(isStart){
+			isStart = false;
+			//This intent delete the background recording
+			Intent intent = new Intent(this, RecordService.class);
+			intent.setAction(RecordService.CANCEL);
+			startService(intent);
+			Toast.makeText(this,"Registrazione annullata", Toast.LENGTH_SHORT).show();
+		}
 		finish(); 
 	}
 
@@ -138,12 +143,12 @@ public class RecordActivity extends ActionBarActivity{
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_record,
 					container, false);
-			
+
 			Context context = getActivity();
 			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); 
 			String pref_maxRec = preferences.getString("eTextMaxRec", getResources().getString(R.string.duration1));
 			rate = preferences.getInt("sbRate", 50);
-			
+
 			if (getResources().getString(R.string.duration1).equals(pref_maxRec))
 				maxRecordTime = 30 * 1000;
 			if (getResources().getString(R.string.duration2).equals(pref_maxRec))
@@ -152,8 +157,8 @@ public class RecordActivity extends ActionBarActivity{
 				maxRecordTime = 120 * 1000;
 			if (getResources().getString(R.string.duration4).equals(pref_maxRec))
 				maxRecordTime = 300 * 1000;
-			
-			
+
+
 			return rootView;
 		}
 	}
@@ -164,18 +169,46 @@ public class RecordActivity extends ActionBarActivity{
 		registerReceiver(receiver, new IntentFilter(RecordService.SENSOR_CHANGE));
 		registerReceiver(receiver, new IntentFilter(RecordService.STOP_SERVICE));
 		//The recording is already stopped in background, this permits to change activity
+		chrono = (Chronometer)findViewById(R.id.chrono);
+		chrono.setBase(baseChronometer);
+		chrono.start();
 		if(isStart && (SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime))
-		stopRecord(null);
+			finish();
+		
+		if(isStart){
+			//This is only for graphical changes
+			TextView start_hint = (TextView)findViewById(R.id.hint);
+			ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
+			LinearLayout mic = (LinearLayout)findViewById(R.id.mic);
+			LinearLayout axis_container = (LinearLayout)findViewById(R.id.axis_container);
+			LinearLayout bars = (LinearLayout)findViewById(R.id.bars);
+			LinearLayout notes_container = (LinearLayout)findViewById(R.id.notes);
+			LinearLayout buttons = (LinearLayout)findViewById(R.id.buttons);
+			ImageButton play = (ImageButton)findViewById(R.id.play);
+			ImageButton pause = (ImageButton)findViewById(R.id.pause);
+			chrono.setVisibility(View.VISIBLE);
+
+			start_hint.setVisibility(View.GONE);
+			scroll.setVisibility(View.GONE);
+			mic.setVisibility(View.GONE);
+			bars.setVisibility(View.VISIBLE);
+			axis_container.setVisibility(View.VISIBLE);
+			notes_container.setVisibility(View.VISIBLE);
+			buttons.setVisibility(View.VISIBLE);		
+			play.setVisibility(View.GONE);
+			pause.setVisibility(View.VISIBLE);
+		}
+			
 	}
 	@Override
 	protected void onPause() {
 		super.onPause();
 		unregisterReceiver(receiver);
 	}
-	
-	
-	
-	
+
+
+
+
 	public void preStartRecord(View view){
 		TextView name = (TextView) findViewById(R.id.intial_name);
 		session_name = name.getText().toString();
@@ -194,7 +227,7 @@ public class RecordActivity extends ActionBarActivity{
 			Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
 			return;
 		}	
-		
+
 		File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
 		if(fileCheck.exists()){
 
@@ -218,8 +251,8 @@ public class RecordActivity extends ActionBarActivity{
 		else{
 			startRecord(view);
 		}
-		
-		
+
+
 	}
 
 
@@ -265,6 +298,8 @@ public class RecordActivity extends ActionBarActivity{
 		chrono.setVisibility(View.VISIBLE);
 		chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
 		chrono.start();
+		
+		baseChronometer = chrono.getBase();
 
 		start_hint.setVisibility(View.GONE);
 		scroll.setVisibility(View.GONE);
@@ -275,7 +310,7 @@ public class RecordActivity extends ActionBarActivity{
 		buttons.setVisibility(View.VISIBLE);		
 		play.setVisibility(View.GONE);
 		pause.setVisibility(View.VISIBLE);
-		
+
 	}
 
 	/**
