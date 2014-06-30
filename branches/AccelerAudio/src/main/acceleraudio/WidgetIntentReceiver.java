@@ -90,8 +90,10 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	}
 	private void startChronometer(Context context) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
-		remoteViews.setTextColor(R.id.chronometer, Color.GREEN);
+//		remoteViews.setTextColor(R.id.chronometer, Color.GREEN);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
+		remoteViews.setViewVisibility(R.id.start_button, 8);
+		remoteViews.setViewVisibility(R.id.stop_button, 0);
 		
 		SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);  //TODO prendere le stringhe dalle costanti
 		String pref_maxRec = preferences.getString("eTextMaxRec", context.getResources().getString(R.string.duration1));
@@ -134,9 +136,11 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 	private void stopChronometer(Context context) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
-		remoteViews.setTextColor(R.id.chronometer, Color.MAGENTA);
+//		remoteViews.setTextColor(R.id.chronometer, Color.RED);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
-
+		remoteViews.setViewVisibility(R.id.stop_button, 8);
+		remoteViews.setViewVisibility(R.id.start_button, 0);
+		
 		//This intent stop the background recording and notify to return the values
 		Intent intent = new Intent(context, RecordService.class);
 		intent.setAction(RecordService.STOP);
