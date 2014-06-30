@@ -11,10 +11,6 @@ import android.widget.RemoteViews;
 
 public class LittleWidgetProvider extends AppWidgetProvider {
 
-	// our actions for our buttons
-	public static final String ACTION_WIDGET_START = "mau.baga.chronometer.START";
-	public static final String ACTION_WIDGET_STOP = "mau.baga.chronometer.STOP";
-
 	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -33,13 +29,13 @@ public class LittleWidgetProvider extends AppWidgetProvider {
 
 	public static PendingIntent startButtonPendingIntent(Context context) {
 		Intent intent = new Intent();
-	    intent.setAction(ACTION_WIDGET_START);
+	    intent.setAction(WidgetIntentReceiver.ACTION_WIDGET_START);
 	    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
 	public static PendingIntent stopButtonPendingIntent(Context context) {
 		Intent intent = new Intent();
-	    intent.setAction(ACTION_WIDGET_STOP);
+	    intent.setAction(WidgetIntentReceiver.ACTION_WIDGET_STOP);
 	    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 
