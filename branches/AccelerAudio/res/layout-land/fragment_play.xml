@@ -36,6 +36,13 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
+            <SeekBar
+                android:id="@+id/progress_song"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingTop="16dp" />
+
             <LinearLayout
                 android:id="@+id/progseek"
                 android:layout_width="fill_parent"
@@ -44,25 +51,21 @@
 
                 <TextView
                     android:id="@+id/text_time_passed"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
-                    android:layout_gravity="bottom"
-                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="left"
                     android:scaleType="fitCenter"
                     android:text="@string/initial_time"
                     android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
                     android:textSize="24sp" />
-
-                <SeekBar
-                    android:id="@+id/progress_song"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

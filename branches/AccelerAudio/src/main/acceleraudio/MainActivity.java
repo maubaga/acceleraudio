@@ -233,7 +233,8 @@ public class MainActivity extends ActionBarActivity {
 			ImageButton play = new ImageButton(this);
 			LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams(
 					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 20);
-			play.setImageResource(R.drawable.media_play);
+			play.setImageResource(R.drawable.media_play_main);
+			play.setPadding(5, 5, 5, 5);
 			play.setScaleType(ScaleType.FIT_CENTER);
 			play.setLayoutParams(params4);
 			play.setBackgroundResource(R.drawable.selector_colors);
