@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:orientation="vertical" >
+        android:orientation="horizontal" >
 
         <Chronometer
             android:id="@+id/chronometer"
@@ -34,6 +34,14 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal" >
+            
+            <Button
+                android:id="@+id/widget_prefereces"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#00000000"
+                android:text="pref" />
 
             <Button
                 android:id="@+id/start_button"
@@ -49,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="#00000000"
-                android:text="@string/stop" />
+                android:text="@string/stop" 
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
 
