@@ -23,7 +23,6 @@ import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Calendar;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -113,8 +112,10 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-
-
+	/**
+	 * This method get the detail of all the song in the database.
+	 * @return A Cursor that contains the details.
+	 */
 	private Cursor getSessions() {
 		// Get all of the notes from the database and create the item list
 		String[] select = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK, DURATION};
@@ -124,6 +125,11 @@ public class MainActivity extends ActionBarActivity {
 		return cursor;
 	}
 
+	/**
+	 * This method get the detail of the song from the database and all the date that build it.
+	 * @param songName Name of the song (without extension like .wav)
+	 * @return A Cursor that contains the details.
+	 */
 	private Cursor getArraysData(String songName) {
 		// Get the three arrays from blob fields in the data base and the dimension of the arrays
 		String[] select = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME, RATE, DURATION};
@@ -133,6 +139,10 @@ public class MainActivity extends ActionBarActivity {
 		return cursor;
 	}
 
+	/**
+	 * This method show the all songs record from this app. Get the data from the database and it show this data in a list with an image and a button that permits to play the song. More option and details are allow thanks a long press in the track.
+	 * @param cursor A Cursor that contain the track to show and their details.
+	 */
 	private void showSessions(Cursor cursor) {
 
 		TextView empty_db = (TextView)findViewById(R.id.empty_db);
@@ -187,16 +197,16 @@ public class MainActivity extends ActionBarActivity {
 			params3.gravity = Gravity.CENTER_VERTICAL;
 			date.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()), 0, 0, 0);
 			date.setTextSize(16);
-			date.setText(dateConverter(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE))));
+			date.setText(AccelerAudioUtilities.dateConverter(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE))));
 			date.setLayoutParams(params3);
 
 			//Session's name
 			final String session_name = name.getText().toString();
 
 			//First and last date
-			String first_date = dateConverter(cursor.getString(cursor.getColumnIndex(FIRST_DATE)));
+			String first_date = AccelerAudioUtilities.dateConverter(cursor.getString(cursor.getColumnIndex(FIRST_DATE)));
 			String first_time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
-			String last_date = dateConverter(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
+			String last_date = AccelerAudioUtilities.dateConverter(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
 			String last_time = cursor.getString(cursor.getColumnIndex(LAST_MODIFY_TIME));
 			final String first_time_date = first_date + " " + first_time;
 			final String last_time_date = last_date + " " + last_time;
@@ -591,34 +601,10 @@ public class MainActivity extends ActionBarActivity {
 			return false;
 		}
 
-		final Calendar c = Calendar.getInstance();
-		int yy = c.get(Calendar.YEAR);
-		int mm = c.get(Calendar.MONTH);
-		int dd = c.get(Calendar.DAY_OF_MONTH);
-		int hh = c.get(Calendar.HOUR_OF_DAY);
-		int mn = c.get(Calendar.MINUTE);
-		String months = "";
-		String days = "";
-		String minutes = "";
-		String date = "";
-		String time = "";
 
-		if(dd < 10)
-			days = "0" + dd; 
-		else
-			days = "" + dd;
-		if(mm < 10)
-			months = "0" + (mm + 1); 
-		else
-			months = "" + (mm + 1);
-		if(mn < 10)
-			minutes = "0" + mn; 
-		else
-			minutes = "" + mn;
-
-		date = yy + "-" + months + "-" + days;
-		time = hh + ":" + minutes;
-
+		//Get data and time
+		String date = AccelerAudioUtilities.getCurrentDate();
+		String time = AccelerAudioUtilities.getCurrentTime();
 
 		//insert the data in the database
 		DBOpenHelper oh = new DBOpenHelper(getApplicationContext());
@@ -673,13 +659,4 @@ public class MainActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
-	
-	public static String dateConverter(String inputDate){
-		String yy = inputDate.substring(0, 4);
-		String mm = inputDate.substring(5, 7);
-		String dd = inputDate.substring(8, 10);
-		String outputDate = dd + "/" + mm + "/" + yy;
-		return outputDate;
-	}
-
 }

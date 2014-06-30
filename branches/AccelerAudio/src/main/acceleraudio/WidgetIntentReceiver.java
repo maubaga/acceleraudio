@@ -16,7 +16,6 @@ import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -25,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.SystemClock;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -64,14 +62,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			size = intent.getIntExtra(RecordService.SIZE, 0);
 			String name = intent.getStringExtra(RecordService.SESSION_NAME);
 
-//			Intent createIntent = new Intent(context, CreateActivity.class);
-//			createIntent.putExtra(RecordService.X_VALUE, x);
-//			createIntent.putExtra(RecordService.Y_VALUE, y);
-//			createIntent.putExtra(RecordService.Z_VALUE, z);
-//			createIntent.putExtra(RecordService.SIZE, size);
-//			createIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//			context.startActivity(createIntent);
-			
 			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); 
 			pref_cbX = preferences.getBoolean("cBoxSelectX", true);
 			pref_cbY = preferences.getBoolean("cBoxSelectY", true);
@@ -90,7 +80,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	}
 	private void startChronometer(Context context) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
-//		remoteViews.setTextColor(R.id.chronometer, Color.GREEN);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
 		remoteViews.setViewVisibility(R.id.start_button, 8);
 		remoteViews.setViewVisibility(R.id.stop_button, 0);
@@ -136,7 +125,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 	private void stopChronometer(Context context) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
-//		remoteViews.setTextColor(R.id.chronometer, Color.RED);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
 		remoteViews.setViewVisibility(R.id.stop_button, 8);
 		remoteViews.setViewVisibility(R.id.start_button, 0);
@@ -163,8 +151,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		try {
 			out = context.openFileOutput(file, Context.MODE_PRIVATE);
 			session_image.compress(Bitmap.CompressFormat.PNG, 90, out);
-			//			Toast toast=Toast.makeText(this,"Immagine creta",Toast.LENGTH_LONG);
-			//			toast.show();
 			out.close();
 			return true;
 		} 
@@ -226,8 +212,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 			fOut.write(dataAdded);
 			fOut.close();
-			//			Toast.makeText(getBaseContext(),"Il file è stato creato!",
-			//					Toast.LENGTH_SHORT).show();
 
 			return true;
 
@@ -328,40 +312,12 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		boolean isCreated = createWavFile(context, session_name);
 
 		if(isSaved && isCreated){
-//			Intent playIntent = new Intent(context, PlayActivity.class);
-//			playIntent.putExtra("session_name", session_name);
-//			playIntent.putExtra(PlayActivity.AUTOPLAY, false); //the song doesn't start automatically
-
+			
 			int duration = size * pref_upsampl * 1000 / FREQUENCY; //duration of the sound in milliSeconds
 			
 			//Get data and time
-			final Calendar c = Calendar.getInstance();
-			int yy = c.get(Calendar.YEAR);
-			int mm = c.get(Calendar.MONTH);
-			int dd = c.get(Calendar.DAY_OF_MONTH);
-			int hh = c.get(Calendar.HOUR_OF_DAY);
-			int mn = c.get(Calendar.MINUTE);
-			String months = "";
-			String days = "";
-			String minutes = "";
-
-			if(dd < 10)
-				days = "0" + dd; 
-			else
-				days = "" + dd;
-
-			if(mm < 10)
-				months = "0" + (mm + 1); 
-			else
-				months = "" + (mm + 1);
-
-			if(mn < 10)
-				minutes = "0" + mn; 
-			else
-				minutes = "" + mn;
-
-			String date = yy + "-" + months + "-" + days;
-			String time = hh + ":" + minutes;
+			String date = AccelerAudioUtilities.getCurrentDate();
+			String time = AccelerAudioUtilities.getCurrentTime();
 
 			//database
 			DBOpenHelper openHelper = new DBOpenHelper(context);
@@ -385,10 +341,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			values.put(DBOpenHelper.DATA_SIZE, size);            //add the number samples to the database
 			db.insert(DBOpenHelper.TABLE, null, values);
 
-//			playIntent.putExtra(PlayActivity.DURATION, duration);
-//			playIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//			context.startActivity(playIntent);
-			
 			Intent modifyIntent = new Intent(context, ModifyActivity.class);
 			modifyIntent.putExtra(FIRST_DATE, date);
 			modifyIntent.putExtra(FIRST_TIME, time);

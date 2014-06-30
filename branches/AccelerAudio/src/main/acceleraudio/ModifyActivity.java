@@ -18,7 +18,6 @@ import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -138,36 +137,12 @@ public class ModifyActivity extends ActionBarActivity {
 
 
 			nameEditText.setText(oldSessionName);
-			final Calendar c = Calendar.getInstance();
-			int yy = c.get(Calendar.YEAR);
-			int mm = c.get(Calendar.MONTH);
-			int dd = c.get(Calendar.DAY_OF_MONTH);
-			int hh = c.get(Calendar.HOUR_OF_DAY);
-			int mn = c.get(Calendar.MINUTE);
-			String months = "";
-			String days = "";
-			String minutes = "";
 
-			if(dd < 10)
-				days = "0" + dd; 
-			else
-				days = "" + dd;
-			
-			if(mm < 10)
-				months = "0" + (mm + 1); 
-			else
-				months = "" + (mm + 1);
+			date = AccelerAudioUtilities.getCurrentDate();
+			time = AccelerAudioUtilities.getCurrentTime();
 
-			if(mn < 10)
-				minutes = "0" + mn; 
-			else
-				minutes = "" + mn;
-
-			date = yy + "-" + months + "-" + days;
-			time = hh + ":" + minutes;
-
-			first_date.setText(MainActivity.dateConverter(firstData) + " " + firstTime);
-			last_date.setText(MainActivity.dateConverter(date) + " " + time);
+			first_date.setText(AccelerAudioUtilities.dateConverter(firstData) + " " + firstTime);
+			last_date.setText(AccelerAudioUtilities.dateConverter(date) + " " + time);
 
 			imageView.setImageURI(Uri.parse(appFileDirectory + oldSessionName + ".png"));
 
