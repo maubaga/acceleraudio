@@ -42,7 +42,7 @@ public class PlayActivity extends ActionBarActivity {
 					stop(null);
 			}
 			if(intent.getAction().equals(PlayerService.CHANGE)){
-				int currentProgress = intent.getIntExtra("current_progress", -1);
+				int currentProgress = intent.getIntExtra(PlayerService.CURRENT_PROGRESS, 0);
 				soundProgress.setProgress(currentProgress);                    //update the seekbar
 				text_time_passed.setText(secondToTime(currentProgress));       //update my "chronometer"
 			}
@@ -136,10 +136,15 @@ public class PlayActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		isOnPause = false;
+
+		//Stop the song in background
+		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
+		stopService(stopIntent);
+
 		finish(); 
 	}
 
@@ -181,13 +186,11 @@ public class PlayActivity extends ActionBarActivity {
 			soundProgress = (SeekBar) rootView.findViewById(R.id.progress_song);
 			soundProgress.setMax(duration);
 
-			
+
 			return rootView;
 		}
 	}
 
-	
-	
 
 	/**
 	 * This method is called when the button "Play" is pressed. It start the PlayService.
@@ -209,7 +212,11 @@ public class PlayActivity extends ActionBarActivity {
 		startService(startIntent);
 
 	}
-
+	
+	/**
+	 * This method is called when the button "Pause" is pressed. It pause the song in the PlayService.
+	 * @param view the button pressed.
+	 */
 	public void pause(View view) {
 
 		ImageButton play = (ImageButton)findViewById(R.id.play);
@@ -223,7 +230,11 @@ public class PlayActivity extends ActionBarActivity {
 		pauseIntent.setAction(PlayerService.PLAY_PAUSE);
 		startService(pauseIntent);
 	}
-
+	
+	/**
+	 * This method is called when the button "Stop" is pressed. It stop the PlayService.
+	 * @param view the button pressed.
+	 */
 	public void stop(View view) {
 
 		ImageButton play = (ImageButton)findViewById(R.id.play);
@@ -238,7 +249,11 @@ public class PlayActivity extends ActionBarActivity {
 
 		finish();
 	}
-
+	
+	/**
+	 * This method is called when the button "Loop" is pressed. It permits to loop or not the song in the PlayService.
+	 * @param view the button pressed.
+	 */
 	public void setLoop(View view) {
 
 		if(isLoop){
