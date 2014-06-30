@@ -85,7 +85,7 @@
             android:contentDescription="@string/play_img_description"
             android:onClick="setLoop"
             android:scaleType="fitCenter"
-            android:src="@drawable/loop2" />
+            android:src="@drawable/loop" />
 
         <ImageButton
             android:id="@+id/play"
@@ -97,7 +97,7 @@
             android:contentDescription="@string/play_img_description"
             android:onClick="play"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_play2" />
+            android:src="@drawable/media_play" />
 
         <ImageButton
             android:id="@+id/pause"
@@ -109,7 +109,7 @@
             android:contentDescription="@string/play_img_description"
             android:onClick="pause"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_pause2"
+            android:src="@drawable/media_pause"
             android:visibility="gone" />
 
         <ImageButton
@@ -122,7 +122,7 @@
             android:contentDescription="@string/play_img_description"
             android:onClick="stop"
             android:scaleType="fitCenter"
-            android:src="@drawable/media_stop2" />
+            android:src="@drawable/media_stop" />
     </LinearLayout>
 
 </LinearLayout>

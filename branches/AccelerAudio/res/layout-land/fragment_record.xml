@@ -80,14 +80,16 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/hint"
+    <EditText
+        android:id="@+id/name"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="42dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="@string/start_hint"
-        android:textSize="28sp" />
+        android:hint="@string/new_name_hint"
+        android:inputType="textCapSentences"
+        android:singleLine="true"
+        android:textSize="24sp" />
 
     <LinearLayout
         android:id="@+id/bars"
@@ -152,7 +154,8 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/note" />
+            android:src="@drawable/note"
+            android:contentDescription="@string/note_img_description" />
 
         <TextView
             android:id="@+id/note"
@@ -177,22 +180,13 @@
     <LinearLayout
         android:id="@+id/mic"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginBottom="15dp"
+        android:layout_height="180dp"
+        android:layout_marginBottom="0dp"
         android:layout_marginLeft="180dp"
         android:layout_marginRight="180dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="0dp"
         android:gravity="center"
         android:orientation="vertical" >
-
-        <EditText
-            android:id="@+id/intial_name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:hint="@string/name_hint"
-            android:inputType="textCapSentences"
-            android:singleLine="true" />
 
         <ImageButton
             android:layout_width="match_parent"
@@ -202,8 +196,17 @@
             android:contentDescription="@string/record_img_description"
             android:onClick="preStartRecord"
             android:scaleType="fitCenter"
-            android:src="@drawable/mic2" />
+            android:src="@drawable/rec" />
     </LinearLayout>
+    
+    <TextView
+        android:id="@+id/hint"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_margin="4dp"
+        android:gravity="center"
+        android:text="@string/start_hint"
+        android:textSize="24sp" />
 
     <LinearLayout
         android:id="@+id/buttons"
