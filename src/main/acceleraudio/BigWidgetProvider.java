@@ -16,11 +16,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.widget.RemoteViews;
 
 public class BigWidgetProvider extends AppWidgetProvider {
-
-	// our actions for our buttons
-	public static final String ACTION_WIDGET_START = "mau.baga.chronometer.START";
-	public static final String ACTION_WIDGET_STOP = "mau.baga.chronometer.STOP";
-
 	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -29,6 +24,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
+		
 		
 		//Accedo al database
 		DBOpenHelper dbHelper = new DBOpenHelper(context);
@@ -56,18 +52,22 @@ public class BigWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		remoteViews.setOnClickPendingIntent(R.id.chronometer, pendingIntent);
 		
+		Intent prefIntent = new Intent(context, PrefActivity.class);
+        PendingIntent prefPendingIntent = PendingIntent.getActivity(context, 0, prefIntent, 0);
+		remoteViews.setOnClickPendingIntent(R.id.widget_prefereces, prefPendingIntent);
+		
 		pushWidgetUpdate(context, remoteViews);
 	}
 
 	public static PendingIntent startButtonPendingIntent(Context context) {
 		Intent intent = new Intent();
-	    intent.setAction(ACTION_WIDGET_START);
+	    intent.setAction(WidgetIntentReceiver.ACTION_WIDGET_START);
 	    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
 	public static PendingIntent stopButtonPendingIntent(Context context) {
 		Intent intent = new Intent();
-	    intent.setAction(ACTION_WIDGET_STOP);
+	    intent.setAction(WidgetIntentReceiver.ACTION_WIDGET_STOP);
 	    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 

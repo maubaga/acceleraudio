@@ -81,8 +81,8 @@
             android:name="WidgetIntentReceiver"
             android:label="widgetBroadcastReceiver" >
             <intent-filter>
-                <action android:name="mau.baga.chronometer.START" />
-                <action android:name="mau.baga.chronometer.STOP" />
+                <action android:name="main.acceleraudio.widget.START" />
+                <action android:name="main.acceleraudio.widget.STOP" />
                 <action android:name="main.acceleraudio.stop_service" />
             </intent-filter>
 

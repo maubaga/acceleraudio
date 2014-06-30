@@ -29,10 +29,14 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class WidgetIntentReceiver extends BroadcastReceiver {
+	// our actions for our buttons
+	public static final String ACTION_WIDGET_START = "main.acceleraudio.widget.START";
+	public static final String ACTION_WIDGET_STOP = "main.acceleraudio.widget.STOP";
+
 	private Bitmap session_image;
 	private byte[] x, y, z;
 	private int size;
-	
+
 	private boolean pref_cbX;
 	private boolean pref_cbY;
 	private boolean pref_cbZ;
@@ -48,11 +52,11 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if(intent.getAction().equals(LittleWidgetProvider.ACTION_WIDGET_START)){
-			startChronometer(context);
+		if(intent.getAction().equals(ACTION_WIDGET_START)){
+			startFromWidget(context);
 		}
-		if(intent.getAction().equals(LittleWidgetProvider.ACTION_WIDGET_STOP)){
-			stopChronometer(context);
+		if(intent.getAction().equals(ACTION_WIDGET_STOP)){
+			stopFromWidget(context);
 		}
 
 		if(intent.getAction().equals(RecordService.STOP_SERVICE)){ //The recording is over!
@@ -68,22 +72,23 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
 			pref_upsampl = preferences.getInt("sbUpsampling", 100);
 			rate = preferences.getInt("sbRate", 50);
-			
+
 			addTrack(context, name); 
-			
-			
+
+
 			//Stop the chronometer in the widget
-			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
-			remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
-			LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+			stop(context);
+
 		}
 	}
-	private void startChronometer(Context context) {
+
+
+	private void startFromWidget(Context context) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
 		remoteViews.setViewVisibility(R.id.start_button, 8);
 		remoteViews.setViewVisibility(R.id.stop_button, 0);
-		
+
 		SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);  //TODO prendere le stringhe dalle costanti
 		String pref_maxRec = preferences.getString("eTextMaxRec", context.getResources().getString(R.string.duration1));
 		int rate = preferences.getInt("sbRate", 50);
@@ -96,7 +101,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			maxRecordTime = 120 * 1000;
 		if (context.getResources().getString(R.string.duration4).equals(pref_maxRec))
 			maxRecordTime = 300 * 1000;
-		
+
 		String folder = context.getApplicationContext().getFilesDir().getPath() + "/";
 		int fileIndex = 1;
 		String name = "Widget";
@@ -107,7 +112,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			else
 				fileIndex++;
 		}
-		
+
 		Intent intent = new Intent(context, RecordService.class);
 		intent.setAction(RecordService.START);
 		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime); 
@@ -121,30 +126,51 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, LittleWidgetProvider.stopButtonPendingIntent(context));
 
 		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
 	}
 
-	private void stopChronometer(Context context) {
+
+
+	private void stopFromWidget(Context context) {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
 		remoteViews.setViewVisibility(R.id.stop_button, 8);
 		remoteViews.setViewVisibility(R.id.start_button, 0);
-		
+		remoteViews.setViewVisibility(R.id.widget_prefereces, 0);
+
 		//This intent stop the background recording and notify to return the values
 		Intent intent = new Intent(context, RecordService.class);
 		intent.setAction(RecordService.STOP);
 		context.startService(intent);
 		Toast.makeText(context,"Registrazione finita", Toast.LENGTH_SHORT).show();
-		
+
 		//REMEMBER TO ALWAYS REFRESH YOUR BUTTON CLICK LISTENERS!!!
 		remoteViews.setOnClickPendingIntent(R.id.start_button, LittleWidgetProvider.startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, LittleWidgetProvider.stopButtonPendingIntent(context));
 
 		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
 	}
-	
-	
+
+	private void stop(Context context) {
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
+		remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() , null, false);
+		remoteViews.setViewVisibility(R.id.stop_button, 8);
+		remoteViews.setViewVisibility(R.id.start_button, 0);
+
+		//REMEMBER TO ALWAYS REFRESH YOUR BUTTON CLICK LISTENERS!!!
+		remoteViews.setOnClickPendingIntent(R.id.start_button, LittleWidgetProvider.startButtonPendingIntent(context));
+		remoteViews.setOnClickPendingIntent(R.id.stop_button, LittleWidgetProvider.stopButtonPendingIntent(context));
+		remoteViews.setOnClickPendingIntent(R.id.start_button, BigWidgetProvider.startButtonPendingIntent(context));
+		remoteViews.setOnClickPendingIntent(R.id.stop_button, BigWidgetProvider.stopButtonPendingIntent(context));
+
+		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+	}
+
+
 	//******************************START CREATE HERE********************************************\\
-	
+
 	public boolean saveImage(Context context, String imageName){
 		FileOutputStream out;
 		String file = imageName + ".png"; //name of the .png file
@@ -305,16 +331,16 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		}
 		return bmp;
 	}
-	
+
 	public boolean addTrack(Context context, String session_name){
 		session_image = createImage();
 		boolean isSaved = saveImage(context, session_name);
 		boolean isCreated = createWavFile(context, session_name);
 
 		if(isSaved && isCreated){
-			
+
 			int duration = size * pref_upsampl * 1000 / FREQUENCY; //duration of the sound in milliSeconds
-			
+
 			//Get data and time
 			String date = AccelerAudioUtilities.getCurrentDate();
 			String time = AccelerAudioUtilities.getCurrentTime();
