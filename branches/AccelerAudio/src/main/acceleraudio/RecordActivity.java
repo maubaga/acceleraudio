@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -157,11 +158,12 @@ public class RecordActivity extends ActionBarActivity{
 				maxRecordTime = 120 * 1000;
 			if (getResources().getString(R.string.duration4).equals(pref_maxRec))
 				maxRecordTime = 300 * 1000;
-
-
+			
 			return rootView;
 		}
 	}
+	
+	
 
 	@Override
 	protected void onResume() {
@@ -177,6 +179,7 @@ public class RecordActivity extends ActionBarActivity{
 		
 		if(isStart){
 			//This is only for graphical changes
+			EditText start_name = (EditText)findViewById(R.id.name);
 			TextView start_hint = (TextView)findViewById(R.id.hint);
 			ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
 			LinearLayout mic = (LinearLayout)findViewById(R.id.mic);
@@ -188,6 +191,7 @@ public class RecordActivity extends ActionBarActivity{
 			ImageButton pause = (ImageButton)findViewById(R.id.pause);
 			chrono.setVisibility(View.VISIBLE);
 
+			start_name.setVisibility(View.GONE);
 			start_hint.setVisibility(View.GONE);
 			scroll.setVisibility(View.GONE);
 			mic.setVisibility(View.GONE);
@@ -210,7 +214,7 @@ public class RecordActivity extends ActionBarActivity{
 
 
 	public void preStartRecord(View view){
-		TextView name = (TextView) findViewById(R.id.intial_name);
+		EditText name = (EditText) findViewById(R.id.name);
 		session_name = name.getText().toString();
 		//Check if a name is given
 		if(session_name.equals("")){
@@ -285,6 +289,7 @@ public class RecordActivity extends ActionBarActivity{
 		isStart = true;
 
 		//This is only for graphical changes
+		EditText start_name = (EditText)findViewById(R.id.name);
 		TextView start_hint = (TextView)findViewById(R.id.hint);
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
 		LinearLayout mic = (LinearLayout)findViewById(R.id.mic);
@@ -301,6 +306,7 @@ public class RecordActivity extends ActionBarActivity{
 		
 		baseChronometer = chrono.getBase();
 
+		start_name.setVisibility(View.GONE);
 		start_hint.setVisibility(View.GONE);
 		scroll.setVisibility(View.GONE);
 		mic.setVisibility(View.GONE);
@@ -334,6 +340,8 @@ public class RecordActivity extends ActionBarActivity{
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
 	}
+	
+	
 
 	/**
 	 * A method called when the button stop is pressed, this method show the data stored in the object Record
@@ -362,5 +370,7 @@ public class RecordActivity extends ActionBarActivity{
 		intent.setAction(RecordService.STOP);
 		startService(intent);
 	}
+	
+	
 
 }

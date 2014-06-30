@@ -105,7 +105,7 @@ public class PlayActivity extends ActionBarActivity {
 		registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
 		registerReceiver(receiver, new IntentFilter(PlayerService.CHANGE));
 		if(isLoop)
-			loop.setImageResource(R.drawable.loop2);
+			loop.setImageResource(R.drawable.loop);
 		else
 			loop.setImageResource(R.drawable.noloop);
 	}
@@ -262,7 +262,7 @@ public class PlayActivity extends ActionBarActivity {
 
 		} else{
 			isLoop = true;
-			loop.setImageResource(R.drawable.loop2);			
+			loop.setImageResource(R.drawable.loop);			
 		}
 
 		//I notify the PlayService that the loop button is pressed
