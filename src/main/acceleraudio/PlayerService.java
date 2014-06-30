@@ -23,12 +23,13 @@ public class PlayerService extends Service{
 	public final static String SONG_TO_PLAY = "song_to_play";
 	public final static String NOTIFICATION = "main.acceleraudio.playerservice";
 	public final static String CHANGE = "main.acceleraudio.change";
+	public final static String CURRENT_PROGRESS = "current_progress";
 	private String sessionToPlay;
 	private String sessionInPlayNow;
 	private MediaPlayer myPlayer = null; 
 	private boolean isPlaying = false;
 	private boolean isLoop = true;
-	private int pos = 0;
+	private int position = 0;
 
 	@Override 
 	public IBinder onBind(Intent intent) 
@@ -49,38 +50,40 @@ public class PlayerService extends Service{
 		if(PLAY_STOP.equals(intent.getAction())){
 			stop();
 		}
-		
+
 		if(SET_LOOP.equals(intent.getAction())){
 			setLoop();
 		}
-		
+
 		if(SEEK_TO.equals(intent.getAction())) {
 			int timeToSeek = intent.getIntExtra(TIME_TO_SEEK, 0);
 			seekTo(timeToSeek); 
 		}
-		
+
 		return Service.START_STICKY; 
 	}
-
+	
+	/**
+	 * This method is called when the button "Play" is pressed. It start the song.
+	 */
 	private void play() { 
 		if(isPlaying && sessionToPlay.equals(sessionInPlayNow))
 			return;
-		
+
 		if(isPlaying && !sessionToPlay.equals(sessionInPlayNow))
 			stop();
-		
+
 		try {
-			isPlaying = true;
 			myPlayer = new MediaPlayer(); 
 			myPlayer.setDataSource(sessionToPlay);
 			myPlayer.prepare();
-			myPlayer.seekTo(pos);
+			myPlayer.seekTo(position);
 			myPlayer.start();
 			myPlayer.setOnCompletionListener(new OnCompletionListener() {				
 				@Override
 				public void onCompletion(MediaPlayer m) {
 					Intent intent = new Intent(NOTIFICATION);
-					pos = 0;
+					position = 0;
 					isPlaying = false;
 					sendBroadcast(intent);	
 					if(isLoop)
@@ -89,38 +92,38 @@ public class PlayerService extends Service{
 						stopSelf();	
 				}
 			});
+			isPlaying = true;
 			sessionInPlayNow = sessionToPlay.toString();
-			
+
 			//Thread to update the seekbar
 			new Thread(
-				    new Runnable() {
-				        @Override
-				        public void run() {
-				            while(myPlayer != null && isPlaying) {
-				                 // Updating progress bar
-				                 int progress =  myPlayer.getCurrentPosition();
-				                 Intent changeProgress = new Intent(CHANGE);
-				                 changeProgress.putExtra("current_progress", progress);
-				                 sendBroadcast(changeProgress);
-				            	
-				                        try {
-				                            // Sleep for 5 seconds
-				                            Thread.sleep(100);
-				                        } catch (InterruptedException e) {
-				                            Log.d("Sleep seekbar", "sleep failure");
-				                        }
-				            }
+					new Runnable() {
+						@Override
+						public void run() {
+							while(myPlayer != null && isPlaying) {
+								// Updating progress bar
+								int progress =  myPlayer.getCurrentPosition();
+								Intent changeProgress = new Intent(CHANGE);
+								changeProgress.putExtra(CURRENT_PROGRESS, progress);
+								sendBroadcast(changeProgress);
 
-				        }
-				    }
-				// Starts the thread by calling the run() method in its Runnable
-				).start();
+								try {
+									// Sleep for 0.1 seconds
+									Thread.sleep(100);
+								} catch (InterruptedException e) {
+									Log.d("Sleep seekbar", "sleep failure");
+								}
+							}
+						}
+					}
+					// Starts the thread by calling the run() method in its Runnable
+					).start();
 
 		} catch (IOException e) {
-			Toast.makeText(getBaseContext(),"prepare failed",
+			Toast.makeText(getBaseContext(),"Errore nell'esecuzione della traccia: " + sessionToPlay,
 					Toast.LENGTH_SHORT).show();
 		}
-		
+
 		// Runs this service in the foreground, 
 		// supplying the ongoing notification to be shown to the user
 		Intent intent = new Intent(this, PlayActivity.class); 
@@ -132,45 +135,57 @@ public class PlayerService extends Service{
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
 		.setContentTitle("Stai ascoltando: "+sessionInPlayNow.substring(35, sessionInPlayNow.length()-4))
 		.setContentText("Premi per tornare alla traccia.")
-        .setSmallIcon(R.drawable.abc_ic_go)
+		.setSmallIcon(R.drawable.abc_ic_go)
 		.setContentIntent(pi) // Required on Gingerbread and below 
 		.build();
 		final int notificationID = 1; // An ID for this notification unique within the app 
 		startForeground(notificationID, notification);
-		
+
 	}
 	
+	/**
+	 * This method is called when the button "Pause" is pressed. It pause the song in the song.
+	 */
 	private void pause() { 
 		if (isPlaying) { 
 			isPlaying = false; 
 			myPlayer.pause();
-			pos = myPlayer.getCurrentPosition();
-			
+			position = myPlayer.getCurrentPosition();
+
+		} 
+	} 
+	
+	/**
+	 * This method is called when the button "Stop" is pressed. It stop the song.
+	 */
+	private void stop() { 
+		if (isPlaying) 
+			isPlaying = false; 
+		
+		if (myPlayer != null) { 
+			myPlayer.release(); 
+			myPlayer = null;
+			position = 0;
 		} 
 	} 
 
-	private void stop() { 
-		if (isPlaying) 
-		{ 
-			isPlaying = false; 
-			if (myPlayer != null) { 
-				myPlayer.release(); 
-				myPlayer = null;
-				pos = 0;
-			} 
-		} 
+	/**
+	 * This update the current position of the song.
+	 * @param milliseconds time to seek in milliseconds.
+	 */
+	private void seekTo(int milliseconds) { 
+		position = milliseconds;
+		if (myPlayer != null)
+			myPlayer.seekTo(position);
 	} 
 	
-	private void seekTo(int millisecond) { 
-			pos = millisecond;
-			if (myPlayer != null)
-				myPlayer.seekTo(pos);
-	} 
-	
+	/**
+	 * This method is called when the button "Loop" is pressed. It permits to loop or not the song in the PlayService.
+	 */
 	private void setLoop() { 
 		if(isLoop){
 			isLoop = false;
-			
+
 		} else{
 			isLoop = true;
 		} 
@@ -180,6 +195,6 @@ public class PlayerService extends Service{
 	public void onDestroy() {
 		stop();
 	}
-	
+
 
 }
