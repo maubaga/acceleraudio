@@ -33,7 +33,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 		//Accedo al database
 		DBOpenHelper dbHelper = new DBOpenHelper(context);
 		String[] SELECT = {NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, DURATION}; 
-		String ORDER_BY = LAST_MODIFY_DATE + ", " + LAST_MODIFY_TIME + " DESC";
+		String ORDER_BY = LAST_MODIFY_DATE + " DESC, " + LAST_MODIFY_TIME + " DESC";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, SELECT, null, null, null, null, ORDER_BY);
 		if(cursor.getCount() == 0){
