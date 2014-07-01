@@ -1,6 +1,7 @@
 package main.acceleraudio;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -169,10 +170,15 @@ public class RecordService extends Service  implements SensorEventListener {
 	 * Display a simple notification that show that the recording is running in background.
 	 */
 	private void displayNotification(){	
+		Intent intent = new Intent();
+	    intent.setAction(WidgetIntentReceiver.ACTION_WIDGET_STOP);
+	    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	    
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
 		.setContentTitle("Registrazione AccelerAudio")
 		.setContentText("Premi per fermare la registrazione.")
         .setSmallIcon(R.drawable.abc_ic_voice_search)
+        .setContentIntent(pendingIntent)
 		.build();
 		final int notificationID = 2; // An ID for this notification unique within the app 
 		startForeground(notificationID, notification);
