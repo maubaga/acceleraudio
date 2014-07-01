@@ -429,18 +429,14 @@ public class MainActivity extends ActionBarActivity {
 				}
 
 				if(new_name.substring(0, 1).equals(" ")){
-					Toast.makeText(MainActivity.this,"Il nome non puï¿½ iniziare con uno spazio", Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
 					return;
 				}
-
-//				if(new_name.length() > 12){
-//					new_name = new_name.substring(0, 12);
-//				}
 
 				File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + new_name + ".wav");
 				if(fileCheck.exists() && !new_name.equals(name)){
 
-					Toast.makeText(MainActivity.this, new_name + " esiste giï¿½!", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, new_name + " esiste già!", Toast.LENGTH_SHORT).show();
 					return;
 
 				} else{
@@ -457,6 +453,8 @@ public class MainActivity extends ActionBarActivity {
 					image.renameTo(new File(dir, new_name + ".png"));
 					audio.renameTo(new File(dir, new_name + ".wav"));
 					showSessions(getSessions());
+					
+					WidgetIntentReceiver.updateWidgetOnStop(getApplicationContext()); //Update the widget with the last song.
 
 				}
 
