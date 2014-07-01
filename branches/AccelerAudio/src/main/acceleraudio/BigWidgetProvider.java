@@ -25,28 +25,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
 		
-		
-		//Get the last song from the database
-		DBOpenHelper dbHelper = new DBOpenHelper(context);
-		String[] SELECT = {NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, DURATION}; 
-		String ORDER_BY = LAST_MODIFY_DATE + " DESC, " + LAST_MODIFY_TIME + " DESC";
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.query(TABLE, SELECT, null, null, null, null, ORDER_BY);
-		if(cursor.getCount() == 0){
-			remoteViews.setTextViewText(R.id.widget_text_view, "Premi start per iniziare.");
-		} else{
-			cursor.moveToFirst();
-			String name = cursor.getString(cursor.getColumnIndex(NAME));
-			remoteViews.setTextViewText(R.id.widget_text_view, name);
-			int duration = cursor.getInt(cursor.getColumnIndex(DURATION));
-			Intent playIntent = new Intent(context, PlayActivity.class);
-			playIntent.putExtra(PlayActivity.DURATION, duration);
-			playIntent.putExtra(PlayActivity.SESSION_NAME, name);
-			playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
-			PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, playIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
-			remoteViews.setOnClickPendingIntent(R.id.widget_text_view, pendingIntent);
-		}
-		
+		updateLastSong(remoteViews, context);
 		
 		Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
@@ -72,6 +51,29 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	public static PendingIntent preferencesPendingIntent(Context context) {
 		Intent prefIntent = new Intent(context, PrefActivity.class);
 	    return PendingIntent.getActivity(context, 0, prefIntent, 0);
+	}
+	
+	public static void updateLastSong(RemoteViews remoteViews, Context context) {
+		//Get the last song from the database
+		DBOpenHelper dbHelper = new DBOpenHelper(context);
+		String[] SELECT = {NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, DURATION}; 
+		String ORDER_BY = LAST_MODIFY_DATE + " DESC, " + LAST_MODIFY_TIME + " DESC";
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor cursor = db.query(TABLE, SELECT, null, null, null, null, ORDER_BY);
+		if(cursor.getCount() == 0){
+			remoteViews.setTextViewText(R.id.widget_text_view, "Premi start per iniziare.");
+		} else{
+			cursor.moveToFirst();
+			String name = cursor.getString(cursor.getColumnIndex(NAME));
+			remoteViews.setTextViewText(R.id.widget_text_view, name);
+			int duration = cursor.getInt(cursor.getColumnIndex(DURATION));
+			Intent playIntent = new Intent(context, PlayActivity.class);
+			playIntent.putExtra(PlayActivity.DURATION, duration);
+			playIntent.putExtra(PlayActivity.SESSION_NAME, name);
+			playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
+			PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, playIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
+			remoteViews.setOnClickPendingIntent(R.id.widget_text_view, pendingIntent);
+		}		
 	}
 
 	public static void pushWidgetUpdate(Context context, RemoteViews remoteViews) {
