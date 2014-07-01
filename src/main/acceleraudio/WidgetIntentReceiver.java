@@ -86,8 +86,8 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	private void startFromWidget(Context context) {
 		//Get max duration and rate from the preferences
 		SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);  //TODO prendere le stringhe dalle costanti
-		String pref_maxRec = preferences.getString("eTextMaxRec", context.getResources().getString(R.string.duration1));
-		int rate = preferences.getInt("sbRate", 50);
+		String pref_maxRec = preferences.getString(PrefActivity.KEY_MAX_REC, context.getResources().getString(R.string.duration1));
+		int rate = preferences.getInt(PrefActivity.KEY_RATE, 50);
 		long maxRecordTime = 0;
 		if (context.getResources().getString(R.string.duration1).equals(pref_maxRec))
 			maxRecordTime = 30 * 1000;
