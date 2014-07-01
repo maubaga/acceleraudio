@@ -168,18 +168,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	/**
 	 * Display a simple notification that show that the recording is running in background.
 	 */
-	private void displayNotification(){
-//		Notification notification = new NotificationCompat.Builder(getApplicationContext())
-//		.setContentTitle("Registrazione AccelerAudio")
-//		.setContentText("Premi per fermare la registrazione.")
-//        .setSmallIcon(R.drawable.abc_ic_voice_search)
-//		.build();
-//		
-//		NotificationManager mNotificationManager =
-//		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//		mNotificationManager.notify(2, notification);
-
-		
+	private void displayNotification(){	
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
 		.setContentTitle("Registrazione AccelerAudio")
 		.setContentText("Premi per fermare la registrazione.")

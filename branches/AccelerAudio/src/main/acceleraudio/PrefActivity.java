@@ -34,7 +34,7 @@ public class PrefActivity extends ActionBarActivity {
 	static TextView max_duration_values;
 	static String duration_value;
 	
-	//keys for the values ​​contained in SharedPreferences
+	//keys for the values contained in SharedPreferences
 	static final String KEY_SELECT_X="cBoxSelectX";
 	static final String KEY_SELECT_Y="cBoxSelectY";
 	static final String KEY_SELECT_Z="cBoxSelectZ";
@@ -241,7 +241,7 @@ public class PrefActivity extends ActionBarActivity {
 		editor.commit();
 	}
 	
-	
+//a pop-up for choose the duration of record
 public void durationChooser(View view){
 		
 		new AlertDialog.Builder(this).setTitle(R.string.max_duration).setItems(R.array.durations,

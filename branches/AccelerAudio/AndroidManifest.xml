@@ -46,11 +46,6 @@
             android:parentActivityName="main.acceleraudio.MainActivity" >
         </activity>
         <activity
-            android:name="main.acceleraudio.CreateActivity"
-            android:label="@string/title_activity_create"
-            android:parentActivityName="main.acceleraudio.RecordActivity" >
-        </activity>
-        <activity
             android:name="main.acceleraudio.ModifyActivity"
             android:label="@string/title_activity_modify" >
         </activity>
