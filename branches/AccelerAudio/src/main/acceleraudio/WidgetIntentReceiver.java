@@ -33,7 +33,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	public static final String ACTION_WIDGET_START = "main.acceleraudio.widget.START";
 	public static final String ACTION_WIDGET_STOP = "main.acceleraudio.widget.STOP";
 
-	private Bitmap session_image;
 	private byte[] x, y, z;
 	private int size;
 
@@ -192,7 +191,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 	//******************************START CREATE HERE********************************************\\
 
-	public boolean saveImage(Context context, String imageName){
+	public static boolean saveImage(Context context, String imageName, Bitmap session_image){
 		FileOutputStream out;
 		String file = imageName + ".png"; //name of the .png file
 		try {
@@ -354,8 +353,8 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	}
 
 	public boolean addTrack(Context context, String session_name){
-		session_image = createImage();
-		boolean isSaved = saveImage(context, session_name);
+		Bitmap session_image = createImage();
+		boolean isSaved = saveImage(context, session_name, session_image);
 		boolean isCreated = createWavFile(context, session_name);
 
 		if(isSaved && isCreated){

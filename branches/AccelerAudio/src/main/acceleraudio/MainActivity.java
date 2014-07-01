@@ -580,19 +580,8 @@ public class MainActivity extends ActionBarActivity {
 			input.close();
 			output.close();
 
-			//duplicate the image
-			inputFile = new File(folder + name + ".png");
-			input = new FileInputStream(inputFile);
-			output = openFileOutput(name + "-" + fileIndex +".png", MODE_PRIVATE);
-
-
-			buf = new byte[(int)inputFile.length()];
-			while ((len = input.read(buf)) > 0) {
-				output.write(buf, 0, len);
-			}
-
-			input.close();
-			output.close();
+			// Create new image.
+			WidgetIntentReceiver.saveImage(this, name + "-" + fileIndex, WidgetIntentReceiver.createImage());
 
 		}
 		catch (Exception e) {
