@@ -11,8 +11,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:padding="8dp"
+        android:maxLines="2"
         android:clickable="true"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -34,20 +37,12 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical" >
-            
-            <Button
-                android:id="@+id/widget_prefereces"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="#00000000"
-                android:text="pref" />
 
             <Button
                 android:id="@+id/start_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:paddingTop="16dp"
                 android:background="#00000000"
                 android:text="@string/start" />
 
@@ -59,6 +54,14 @@
                 android:background="#00000000"
                 android:text="@string/stop" 
                 android:visibility="gone"/>
+            
+            <Button
+                android:id="@+id/widget_prefereces"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/ic_action_settings" />
         </LinearLayout>
     </LinearLayout>
 
