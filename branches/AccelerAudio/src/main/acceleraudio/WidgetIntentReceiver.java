@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -135,16 +136,17 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		//Start the little widget
 		RemoteViews littleRemoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		littleRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
-		littleRemoteViews.setViewVisibility(R.id.start_button, 8);
-		littleRemoteViews.setViewVisibility(R.id.stop_button, 0);
+		littleRemoteViews.setViewVisibility(R.id.start_button, View.GONE);
+		littleRemoteViews.setViewVisibility(R.id.stop_button, View.VISIBLE);
 
 		//Start the big widget
 		RemoteViews bigRemoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		bigRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
-		bigRemoteViews.setViewVisibility(R.id.start_button, 8);
-		bigRemoteViews.setViewVisibility(R.id.widget_text_view, 8);
-		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, 8);
-		bigRemoteViews.setViewVisibility(R.id.stop_button, 0);
+		bigRemoteViews.setViewPadding(R.id.chronometer, 80, 0, 0, 0);
+		bigRemoteViews.setViewVisibility(R.id.start_button, View.GONE);
+		bigRemoteViews.setViewVisibility(R.id.widget_text_view, View.GONE);
+		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, View.GONE);
+		bigRemoteViews.setViewVisibility(R.id.stop_button, View.VISIBLE);
 
 		//Refresh the stop listener.
 		littleRemoteViews.setOnClickPendingIntent(R.id.stop_button, LittleWidgetProvider.stopButtonPendingIntent(context));
@@ -165,17 +167,17 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		RemoteViews littleRemoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		littleRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, false);
 		littleRemoteViews.setTextViewText(R.id.chronometer, context.getResources().getString(R.string.initial_time));
-		littleRemoteViews.setViewVisibility(R.id.start_button, 0);
-		littleRemoteViews.setViewVisibility(R.id.stop_button, 8);
+		littleRemoteViews.setViewVisibility(R.id.start_button, View.VISIBLE);
+		littleRemoteViews.setViewVisibility(R.id.stop_button, View.GONE);
 
 		//Stop the big widget
 		RemoteViews bigRemoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		bigRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, false);
 		bigRemoteViews.setTextViewText(R.id.chronometer, context.getResources().getString(R.string.initial_time));
-		bigRemoteViews.setViewVisibility(R.id.start_button, 0);
-		bigRemoteViews.setViewVisibility(R.id.widget_text_view, 0);
-		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, 0);
-		bigRemoteViews.setViewVisibility(R.id.stop_button, 8);
+		bigRemoteViews.setViewVisibility(R.id.start_button, View.VISIBLE);
+		bigRemoteViews.setViewVisibility(R.id.widget_text_view, View.VISIBLE);
+		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, View.VISIBLE);
+		bigRemoteViews.setViewVisibility(R.id.stop_button, View.GONE);
 		
 		BigWidgetProvider.updateLastSong(bigRemoteViews, context);
 
