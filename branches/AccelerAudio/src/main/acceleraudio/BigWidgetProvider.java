@@ -20,13 +20,13 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		
-		//Definisco il layout del widget e mi salvo la sua istanza in remoteViews
+		//Get the layout of the BigWidget
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
 		
 		
-		//Accedo al database
+		//Get the last song from the database
 		DBOpenHelper dbHelper = new DBOpenHelper(context);
 		String[] SELECT = {NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, DURATION}; 
 		String ORDER_BY = LAST_MODIFY_DATE + " DESC, " + LAST_MODIFY_TIME + " DESC";
@@ -52,9 +52,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		remoteViews.setOnClickPendingIntent(R.id.chronometer, pendingIntent);
 		
-		Intent prefIntent = new Intent(context, PrefActivity.class);
-        PendingIntent prefPendingIntent = PendingIntent.getActivity(context, 0, prefIntent, 0);
-		remoteViews.setOnClickPendingIntent(R.id.widget_prefereces, prefPendingIntent);
+		remoteViews.setOnClickPendingIntent(R.id.widget_prefereces, preferencesPendingIntent(context));
 		
 		pushWidgetUpdate(context, remoteViews);
 	}
@@ -69,6 +67,11 @@ public class BigWidgetProvider extends AppWidgetProvider {
 		Intent intent = new Intent();
 	    intent.setAction(WidgetIntentReceiver.ACTION_WIDGET_STOP);
 	    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	}
+	
+	public static PendingIntent preferencesPendingIntent(Context context) {
+		Intent prefIntent = new Intent(context, PrefActivity.class);
+	    return PendingIntent.getActivity(context, 0, prefIntent, 0);
 	}
 
 	public static void pushWidgetUpdate(Context context, RemoteViews remoteViews) {
