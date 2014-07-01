@@ -174,6 +174,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		RemoteViews bigRemoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		bigRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, false);
 		bigRemoteViews.setTextViewText(R.id.chronometer, context.getResources().getString(R.string.initial_time));
+		bigRemoteViews.setViewPadding(R.id.chronometer, 0, 0, 0, 0);
 		bigRemoteViews.setViewVisibility(R.id.start_button, View.VISIBLE);
 		bigRemoteViews.setViewVisibility(R.id.widget_text_view, View.VISIBLE);
 		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, View.VISIBLE);
@@ -193,20 +194,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 	//******************************START CREATE HERE********************************************\\
 
-	public static boolean saveImage(Context context, String imageName, Bitmap session_image){
-		FileOutputStream out;
-		String file = imageName + ".png"; //name of the .png file
-		try {
-			out = context.openFileOutput(file, Context.MODE_PRIVATE);
-			session_image.compress(Bitmap.CompressFormat.PNG, 90, out);
-			out.close();
-			return true;
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+
 
 	//https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
 	//write the .wav file
@@ -332,31 +320,10 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		}
 	}
 
-	public static Bitmap createImage() {
-		//creo l'immagine
-		Bitmap bmp = Bitmap.createBitmap(10, 10, Bitmap.Config.RGB_565); // this creates a MUTABLE bitmap
-		long value = System.currentTimeMillis();
 
-		//le do i valori
-		int color = (int) value;
-		int[] indexes = new int[4];
-		for(int i = 0; i < indexes.length; i++)
-			indexes[i] = (int)((value >> 2 * i) & 0xff) % (bmp.getWidth() / 2);
 
-		for(int i = 0; i < indexes.length; i++){
-			for(int j = i; j < indexes.length; j++){
-				bmp.setPixel(indexes[i], indexes[j], color);
-				bmp.setPixel(indexes[i], bmp.getHeight() - indexes[j] - 1, color);
-				bmp.setPixel(bmp.getWidth() - indexes[i] -1, indexes[j], color);
-				bmp.setPixel(bmp.getWidth() - indexes[i] -1, bmp.getHeight() - indexes[j] - 1, color);
-			}
-		}
-		return bmp;
-	}
-
-	public boolean addTrack(Context context, String session_name){
-		Bitmap session_image = createImage();
-		boolean isSaved = saveImage(context, session_name, session_image);
+	private boolean addTrack(Context context, String session_name){
+		boolean isSaved = AccelerAudioUtilities.saveImage(context, session_name, AccelerAudioUtilities.createImage());
 		boolean isCreated = createWavFile(context, session_name);
 
 		if(isSaved && isCreated){

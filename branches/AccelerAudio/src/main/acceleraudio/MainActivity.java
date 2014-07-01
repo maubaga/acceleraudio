@@ -581,7 +581,7 @@ public class MainActivity extends ActionBarActivity {
 			output.close();
 
 			// Create new image.
-			WidgetIntentReceiver.saveImage(this, name + "-" + fileIndex, WidgetIntentReceiver.createImage());
+			AccelerAudioUtilities.saveImage(this, name + "-" + fileIndex, AccelerAudioUtilities.createImage());
 
 		}
 		catch (Exception e) {
