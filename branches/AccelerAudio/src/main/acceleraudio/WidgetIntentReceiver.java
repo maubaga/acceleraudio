@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+import android.os.StatFs;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -178,7 +180,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		bigRemoteViews.setViewVisibility(R.id.widget_text_view, View.VISIBLE);
 		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, View.VISIBLE);
 		bigRemoteViews.setViewVisibility(R.id.stop_button, View.GONE);
-		
+
 		BigWidgetProvider.updateLastSong(bigRemoteViews, context);
 
 		//REMEMBER TO ALWAYS REFRESH YOUR BUTTON CLICK LISTENERS!!!
@@ -320,8 +322,34 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	}
 
 
-
+	/**
+	 * This method create the song and the image. 
+	 * It return true if the creation is successful, 
+	 * false if the session name is null or disk space is insufficient to save the song or an error in the create is occurred.
+	 * @param context The Context where this method is called.
+	 * @param session_name The name of the song, it mustn't be null.
+	 * @return true if the creation is successful, false otherwise.
+	 */
 	private boolean addTrack(Context context, String session_name){
+		if(session_name == null || session_name.equals(""))
+			return false;
+
+		//Get free space
+		File path = Environment.getDataDirectory();
+		StatFs stat = new StatFs(path.getPath());
+		@SuppressWarnings("deprecation")
+		long blockSize = stat.getBlockSize(); // getBlockSizeLong() need API level 18
+		@SuppressWarnings("deprecation")
+		long availableBlocks = stat.getAvailableBlocks(); // getAvailableBlocksLong() need API level 18
+		long freeByte = blockSize * availableBlocks;		
+		long byteRequest = 200 + 44 + pref_upsampl * size; //200: max image dimension, 44: bytes wav headers, size * upsample: song dimension
+		// Check if the space in the "disk" is sufficient to save the song and the image.
+		if (byteRequest > freeByte){
+			Toast.makeText(context,"Memoria insufficiente per salvare la traccia.", Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+
 		boolean isSaved = AccelerAudioUtilities.saveImage(context, session_name, AccelerAudioUtilities.createImage());
 		boolean isCreated = createWavFile(context, session_name);
 
