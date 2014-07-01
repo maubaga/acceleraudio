@@ -147,8 +147,8 @@ public class RecordActivity extends ActionBarActivity{
 
 			Context context = getActivity();
 			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); 
-			String pref_maxRec = preferences.getString("eTextMaxRec", getResources().getString(R.string.duration1));
-			rate = preferences.getInt("sbRate", 50);
+			String pref_maxRec = preferences.getString(PrefActivity.KEY_MAX_REC, getResources().getString(R.string.duration1));
+			rate = preferences.getInt(PrefActivity.KEY_RATE, 50);
 
 			if (getResources().getString(R.string.duration1).equals(pref_maxRec))
 				maxRecordTime = 30 * 1000;
@@ -158,7 +158,7 @@ public class RecordActivity extends ActionBarActivity{
 				maxRecordTime = 120 * 1000;
 			if (getResources().getString(R.string.duration4).equals(pref_maxRec))
 				maxRecordTime = 300 * 1000;
-			
+		
 			return rootView;
 		}
 	}
