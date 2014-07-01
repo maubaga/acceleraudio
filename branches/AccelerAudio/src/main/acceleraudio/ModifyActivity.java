@@ -82,7 +82,7 @@ public class ModifyActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_create);
+		setContentView(R.layout.activity_modify);
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -124,7 +124,7 @@ public class ModifyActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_create,
+			View rootView = inflater.inflate(R.layout.fragment_modify,
 					container, false);
 
 			nameEditText = (EditText)rootView.findViewById(R.id.name);
@@ -300,8 +300,7 @@ public class ModifyActivity extends ActionBarActivity {
 				startActivity(playIntent);
 				
 				WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
-				
-				finish(); 
+				 
 			}
 			else{
 				Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
