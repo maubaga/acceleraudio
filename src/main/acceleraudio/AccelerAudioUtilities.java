@@ -1,6 +1,10 @@
 package main.acceleraudio;
 
+import java.io.FileOutputStream;
 import java.util.Calendar;
+
+import android.content.Context;
+import android.graphics.Bitmap;
 
 
 
@@ -74,6 +78,54 @@ public class AccelerAudioUtilities{
 		time = hours + ":" + minutes;
 		
 		return time;
+	}
+	
+	/**
+	 * Create a symmetrical 10*10 Bitmap in RGB_565 format from the current time.
+	 * @return The Bitmap create.
+	 */
+	public static Bitmap createImage() {
+		// Create a Bitmap
+		Bitmap bmp = Bitmap.createBitmap(10, 10, Bitmap.Config.RGB_565); // this creates a MUTABLE bitmap
+		long value = System.currentTimeMillis();
+
+		// Color the Bitmap
+		int color = (int) value;
+		int[] indexes = new int[4];
+		for(int i = 0; i < indexes.length; i++)
+			indexes[i] = (int)((value >> 2 * i) & 0xff) % (bmp.getWidth() / 2);
+
+		for(int i = 0; i < indexes.length; i++){
+			for(int j = i; j < indexes.length; j++){
+				bmp.setPixel(indexes[i], indexes[j], color);
+				bmp.setPixel(indexes[i], bmp.getHeight() - indexes[j] - 1, color);
+				bmp.setPixel(bmp.getWidth() - indexes[i] -1, indexes[j], color);
+				bmp.setPixel(bmp.getWidth() - indexes[i] -1, bmp.getHeight() - indexes[j] - 1, color);
+			}
+		}
+		return bmp;
+	}
+	
+	/**
+	 * Save the Bitmap session_image with the name imageName.png, return true if the image is created, false otherwise.
+	 * @param context The Context where the image is create.
+	 * @param imageName The name of the image to save (without .png)
+	 * @param session_image The Bitmap to save
+	 * @return true if the image is created, false otherwise
+	 */
+	public static boolean saveImage(Context context, String imageName, Bitmap session_image){
+		FileOutputStream out;
+		String file = imageName + ".png"; //name of the .png file
+		try {
+			out = context.openFileOutput(file, Context.MODE_PRIVATE);
+			session_image.compress(Bitmap.CompressFormat.PNG, 90, out);
+			out.close();
+			return true;
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }
