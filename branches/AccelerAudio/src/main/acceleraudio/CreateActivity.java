@@ -62,7 +62,7 @@ public class CreateActivity extends ActionBarActivity {
 	private static byte[] x, y, z;
 	private static int size;
 
-	//all file parameters
+	//all .wav file parameters
 	private final byte bits_per_sample = 8; // 8, 16...
 	private final byte num_channels = 1; // 1 = mono, 2 = stereo
 	private final int sample_rate = 8000; // 8000, 44100...
@@ -82,11 +82,11 @@ public class CreateActivity extends ActionBarActivity {
 		}
 
 		SharedPreferences preferences = this.getSharedPreferences("Session_Preferences", MODE_PRIVATE); 
-		pref_cbX = preferences.getBoolean("cBoxSelectX", true);
-		pref_cbY = preferences.getBoolean("cBoxSelectY", true);
-		pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
-		pref_upsampl = preferences.getInt("sbUpsampling", 100);
-		String pref_rate = preferences.getString("eTextSampleRate", getResources().getString(R.string.sample_rate1));
+		pref_cbX = preferences.getBoolean(PrefActivity.KEY_SELECT_X, true);
+		pref_cbY = preferences.getBoolean(PrefActivity.KEY_SELECT_Y, true);
+		pref_cbZ = preferences.getBoolean(PrefActivity.KEY_SELECT_Z, true);
+		pref_upsampl = preferences.getInt(PrefActivity.KEY_UPSAMPL, 100);
+		String pref_rate = preferences.getString(PrefActivity.KEY_RATE, getResources().getString(R.string.sample_rate1));
 
 		//This convert the rate in a int
 		if (getResources().getString(R.string.sample_rate0).equals(pref_rate))

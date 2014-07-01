@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+//A helper class to manage database creation and version management
 public class DBOpenHelper extends SQLiteOpenHelper {
 	
+	//keys for database
 	private static final String DATABASE_NAME = "AccAudio.db";
 	private static final int DATABASE_VERSION = 1;
 	public static final String TABLE = "registrazione";
@@ -35,7 +37,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 		String sql = "create table " + TABLE + 
 					"( "+ NAME + " text primary key, " + 
 					FIRST_DATE + " text not null, " +
-					FIRST_TIME + " text not null, " +//vedere formato su doc SQLite
+					FIRST_TIME + " text not null, " +
 					LAST_MODIFY_DATE + " text not null, " +
 					LAST_MODIFY_TIME + " text not null, " +
 					DURATION + " integer, " +
