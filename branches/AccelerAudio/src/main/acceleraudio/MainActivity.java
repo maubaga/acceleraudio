@@ -485,6 +485,8 @@ public class MainActivity extends ActionBarActivity {
 		File audio = new File(dir, session_name + ".wav");
 		image.delete();
 		audio.delete();
+		
+		WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
 
 	}
 
@@ -626,6 +628,8 @@ public class MainActivity extends ActionBarActivity {
 		values.put(DBOpenHelper.Z_VALUES, z);
 		values.put(DBOpenHelper.DATA_SIZE, size);        //add the number samples to the database
 		db.insert(DBOpenHelper.TABLE, null, values);
+		
+		WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
 
 		return true;
 	}

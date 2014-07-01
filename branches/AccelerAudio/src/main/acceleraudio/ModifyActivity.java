@@ -299,6 +299,8 @@ public class ModifyActivity extends ActionBarActivity {
 				playIntent.putExtra(PlayActivity.DURATION, duration);
 				startActivity(playIntent);
 				
+				WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
+				
 				finish(); 
 			}
 			else{
