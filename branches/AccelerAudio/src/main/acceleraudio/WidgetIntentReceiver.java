@@ -71,7 +71,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			pref_cbY = preferences.getBoolean("cBoxSelectY", true);
 			pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
 			pref_upsampl = preferences.getInt("sbUpsampling", 100);
-			rate = preferences.getInt("sbRate", 50);
+			rate = preferences.getInt("sbRate", 100);
 
 			addTrack(context, name); 
 
@@ -165,12 +165,14 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		//Stop the little widget
 		RemoteViews littleRemoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		littleRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, false);
+		littleRemoteViews.setTextViewText(R.id.chronometer, context.getResources().getString(R.string.initial_time));
 		littleRemoteViews.setViewVisibility(R.id.start_button, 0);
 		littleRemoteViews.setViewVisibility(R.id.stop_button, 8);
 
 		//Stop the big widget
 		RemoteViews bigRemoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		bigRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, false);
+		bigRemoteViews.setTextViewText(R.id.chronometer, context.getResources().getString(R.string.initial_time));
 		bigRemoteViews.setViewVisibility(R.id.start_button, 0);
 		bigRemoteViews.setViewVisibility(R.id.widget_text_view, 0);
 		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, 0);
