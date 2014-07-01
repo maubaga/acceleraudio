@@ -157,7 +157,11 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 	}
 
-	private void updateWidgetOnStop(Context context) {		//TODO REFRESH THE NAME OF LAST SONG
+	/**
+	 * This method update the layout of the two widget when the recording is over. It refresh the last song store in the database, so this method can be call every time that the database is update, for example for deleting, modification or duplication of records.
+	 * @param context The context where the method is call.
+	 */
+	public static void updateWidgetOnStop(Context context) {	
 		//Stop the little widget
 		RemoteViews littleRemoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		littleRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, false);
@@ -171,6 +175,8 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		bigRemoteViews.setViewVisibility(R.id.widget_text_view, 0);
 		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, 0);
 		bigRemoteViews.setViewVisibility(R.id.stop_button, 8);
+		
+		BigWidgetProvider.updateLastSong(bigRemoteViews, context);
 
 		//REMEMBER TO ALWAYS REFRESH YOUR BUTTON CLICK LISTENERS!!!
 		littleRemoteViews.setOnClickPendingIntent(R.id.start_button, LittleWidgetProvider.startButtonPendingIntent(context));
