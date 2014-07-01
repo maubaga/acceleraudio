@@ -83,13 +83,13 @@
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:hint="@string/new_name_hint"
         android:inputType="textCapSentences"
         android:singleLine="true"
-        android:textSize="28sp" />
+        android:textSize="22sp" />
 
     <LinearLayout
         android:id="@+id/bars"
@@ -180,11 +180,11 @@
     <LinearLayout
         android:id="@+id/mic"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="80dp"
-        android:layout_marginTop="103dp"
-        android:layout_marginBottom="103dp"
+        android:layout_height="200dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginBottom="72dp"
         android:gravity="center"
         android:orientation="vertical" >
 

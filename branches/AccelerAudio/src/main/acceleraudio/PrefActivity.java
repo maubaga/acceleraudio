@@ -93,7 +93,7 @@ public class PrefActivity extends ActionBarActivity {
 			boolean pref_cbX = preferences.getBoolean(KEY_SELECT_X, true);
 			boolean pref_cbY = preferences.getBoolean(KEY_SELECT_Y, true);
 			boolean pref_cbZ = preferences.getBoolean(KEY_SELECT_Z, true);
-			int pref_rate = preferences.getInt(KEY_RATE, 50);
+			int pref_rate = preferences.getInt(KEY_RATE, 100);
 			String pref_maxRec = preferences.getString(KEY_MAX_REC, getResources().getString(R.string.duration1));
 			int pref_upsampl = preferences.getInt(KEY_UPSAMPL, 100);
 			

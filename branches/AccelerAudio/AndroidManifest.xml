@@ -26,8 +26,7 @@
         </activity>
         <activity
             android:name="main.acceleraudio.RecordActivity"
-            android:label="@string/title_activity_record"
-            android:parentActivityName="main.acceleraudio.MainActivity" >
+            android:label="@string/title_activity_record" >
         </activity>
         <activity
             android:name="main.acceleraudio.PrefActivity"
@@ -42,8 +41,7 @@
 
         <activity
             android:name="main.acceleraudio.PlayActivity"
-            android:label="@string/title_activity_play"
-            android:parentActivityName="main.acceleraudio.MainActivity" >
+            android:label="@string/title_activity_play" >
         </activity>
         <activity
             android:name="main.acceleraudio.ModifyActivity"
