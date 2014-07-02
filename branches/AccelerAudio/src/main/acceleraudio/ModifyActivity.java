@@ -249,6 +249,11 @@ public class ModifyActivity extends ActionBarActivity {
 				Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
 				return false;
 			}
+			
+			if(session_name.contains("/")){
+				Toast.makeText(this,"Non puoi inserire / nel nome", Toast.LENGTH_SHORT).show();
+				return false;
+			}	
 
 			if(session_name.substring(0, 1).equals(" ")){
 				Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();

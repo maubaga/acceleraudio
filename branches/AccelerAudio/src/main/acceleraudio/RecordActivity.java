@@ -230,6 +230,11 @@ public class RecordActivity extends ActionBarActivity{
 			Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
 			return;
 		}	
+		
+		if(session_name.contains("/")){
+			Toast.makeText(this,"Non puoi inserire / nel nome", Toast.LENGTH_SHORT).show();
+			return;
+		}	
 
 		File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
 		if(fileCheck.exists()){
