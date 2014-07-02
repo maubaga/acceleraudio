@@ -7,7 +7,7 @@
     android:background="@drawable/round" >
 
     <Chronometer
-        android:id="@+id/chronometer"
+        android:id="@+id/little_chronometer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

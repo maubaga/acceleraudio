@@ -23,7 +23,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
-		remoteViews.setOnClickPendingIntent(R.id.chronometer, chronometerPendingIntent(context));		
+		remoteViews.setOnClickPendingIntent(R.id.big_chronometer, chronometerPendingIntent(context));		
 		remoteViews.setOnClickPendingIntent(R.id.widget_prefereces, preferencesPendingIntent(context));
 		
 		updateLastSong(remoteViews, context);
