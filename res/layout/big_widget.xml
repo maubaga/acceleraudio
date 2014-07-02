@@ -25,7 +25,7 @@
         android:orientation="horizontal" >
 
         <Chronometer
-            android:id="@+id/chronometer"
+            android:id="@+id/big_chronometer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"

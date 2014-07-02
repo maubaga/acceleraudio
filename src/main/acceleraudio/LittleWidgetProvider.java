@@ -18,7 +18,7 @@ public class LittleWidgetProvider extends AppWidgetProvider {
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
-		remoteViews.setOnClickPendingIntent(R.id.chronometer, chronometerPendingIntent(context));		
+		remoteViews.setOnClickPendingIntent(R.id.little_chronometer, chronometerPendingIntent(context));		
 						
 		pushWidgetUpdate(context, remoteViews);
 	}
@@ -52,7 +52,7 @@ public class LittleWidgetProvider extends AppWidgetProvider {
 	 */
 	public static PendingIntent chronometerPendingIntent(Context context) {
 		Intent intent = new Intent(context, MainActivity.class);
-        return PendingIntent.getActivity(context, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+        return PendingIntent.getActivity(context, 0, intent, 0);
 	}
 	
 	
