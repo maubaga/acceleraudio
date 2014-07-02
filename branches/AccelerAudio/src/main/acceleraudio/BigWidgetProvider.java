@@ -98,7 +98,8 @@ public class BigWidgetProvider extends AppWidgetProvider {
 			playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
 			PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, playIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
 			remoteViews.setOnClickPendingIntent(R.id.widget_text_view, pendingIntent);
-		}		
+		}	
+		dbHelper.close();
 	}
 
 	/**
