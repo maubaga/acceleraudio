@@ -3,6 +3,8 @@ package main.acceleraudio;
 import java.io.FileOutputStream;
 import java.util.Calendar;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.graphics.Bitmap;
 
@@ -136,6 +138,16 @@ public class AccelerAudioUtilities{
 		for (int i = 1; i < byteArray.length - 1; i++){
 			byteArray[i] = (byte) ((byteArray[i - 1] + byteArray[i] + byteArray[i + 1]) /  3);
 		}
+	}
+	
+	public static boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
+	    ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (serviceClass.getName().equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 
 }

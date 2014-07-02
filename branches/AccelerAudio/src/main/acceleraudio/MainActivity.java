@@ -106,6 +106,11 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 		if (id == R.id.action_new) {
+			boolean isRecordingStart = AccelerAudioUtilities.isMyServiceRunning(RecordService.class, this);
+			if (isRecordingStart){
+				Toast.makeText(this,"Registrazione già iniziata da widget", Toast.LENGTH_SHORT).show();
+				return false;
+			}
 			Intent intent = new Intent(this, RecordActivity.class);
 			startActivity(intent); 
 		}
