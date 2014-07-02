@@ -73,12 +73,12 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			size = intent.getIntExtra(RecordService.SIZE, 0);
 			String name = intent.getStringExtra(RecordService.SESSION_NAME);
 
-			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); //TODO prendere le stringhe dalle costanti
-			pref_cbX = preferences.getBoolean("cBoxSelectX", true);
-			pref_cbY = preferences.getBoolean("cBoxSelectY", true);
-			pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
-			pref_upsampl = preferences.getInt("sbUpsampling", 100);
-			rate = preferences.getInt("sbRate", 100);
+			SharedPreferences preferences = context.getSharedPreferences(PrefActivity.KEY_PREFERENCE, Context.MODE_PRIVATE);
+			pref_cbX = preferences.getBoolean(PrefActivity.KEY_SELECT_X, true);
+			pref_cbY = preferences.getBoolean(PrefActivity.KEY_SELECT_Y, true);
+			pref_cbZ = preferences.getBoolean(PrefActivity.KEY_SELECT_Z, true);
+			pref_upsampl = preferences.getInt(PrefActivity.KEY_UPSAMPL, 100);
+			rate = preferences.getInt(PrefActivity.KEY_RATE, 100);
 
 			addTrack(context, name); 
 
@@ -92,7 +92,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 	private void startFromWidget(Context context) {
 		//Get max duration and rate from the preferences
-		SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);  //TODO prendere le stringhe dalle costanti
+		SharedPreferences preferences = context.getSharedPreferences(PrefActivity.KEY_PREFERENCE, Context.MODE_PRIVATE);
 		String pref_maxRec = preferences.getString(PrefActivity.KEY_MAX_REC, context.getResources().getString(R.string.duration1));
 		int rate = preferences.getInt(PrefActivity.KEY_RATE, 100);
 		long maxRecordTime = 0;
@@ -142,14 +142,14 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	private void updateWidgetOnStart(Context context) {		
 		//Start the little widget
 		RemoteViews littleRemoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
-		littleRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
+		littleRemoteViews.setChronometer(R.id.little_chronometer, SystemClock.elapsedRealtime(), null, true);
 		littleRemoteViews.setViewVisibility(R.id.start_button, View.GONE);
 		littleRemoteViews.setViewVisibility(R.id.stop_button, View.VISIBLE);
 
 		//Start the big widget
 		RemoteViews bigRemoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
-		bigRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, true);
-		bigRemoteViews.setViewPadding(R.id.chronometer, 80, 0, 0, 0);
+		bigRemoteViews.setChronometer(R.id.big_chronometer, SystemClock.elapsedRealtime(), null, true);
+		bigRemoteViews.setViewPadding(R.id.big_chronometer, 80, 0, 0, 0);
 		bigRemoteViews.setViewVisibility(R.id.start_button, View.GONE);
 		bigRemoteViews.setViewVisibility(R.id.widget_text_view, View.GONE);
 		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, View.GONE);
@@ -172,16 +172,16 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	public static void updateWidgetOnStop(Context context) {	
 		//Stop the little widget
 		RemoteViews littleRemoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
-		littleRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, false);
-		littleRemoteViews.setTextViewText(R.id.chronometer, context.getResources().getString(R.string.initial_time));
+		littleRemoteViews.setChronometer(R.id.little_chronometer, SystemClock.elapsedRealtime(), null, false);
+		littleRemoteViews.setTextViewText(R.id.little_chronometer, context.getResources().getString(R.string.initial_time));
 		littleRemoteViews.setViewVisibility(R.id.start_button, View.VISIBLE);
 		littleRemoteViews.setViewVisibility(R.id.stop_button, View.GONE);
 
 		//Stop the big widget
 		RemoteViews bigRemoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
-		bigRemoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime(), null, false);
-		bigRemoteViews.setTextViewText(R.id.chronometer, context.getResources().getString(R.string.initial_time));
-		bigRemoteViews.setViewPadding(R.id.chronometer, 0, 0, 0, 0);
+		bigRemoteViews.setChronometer(R.id.big_chronometer, SystemClock.elapsedRealtime(), null, false);
+		bigRemoteViews.setTextViewText(R.id.big_chronometer, context.getResources().getString(R.string.initial_time));
+		bigRemoteViews.setViewPadding(R.id.big_chronometer, 0, 0, 0, 0);
 		bigRemoteViews.setViewVisibility(R.id.start_button, View.VISIBLE);
 		bigRemoteViews.setViewVisibility(R.id.widget_text_view, View.VISIBLE);
 		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, View.VISIBLE);
@@ -191,10 +191,10 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 		//Refresh the start and preference listener.
 		littleRemoteViews.setOnClickPendingIntent(R.id.start_button, LittleWidgetProvider.startButtonPendingIntent(context));
-		littleRemoteViews.setOnClickPendingIntent(R.id.chronometer, LittleWidgetProvider.chronometerPendingIntent(context));
+		littleRemoteViews.setOnClickPendingIntent(R.id.little_chronometer, LittleWidgetProvider.chronometerPendingIntent(context));
 		bigRemoteViews.setOnClickPendingIntent(R.id.start_button, BigWidgetProvider.startButtonPendingIntent(context));
 		bigRemoteViews.setOnClickPendingIntent(R.id.widget_prefereces, BigWidgetProvider.preferencesPendingIntent(context));
-		bigRemoteViews.setOnClickPendingIntent(R.id.chronometer, BigWidgetProvider.chronometerPendingIntent(context));
+		bigRemoteViews.setOnClickPendingIntent(R.id.big_chronometer, BigWidgetProvider.chronometerPendingIntent(context));
 
 		//Update the widgets
 		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), littleRemoteViews);

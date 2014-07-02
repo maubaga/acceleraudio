@@ -26,21 +26,20 @@ import android.widget.Toast;
 //class that manages the preferences of the app
 public class PrefActivity extends ActionBarActivity {
 	
-	static CheckBox cbX;
-	static CheckBox cbY;
-	static CheckBox cbZ;
-	static TextView sample_rate_values;
-	static String rate_value;
-	static TextView max_duration_values;
-	static String duration_value;
+	private static CheckBox cbX;
+	private static CheckBox cbY;
+	private static CheckBox cbZ;
+	private static TextView max_duration_values;
+	private static String duration_value;
 	
 	//keys for the values contained in SharedPreferences
-	static final String KEY_SELECT_X="cBoxSelectX";
-	static final String KEY_SELECT_Y="cBoxSelectY";
-	static final String KEY_SELECT_Z="cBoxSelectZ";
-	static final String KEY_RATE="sbRate";
-	static final String KEY_MAX_REC="eTextMaxRec";
-	static final String KEY_UPSAMPL="sbUpsampling";
+	public static final String KEY_PREFERENCE ="Session_Preferences";
+	public static final String KEY_SELECT_X = "cBoxSelectX";
+	public static final String KEY_SELECT_Y = "cBoxSelectY";
+	public static final String KEY_SELECT_Z = "cBoxSelectZ";
+	public static final String KEY_RATE = "sbRate";
+	public static final String KEY_MAX_REC = "eTextMaxRec";
+	public static final String KEY_UPSAMPL = "sbUpsampling";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +88,7 @@ public class PrefActivity extends ActionBarActivity {
 			
 			//recovery states of the components using SharedPreferences
 			Context context = getActivity();
-			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);
+			SharedPreferences preferences = context.getSharedPreferences(KEY_PREFERENCE, Context.MODE_PRIVATE);
 			boolean pref_cbX = preferences.getBoolean(KEY_SELECT_X, true);
 			boolean pref_cbY = preferences.getBoolean(KEY_SELECT_Y, true);
 			boolean pref_cbZ = preferences.getBoolean(KEY_SELECT_Z, true);
@@ -208,7 +207,7 @@ public class PrefActivity extends ActionBarActivity {
 		super.onPause();
 		
 		//make use of SharedPrefereces and its editor to save the state of the components
-		SharedPreferences preferences = getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(KEY_PREFERENCE, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		
 		//state of CheckBoxes relative to the selected axes
