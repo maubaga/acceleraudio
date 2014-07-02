@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -67,7 +68,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			size = intent.getIntExtra(RecordService.SIZE, 0);
 			String name = intent.getStringExtra(RecordService.SESSION_NAME);
 
-			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); 
+			SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE); //TODO prendere le stringhe dalle costanti
 			pref_cbX = preferences.getBoolean("cBoxSelectX", true);
 			pref_cbY = preferences.getBoolean("cBoxSelectY", true);
 			pref_cbZ = preferences.getBoolean("cBoxSelectZ", true);
@@ -88,7 +89,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		//Get max duration and rate from the preferences
 		SharedPreferences preferences = context.getSharedPreferences("Session_Preferences", Context.MODE_PRIVATE);  //TODO prendere le stringhe dalle costanti
 		String pref_maxRec = preferences.getString(PrefActivity.KEY_MAX_REC, context.getResources().getString(R.string.duration1));
-		int rate = preferences.getInt(PrefActivity.KEY_RATE, 50);
+		int rate = preferences.getInt(PrefActivity.KEY_RATE, 100);
 		long maxRecordTime = 0;
 		if (context.getResources().getString(R.string.duration1).equals(pref_maxRec))
 			maxRecordTime = 30 * 1000;
@@ -328,6 +329,8 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	 * @param session_name The name of the song, it mustn't be null.
 	 * @return true if the creation is successful, false otherwise.
 	 */
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
 	private boolean addTrack(Context context, String session_name){
 		if(session_name == null || session_name.equals(""))
 			return false;
@@ -335,10 +338,18 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		//Get free space
 		File path = Environment.getDataDirectory();
 		StatFs stat = new StatFs(path.getPath());
-		@SuppressWarnings("deprecation")
-		long blockSize = stat.getBlockSize(); // getBlockSizeLong() need API level 18
-		@SuppressWarnings("deprecation")
-		long availableBlocks = stat.getAvailableBlocks(); // getAvailableBlocksLong() need API level 18
+		long blockSize; 
+		long availableBlocks; 
+		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentapiVersion >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2){
+			blockSize = stat.getBlockSizeLong(); // getBlockSizeLong() need API level 18
+			availableBlocks= stat.getAvailableBlocksLong(); // getAvailableBlocksLong() need API level 18
+
+		} else{
+			blockSize = stat.getBlockSize(); // getBlockSizeLong() need API level 18
+			availableBlocks= stat.getAvailableBlocks(); // getAvailableBlocksLong() need API level 18
+		}
+		
 		long freeByte = blockSize * availableBlocks;		
 		long byteRequest = 200 + 44 + pref_upsampl * size; //200: max image dimension, 44: bytes wav headers, size * upsample: song dimension
 		// Check if the space in the "disk" is sufficient to save the song and the image.
