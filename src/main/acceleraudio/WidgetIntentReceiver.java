@@ -183,11 +183,14 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 		BigWidgetProvider.updateLastSong(bigRemoteViews, context);
 
-		//REMEMBER TO ALWAYS REFRESH YOUR BUTTON CLICK LISTENERS!!!
+		//Refresh the start and preference listener.
 		littleRemoteViews.setOnClickPendingIntent(R.id.start_button, LittleWidgetProvider.startButtonPendingIntent(context));
+		littleRemoteViews.setOnClickPendingIntent(R.id.chronometer, LittleWidgetProvider.chronometerPendingIntent(context));
 		bigRemoteViews.setOnClickPendingIntent(R.id.start_button, BigWidgetProvider.startButtonPendingIntent(context));
 		bigRemoteViews.setOnClickPendingIntent(R.id.widget_prefereces, BigWidgetProvider.preferencesPendingIntent(context));
+		bigRemoteViews.setOnClickPendingIntent(R.id.chronometer, BigWidgetProvider.chronometerPendingIntent(context));
 
+		//Update the widgets
 		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), littleRemoteViews);
 		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), bigRemoteViews);
 	}
