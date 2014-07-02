@@ -18,41 +18,66 @@ import android.widget.RemoteViews;
 public class BigWidgetProvider extends AppWidgetProvider {
 	
 	@Override
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-		
+	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {		
 		//Get the layout of the BigWidget
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
-		
-		updateLastSong(remoteViews, context);
-		
-		Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-		remoteViews.setOnClickPendingIntent(R.id.chronometer, pendingIntent);
-		
+		remoteViews.setOnClickPendingIntent(R.id.chronometer, chronometerPendingIntent(context));		
 		remoteViews.setOnClickPendingIntent(R.id.widget_prefereces, preferencesPendingIntent(context));
 		
+		updateLastSong(remoteViews, context);
+						
 		pushWidgetUpdate(context, remoteViews);
 	}
 
+	/**
+	 * Get a PendigIntent for start button that start a recording.
+	 * @param context The context where the method is call.
+	 * @return A PendingIntet to associate with the start button.
+	 */
 	public static PendingIntent startButtonPendingIntent(Context context) {
 		Intent intent = new Intent();
 	    intent.setAction(WidgetIntentReceiver.ACTION_WIDGET_START);
 	    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
+	/**
+	 * Get a PendigIntent for stop button that stop the recording.
+	 * @param context The context where the method is call.
+	 * @return A PendingIntet to associate with the stop button.
+	 */
 	public static PendingIntent stopButtonPendingIntent(Context context) {
 		Intent intent = new Intent();
 	    intent.setAction(WidgetIntentReceiver.ACTION_WIDGET_STOP);
 	    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
+	/**
+	 * Get a PendigIntent for preferences button that that start PrefActivity.
+	 * @param context The context where the method is call.
+	 * @return A PendingIntet to associate with the preferences button.
+	 */
 	public static PendingIntent preferencesPendingIntent(Context context) {
 		Intent prefIntent = new Intent(context, PrefActivity.class);
-	    return PendingIntent.getActivity(context, 0, prefIntent, 0);
+	    return PendingIntent.getActivity(context, 0, prefIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
 	}
 	
+	/**
+	 * Get a PendigIntent for preferences chronometer that that start MainActivity.
+	 * @param context The context where the method is call.
+	 * @return A PendingIntet to associate with the chronometer.
+	 */
+	public static PendingIntent chronometerPendingIntent(Context context) {
+		Intent intent = new Intent(context, MainActivity.class);
+        return PendingIntent.getActivity(context, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+	}
+	
+	/**
+	 * This method get the last song from the database and show it in a TextView. Then set a Intent on it that start PlayActivity.
+	 * @param remoteViews RemoteView that contain the TextView.
+	 * @param context The context where the method is call.
+	 */
 	public static void updateLastSong(RemoteViews remoteViews, Context context) {
 		//Get the last song from the database
 		DBOpenHelper dbHelper = new DBOpenHelper(context);
@@ -76,6 +101,11 @@ public class BigWidgetProvider extends AppWidgetProvider {
 		}		
 	}
 
+	/**
+	 * This method update the RemoteViews give as param.
+	 * @param context The context where the method is call.
+	 * @param remoteViews RemoteViews to update.
+	 */
 	public static void pushWidgetUpdate(Context context, RemoteViews remoteViews) {
 		ComponentName myWidget = new ComponentName(context, BigWidgetProvider.class);
 	    AppWidgetManager manager = AppWidgetManager.getInstance(context);
