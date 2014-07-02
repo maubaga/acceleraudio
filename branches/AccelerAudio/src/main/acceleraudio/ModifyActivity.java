@@ -110,9 +110,9 @@ public class ModifyActivity extends ActionBarActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(PlayerService.class, this);
-		if (isPlaying){
-			//Stop the song in background
+		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(this, PlayerService.class);
+		if (isPlaying){ // Check if is in play something.
+			// Stop the song in background.
 			Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 			stopService(stopIntent);
 		}
@@ -448,8 +448,8 @@ public class ModifyActivity extends ActionBarActivity {
 
 
 	/**
-	 * This method is called when the button "Prova" is pressed and it create a temporary wav file and play it
-	 * @param view the button pressed
+	 * This method is called when the button "Anteprima" is pressed and it create a temporary wav file and play it.
+	 * @param view the button pressed.
 	 */
 	public void startPreview(View view){
 
@@ -495,10 +495,14 @@ public class ModifyActivity extends ActionBarActivity {
 		}
 	}
 
+	
+	/**
+	 * Method called when the button "Stop" is pressed. Stop the preview of the song.
+	 * @param view The button pressed.
+	 */
 	public void stopPreview(View view){
 		try{
 			if(mp != null){
-
 				Button play = (Button)findViewById(R.id.start_bt);
 				Button stop = (Button)findViewById(R.id.stop_bt);
 
@@ -507,7 +511,6 @@ public class ModifyActivity extends ActionBarActivity {
 
 				mp.stop();
 				mp = null;
-
 			}
 		}catch(Exception e){
 			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
