@@ -106,8 +106,8 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 		if (id == R.id.action_new) {
-			boolean isRecordingStart = AccelerAudioUtilities.isMyServiceRunning(RecordService.class, this);
-			if (isRecordingStart){
+			boolean isRecordingStart = AccelerAudioUtilities.isMyServiceRunning(this, RecordService.class);
+			if (isRecordingStart){ // Check the recording is already start.
 				Toast.makeText(this,"Registrazione già iniziata da widget", Toast.LENGTH_SHORT).show();
 				return false;
 			}
@@ -404,6 +404,16 @@ public class MainActivity extends ActionBarActivity {
 	 * @param new_name The name of the song to delete.
 	 */
 	private void renameSession(String new_name){
+		
+		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(this, PlayerService.class);
+		if (isPlaying){ // Check if is in play something.
+			String sessionInPlay = PlayerService.getSessionInPlay();
+			if(new_name.equals(sessionInPlay)){ // Check if the song to rename is in play now.
+				// Stop the song in background.
+				Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
+				stopService(stopIntent);
+			}
+		}
 
 		final String name = new_name;
 
@@ -480,11 +490,11 @@ public class MainActivity extends ActionBarActivity {
 	 */
 	private void deleteSession(String session_name){
 
-		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(PlayerService.class, this);
-		if (isPlaying){
-			String sessionInPlay = PlayerService.getSessionInPlay().substring(35, PlayerService.getSessionInPlay().length()-4);
-			if(session_name.equals(sessionInPlay)){
-				//Stop the song in background
+		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(this, PlayerService.class);
+		if (isPlaying){ // Check if is in play something.
+			String sessionInPlay = PlayerService.getSessionInPlay();
+			if(session_name.equals(sessionInPlay)){ // Check if the song to delete is in play now.
+				// Stop the song in background.
 				Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 				stopService(stopIntent);
 			}
@@ -500,7 +510,6 @@ public class MainActivity extends ActionBarActivity {
 		audio.delete();
 
 		WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
-
 	}
 
 

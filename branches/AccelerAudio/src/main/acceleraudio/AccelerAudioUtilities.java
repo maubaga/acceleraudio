@@ -140,7 +140,13 @@ public class AccelerAudioUtilities{
 		}
 	}
 	
-	public static boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
+	/**
+	 * Check if the service serviceClass is running, return true if is running, false otherwise.
+	 * @param context The context where the method is call.
+	 * @param serviceClass The service to check.
+	 * @return true if the service is running, false otherwise.
+	 */
+	public static boolean isMyServiceRunning( Context context, Class<?> serviceClass) {
 	    ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	        if (serviceClass.getName().equals(service.service.getClassName())) {

@@ -55,7 +55,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if(intent.getAction().equals(ACTION_WIDGET_START)){
-			boolean isRecordingStart = AccelerAudioUtilities.isMyServiceRunning(RecordService.class, context);
+			boolean isRecordingStart = AccelerAudioUtilities.isMyServiceRunning(context, RecordService.class);
 			if (isRecordingStart){
 				Toast.makeText(context,"Registrazione già iniziata da applicazione.", Toast.LENGTH_SHORT).show();
 				return;
