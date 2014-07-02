@@ -137,16 +137,16 @@ public class PlayActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onBackPressed() {
-		isOnPause = false;
-
-		//Stop the song in background
-		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
-		stopService(stopIntent);
-
-		finish(); 
-	}
+//	@Override
+//	public void onBackPressed() {
+//		isOnPause = false;
+//
+//		//Stop the song in background
+//		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
+//		stopService(stopIntent);
+//
+//		finish(); 
+//	}
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
