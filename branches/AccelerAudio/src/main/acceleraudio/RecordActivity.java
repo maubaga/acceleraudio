@@ -21,6 +21,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -158,7 +159,7 @@ public class RecordActivity extends ActionBarActivity{
 				maxRecordTime = 120 * 1000;
 			if (getResources().getString(R.string.duration4).equals(pref_maxRec))
 				maxRecordTime = 300 * 1000;
-		
+
 			return rootView;
 		}
 	}	
@@ -174,7 +175,7 @@ public class RecordActivity extends ActionBarActivity{
 		chrono.start();
 		if(isStart && (SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime))
 			finish();
-		
+
 		if(isStart){
 			//This is only for graphical changes
 			EditText start_name = (EditText)findViewById(R.id.name);
@@ -200,7 +201,7 @@ public class RecordActivity extends ActionBarActivity{
 			play.setVisibility(View.GONE);
 			pause.setVisibility(View.VISIBLE);
 		}
-			
+
 	}
 	@Override
 	protected void onPause() {
@@ -253,8 +254,10 @@ public class RecordActivity extends ActionBarActivity{
 		else{
 			startRecord(view);
 		}
-
-
+		
+		// Close the keyboard if it's open.
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 	}
 
 
@@ -301,7 +304,7 @@ public class RecordActivity extends ActionBarActivity{
 		chrono.setVisibility(View.VISIBLE);
 		chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
 		chrono.start();
-		
+
 		baseChronometer = chrono.getBase();
 
 		start_name.setVisibility(View.GONE);
@@ -338,8 +341,8 @@ public class RecordActivity extends ActionBarActivity{
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
 	}
-	
-	
+
+
 
 	/**
 	 * A method called when the button stop is pressed, this method show the data stored in the object Record
@@ -368,7 +371,7 @@ public class RecordActivity extends ActionBarActivity{
 		intent.setAction(RecordService.STOP);
 		startService(intent);
 	}
-	
-	
+
+
 
 }
