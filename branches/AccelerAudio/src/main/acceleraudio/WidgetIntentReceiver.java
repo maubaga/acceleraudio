@@ -4,7 +4,6 @@ import static main.acceleraudio.DBOpenHelper.DATA_SIZE;
 import static main.acceleraudio.DBOpenHelper.FIRST_DATE;
 import static main.acceleraudio.DBOpenHelper.FIRST_TIME;
 import static main.acceleraudio.DBOpenHelper.NAME;
-import static main.acceleraudio.DBOpenHelper.TABLE;
 import static main.acceleraudio.DBOpenHelper.UPSAMPL;
 import static main.acceleraudio.DBOpenHelper.X_CHECK;
 import static main.acceleraudio.DBOpenHelper.X_VALUES;
@@ -14,18 +13,11 @@ import static main.acceleraudio.DBOpenHelper.Z_CHECK;
 import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
-import android.os.StatFs;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -35,21 +27,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	// our actions for our buttons
 	public static final String ACTION_WIDGET_START = "main.acceleraudio.widget.START";
 	public static final String ACTION_WIDGET_STOP = "main.acceleraudio.widget.STOP";
-
-	private byte[] x, y, z;
-	private int size;
-
-	private boolean pref_cbX;
-	private boolean pref_cbY;
-	private boolean pref_cbZ;
-	private int rate; 
-	private int pref_upsampl;
-
-
-	//all file parameters
-	private final byte BITS_PER_SAMPLE = 8; // 8, 16...
-	private final byte NUM_OF_CHANNEL = 1; // 1 = mono, 2 = stereo
-	private final int FREQUENCY = 8000; // 8000, 44100...
 
 
 	@Override
@@ -67,25 +44,46 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		}
 
 		if(intent.getAction().equals(RecordService.STOP_SERVICE)){ //The recording is over!
-			x = intent.getByteArrayExtra(RecordService.X_VALUE);
-			y = intent.getByteArrayExtra(RecordService.Y_VALUE);
-			z = intent.getByteArrayExtra(RecordService.Z_VALUE);
-			size = intent.getIntExtra(RecordService.SIZE, 0);
+			byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
+			byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
+			byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
+			int size = intent.getIntExtra(RecordService.SIZE, 0);
 			String name = intent.getStringExtra(RecordService.SESSION_NAME);
 
 			SharedPreferences preferences = context.getSharedPreferences(PrefActivity.KEY_PREFERENCE, Context.MODE_PRIVATE);
-			pref_cbX = preferences.getBoolean(PrefActivity.KEY_SELECT_X, true);
-			pref_cbY = preferences.getBoolean(PrefActivity.KEY_SELECT_Y, true);
-			pref_cbZ = preferences.getBoolean(PrefActivity.KEY_SELECT_Z, true);
-			pref_upsampl = preferences.getInt(PrefActivity.KEY_UPSAMPL, 100);
-			rate = preferences.getInt(PrefActivity.KEY_RATE, 100);
+			boolean pref_cbX = preferences.getBoolean(PrefActivity.KEY_SELECT_X, true);
+			boolean pref_cbY = preferences.getBoolean(PrefActivity.KEY_SELECT_Y, true);
+			boolean pref_cbZ = preferences.getBoolean(PrefActivity.KEY_SELECT_Z, true);
+			int pref_upsampl = preferences.getInt(PrefActivity.KEY_UPSAMPL, 100);
+			int rate = preferences.getInt(PrefActivity.KEY_RATE, 100);
 
-			addTrack(context, name); 
+			// Create the song.
+			SongCreator songCreator = new SongCreator(x, y, z, size);
+			songCreator.setRate(rate);
+			songCreator.setUpsample(pref_upsampl);
+			songCreator.setAxes(pref_cbX, pref_cbY, pref_cbZ);
+			boolean isCreated = songCreator.createNewSession(context, name); 
 
-
-			//Update layout of the Widgets
-			updateWidgetOnStop(context);
-
+			if(isCreated){
+				// Update layout of the Widgets.
+				updateWidgetOnStop(context);
+				
+				// Start Modify Activity.
+				Intent modifyIntent = new Intent(context, ModifyActivity.class);
+				modifyIntent.putExtra(FIRST_DATE, AccelerAudioUtilities.getCurrentDate());
+				modifyIntent.putExtra(FIRST_TIME, AccelerAudioUtilities.getCurrentTime());
+				modifyIntent.putExtra(NAME, name);
+				modifyIntent.putExtra(X_VALUES, x);
+				modifyIntent.putExtra(Y_VALUES, y);
+				modifyIntent.putExtra(Z_VALUES, z);
+				modifyIntent.putExtra(DATA_SIZE, size);
+				modifyIntent.putExtra(X_CHECK, pref_cbX);
+				modifyIntent.putExtra(Y_CHECK, pref_cbY);
+				modifyIntent.putExtra(Z_CHECK, pref_cbZ);
+				modifyIntent.putExtra(UPSAMPL, pref_upsampl);
+				modifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(modifyIntent);
+			}
 		}
 	}
 
@@ -162,7 +160,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		//Update the widgets
 		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), littleRemoteViews);
 		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), bigRemoteViews);
-
 	}
 
 	/**
@@ -200,225 +197,4 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), littleRemoteViews);
 		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), bigRemoteViews);
 	}
-
-
-	//******************************START CREATE HERE********************************************\\
-
-
-
-	//https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
-	//write the .wav file
-	public boolean createWavFile(Context context, String songName){
-
-		try {
-
-			String file = songName + ".wav"; //name of the .wav file
-
-			//create the data to add
-			final int UPSAMPLING = pref_upsampl;
-			byte[] dataAdded = new byte[size * UPSAMPLING];
-
-			int num_axes = 0;
-			if(pref_cbX)
-				num_axes++;
-			if(pref_cbY)
-				num_axes++;
-			if(pref_cbZ)
-				num_axes++;
-
-			for(int i = 0; i < size; i++){
-
-				int sum_axes = 0;
-
-				if(pref_cbX)
-					sum_axes += x[i];
-				if(pref_cbY)
-					sum_axes += y[i];
-				if(pref_cbZ)
-					sum_axes += z[i];
-
-				for(int j = i * UPSAMPLING; j < (i + 1) * UPSAMPLING; j++)
-					dataAdded[j] = (byte)(sum_axes / num_axes);
-			}	
-
-
-			FileOutputStream fOut = context.openFileOutput(file,Context.MODE_PRIVATE);
-
-			long totalAudioLen = dataAdded.length * NUM_OF_CHANNEL * (BITS_PER_SAMPLE / 8);
-			long chunkSize = 36 + (dataAdded.length * NUM_OF_CHANNEL * (BITS_PER_SAMPLE / 8));
-			long byteRate = FREQUENCY * NUM_OF_CHANNEL * (BITS_PER_SAMPLE / 8);
-
-			WriteWaveFileHeader(fOut, totalAudioLen, 
-					chunkSize, 
-					FREQUENCY, NUM_OF_CHANNEL, 
-					byteRate);
-
-
-			AccelerAudioUtilities.averageArray(dataAdded); //loop this method for more average!
-
-			fOut.write(dataAdded);
-			fOut.close();
-
-			return true;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-
-	//define the header of the .wav file. DON'T CHANGE IT!
-	private void WriteWaveFileHeader(
-			FileOutputStream out, long totalAudioLen,
-			long totalDataLen, long longSampleRate, int channels,
-			long byteRate) throws IOException {
-
-		byte[] headerBuffer = new byte[44];
-
-		headerBuffer[0] = 'R';  // RIFF/WAVE header
-		headerBuffer[1] = 'I';
-		headerBuffer[2] = 'F';
-		headerBuffer[3] = 'F';
-		headerBuffer[4] = (byte) (totalDataLen & 0xff);
-		headerBuffer[5] = (byte) ((totalDataLen >> 8) & 0xff);
-		headerBuffer[6] = (byte) ((totalDataLen >> 16) & 0xff);
-		headerBuffer[7] = (byte) ((totalDataLen >> 24) & 0xff);
-		headerBuffer[8] = 'W';
-		headerBuffer[9] = 'A';
-		headerBuffer[10] = 'V';
-		headerBuffer[11] = 'E';
-		headerBuffer[12] = 'f';  // 'fmt ' chunk
-		headerBuffer[13] = 'm';
-		headerBuffer[14] = 't';
-		headerBuffer[15] = ' ';
-		headerBuffer[16] = 16;  // 4 bytes: size of 'fmt ' chunk
-		headerBuffer[17] = 0;
-		headerBuffer[18] = 0;
-		headerBuffer[19] = 0;
-		headerBuffer[20] = 1;  // format = 1
-		headerBuffer[21] = 0;
-		headerBuffer[22] = (byte) channels;
-		headerBuffer[23] = 0;
-		headerBuffer[24] = (byte) (longSampleRate & 0xff);
-		headerBuffer[25] = (byte) ((longSampleRate >> 8) & 0xff);
-		headerBuffer[26] = (byte) ((longSampleRate >> 16) & 0xff);
-		headerBuffer[27] = (byte) ((longSampleRate >> 24) & 0xff);
-		headerBuffer[28] = (byte) (byteRate & 0xff);
-		headerBuffer[29] = (byte) ((byteRate >> 8) & 0xff);
-		headerBuffer[30] = (byte) ((byteRate >> 16) & 0xff);
-		headerBuffer[31] = (byte) ((byteRate >> 24) & 0xff);
-		headerBuffer[32] = (byte) (2 * 16 / 8);  // block align
-		headerBuffer[33] = 0;
-		headerBuffer[34] = BITS_PER_SAMPLE;  // bits per sample
-		headerBuffer[35] = 0;
-		headerBuffer[36] = 'd';
-		headerBuffer[37] = 'a';
-		headerBuffer[38] = 't';
-		headerBuffer[39] = 'a';
-		headerBuffer[40] = (byte) (totalAudioLen & 0xff);
-		headerBuffer[41] = (byte) ((totalAudioLen >> 8) & 0xff);
-		headerBuffer[42] = (byte) ((totalAudioLen >> 16) & 0xff);
-		headerBuffer[43] = (byte) ((totalAudioLen >> 24) & 0xff);
-
-		out.write(headerBuffer, 0, 44);
-	}
-
-
-
-	/**
-	 * This method create the song and the image. 
-	 * It return true if the creation is successful, 
-	 * false if the session name is null or disk space is insufficient to save the song or an error in the create is occurred.
-	 * @param context The Context where this method is called.
-	 * @param session_name The name of the song, it mustn't be null.
-	 * @return true if the creation is successful, false otherwise.
-	 */
-	@SuppressWarnings("deprecation")
-	@SuppressLint("NewApi")
-	private boolean addTrack(Context context, String session_name){
-		if(session_name == null || session_name.equals(""))
-			return false;
-
-		//Get free space
-		File path = Environment.getDataDirectory();
-		StatFs stat = new StatFs(path.getPath());
-		long blockSize; 
-		long availableBlocks; 
-		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-		if (currentapiVersion >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2){
-			blockSize = stat.getBlockSizeLong(); // getBlockSizeLong() need API level 18
-			availableBlocks= stat.getAvailableBlocksLong(); // getAvailableBlocksLong() need API level 18
-
-		} else{
-			blockSize = stat.getBlockSize(); // getBlockSizeLong() need API level 18
-			availableBlocks= stat.getAvailableBlocks(); // getAvailableBlocksLong() need API level 18
-		}
-		
-		long freeByte = blockSize * availableBlocks;		
-		long byteRequest = 200 + 44 + pref_upsampl * size; //200: max image dimension, 44: bytes wav headers, size * upsample: song dimension
-		// Check if the space in the "disk" is sufficient to save the song and the image.
-		if (byteRequest > freeByte){
-			Toast.makeText(context,"Memoria insufficiente per salvare la traccia.", Toast.LENGTH_LONG).show();
-			return false;
-		}
-
-
-		boolean isSaved = AccelerAudioUtilities.saveImage(context, session_name, AccelerAudioUtilities.createImage());
-		boolean isCreated = createWavFile(context, session_name);
-
-		if(isSaved && isCreated){
-
-			int duration = size * pref_upsampl * 1000 / FREQUENCY; //duration of the sound in milliSeconds
-
-			//Get data and time
-			String date = AccelerAudioUtilities.getCurrentDate();
-			String time = AccelerAudioUtilities.getCurrentTime();
-
-			//database
-			DBOpenHelper openHelper = new DBOpenHelper(context);
-			SQLiteDatabase db = openHelper.getWritableDatabase();
-			db.delete(TABLE, NAME + "='" + session_name + "'", null);
-			ContentValues values = new ContentValues();
-			values.put(DBOpenHelper.NAME, session_name);
-			values.put(DBOpenHelper.FIRST_DATE, date);
-			values.put(DBOpenHelper.FIRST_TIME, time);
-			values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
-			values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-			values.put(DBOpenHelper.DURATION, duration);   
-			values.put(DBOpenHelper.RATE, rate);       
-			values.put(DBOpenHelper.UPSAMPL, pref_upsampl);       //add seekbar value
-			values.put(DBOpenHelper.X_CHECK, pref_cbX);
-			values.put(DBOpenHelper.Y_CHECK, pref_cbY);
-			values.put(DBOpenHelper.Z_CHECK, pref_cbZ);
-			values.put(DBOpenHelper.X_VALUES, x);                //add the three byte array to the database
-			values.put(DBOpenHelper.Y_VALUES, y);
-			values.put(DBOpenHelper.Z_VALUES, z);
-			values.put(DBOpenHelper.DATA_SIZE, size);            //add the number samples to the database
-			db.insert(DBOpenHelper.TABLE, null, values);
-
-			Intent modifyIntent = new Intent(context, ModifyActivity.class);
-			modifyIntent.putExtra(FIRST_DATE, date);
-			modifyIntent.putExtra(FIRST_TIME, time);
-			modifyIntent.putExtra(NAME, session_name);
-			modifyIntent.putExtra(X_VALUES, x);
-			modifyIntent.putExtra(Y_VALUES, y);
-			modifyIntent.putExtra(Z_VALUES, z);
-			modifyIntent.putExtra(DATA_SIZE, size);
-			modifyIntent.putExtra(X_CHECK, pref_cbX);
-			modifyIntent.putExtra(Y_CHECK, pref_cbY);
-			modifyIntent.putExtra(Z_CHECK, pref_cbZ);
-			modifyIntent.putExtra(UPSAMPL, pref_upsampl);
-			modifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(modifyIntent);
-			return true;
-		}
-		else{
-			Toast.makeText(context,"Errore di creazione file", Toast.LENGTH_LONG).show();
-			return false;
-		}
-	}
-
-
-
 }

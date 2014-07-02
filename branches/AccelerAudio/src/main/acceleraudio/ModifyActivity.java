@@ -16,12 +16,9 @@ import static main.acceleraudio.DBOpenHelper.Z_CHECK;
 import static main.acceleraudio.DBOpenHelper.Z_VALUES;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
@@ -70,14 +67,6 @@ public class ModifyActivity extends ActionBarActivity {
 	private static byte[] x, y, z;
 	private static int size;
 
-	//all file parameters
-	private byte bits_per_sample = 8; // 8, 16...
-	private byte num_channels = 1; // 1 = mono, 2 = stereo
-	private int sample_rate = 8000; // 8000, 44100...
-
-	//database
-	private DBOpenHelper openHelper;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +95,7 @@ public class ModifyActivity extends ActionBarActivity {
 		zCheck = intent.getBooleanExtra(Z_CHECK, true);
 		seekValue = intent.getIntExtra(UPSAMPL, 50);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -117,7 +106,7 @@ public class ModifyActivity extends ActionBarActivity {
 			stopService(stopIntent);
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		stopPreview(null);
@@ -265,9 +254,9 @@ public class ModifyActivity extends ActionBarActivity {
 				Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
 				return false;
 			}
-			
+
 			stopPreview(null); //if the preview still playing I stop it
-			
+
 			File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
 			if(fileCheck.exists() && !session_name.equals(oldSessionName)){
 
@@ -276,48 +265,22 @@ public class ModifyActivity extends ActionBarActivity {
 
 			}
 
-			boolean isCreated = createWavFile(session_name, x, y, z, size);
+			SongCreator songCreator = new SongCreator(x, y, z, size);
+			songCreator.setUpsample(seekbar_value);
+			songCreator.setAxes( x_axis.isChecked(),  y_axis.isChecked(),  z_axis.isChecked());
+			boolean isModify = songCreator.modifySession(this, session_name, oldSessionName);
 
-			if(isCreated){
+			if(isModify){
+				WidgetIntentReceiver.updateWidgetOnStop(this); // Update the widget with the last song.
 
-				int duration = size * (et_upsampl.getProgress() + 1) * 1000 / sample_rate; //duration of the sound in milliSeconds
-				
-				openHelper = new DBOpenHelper(this);
-				SQLiteDatabase db = openHelper.getWritableDatabase();
-
-				ContentValues values = new ContentValues();
-				values.put(DBOpenHelper.NAME, session_name);
-				values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
-				values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-				values.put(DBOpenHelper.DURATION, duration); 
-				values.put(DBOpenHelper.UPSAMPL, et_upsampl.getProgress() + 1);     //add seekbar value
-				values.put(DBOpenHelper.X_CHECK, x_axis.isChecked());
-				values.put(DBOpenHelper.Y_CHECK, y_axis.isChecked());
-				values.put(DBOpenHelper.Z_CHECK, z_axis.isChecked());
-				db.update(DBOpenHelper.TABLE, values, NAME +"= '" + oldSessionName + "'",null);
-
-				if(!oldSessionName.equals(session_name)){
-					File dir = getFilesDir();
-					File image = new File(dir, oldSessionName + ".png");
-					File audio = new File(dir, oldSessionName + ".wav");
-					image.renameTo(new File(dir, session_name + ".png"));
-					audio.delete();
-				}
-				
+				int duration = size * seekbar_value * 1000 / SongCreator.FREQUENCY; // Compute the duration of the song.
+				// Start PlayActivity
 				Intent playIntent = new Intent(this, PlayActivity.class);
 				playIntent.putExtra("session_name", session_name);
-				playIntent.putExtra(PlayActivity.AUTOPLAY, false); //the song doesn't start automatically
+				playIntent.putExtra(PlayActivity.AUTOPLAY, false); // The song doesn't start automatically.
 				playIntent.putExtra(PlayActivity.DURATION, duration);
-				startActivity(playIntent);
-				
-				WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
-				 
+				startActivity(playIntent);				
 			}
-			else{
-				Toast.makeText(this,"Errore di creazione file", Toast.LENGTH_LONG).show();
-				return false;
-			}
-
 			return true;
 		}
 
@@ -328,125 +291,6 @@ public class ModifyActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-
-	//https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
-	//write the .wav file
-	private boolean createWavFile(String songName, byte[] x, byte[] y, byte[] z, int size){
-
-		try {
-
-			String file = songName + ".wav"; //name of the .wav file
-
-			//create the data to add
-			final int UPSAMPLING = seekbar_value;
-			byte[] dataAdded = new byte[size * UPSAMPLING];
-
-			int num_axes = 0;
-			if(x_axis.isChecked())
-				num_axes++;
-			if(y_axis.isChecked())
-				num_axes++;
-			if(z_axis.isChecked())
-				num_axes++;
-
-			for(int i = 0; i < size; i++){
-
-				int sum_axes = 0;
-
-				if(x_axis.isChecked())
-					sum_axes += x[i];
-				if(y_axis.isChecked())
-					sum_axes += y[i];
-				if(z_axis.isChecked())
-					sum_axes += z[i];
-
-				for(int j = i * UPSAMPLING; j < (i + 1) * UPSAMPLING; j++)
-					dataAdded[j] = (byte)(sum_axes / num_axes);
-			}	
-
-			FileOutputStream fOut = openFileOutput(file,MODE_PRIVATE);
-
-			long totalAudioLen = dataAdded.length * num_channels * (bits_per_sample / 8);
-			long chunkSize = 36 + (dataAdded.length * num_channels * (bits_per_sample / 8));
-			long byteRate = sample_rate * num_channels * (bits_per_sample / 8);
-
-			WriteWaveFileHeader(fOut, totalAudioLen, 
-					chunkSize, 
-					sample_rate, num_channels, 
-					byteRate);
-
-
-			AccelerAudioUtilities.averageArray(dataAdded); //loop this method for more average!
-
-			fOut.write(dataAdded);
-			fOut.close();
-
-			return true;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-
-	//define the header of the .wav file. DON'T CHANGE IT!
-	private void WriteWaveFileHeader(
-			FileOutputStream out, long totalAudioLen,
-			long totalDataLen, long longSampleRate, int channels,
-			long byteRate) throws IOException {
-
-		byte[] headerBuffer = new byte[44];
-
-		headerBuffer[0] = 'R';  // RIFF/WAVE header
-		headerBuffer[1] = 'I';
-		headerBuffer[2] = 'F';
-		headerBuffer[3] = 'F';
-		headerBuffer[4] = (byte) (totalDataLen & 0xff);
-		headerBuffer[5] = (byte) ((totalDataLen >> 8) & 0xff);
-		headerBuffer[6] = (byte) ((totalDataLen >> 16) & 0xff);
-		headerBuffer[7] = (byte) ((totalDataLen >> 24) & 0xff);
-		headerBuffer[8] = 'W';
-		headerBuffer[9] = 'A';
-		headerBuffer[10] = 'V';
-		headerBuffer[11] = 'E';
-		headerBuffer[12] = 'f';  // 'fmt ' chunk
-		headerBuffer[13] = 'm';
-		headerBuffer[14] = 't';
-		headerBuffer[15] = ' ';
-		headerBuffer[16] = 16;  // 4 bytes: size of 'fmt ' chunk
-		headerBuffer[17] = 0;
-		headerBuffer[18] = 0;
-		headerBuffer[19] = 0;
-		headerBuffer[20] = 1;  // format = 1
-		headerBuffer[21] = 0;
-		headerBuffer[22] = (byte) channels;
-		headerBuffer[23] = 0;
-		headerBuffer[24] = (byte) (longSampleRate & 0xff);
-		headerBuffer[25] = (byte) ((longSampleRate >> 8) & 0xff);
-		headerBuffer[26] = (byte) ((longSampleRate >> 16) & 0xff);
-		headerBuffer[27] = (byte) ((longSampleRate >> 24) & 0xff);
-		headerBuffer[28] = (byte) (byteRate & 0xff);
-		headerBuffer[29] = (byte) ((byteRate >> 8) & 0xff);
-		headerBuffer[30] = (byte) ((byteRate >> 16) & 0xff);
-		headerBuffer[31] = (byte) ((byteRate >> 24) & 0xff);
-		headerBuffer[32] = (byte) (2 * 16 / 8);  // block align
-		headerBuffer[33] = 0;
-		headerBuffer[34] = bits_per_sample;  // bits per sample
-		headerBuffer[35] = 0;
-		headerBuffer[36] = 'd';
-		headerBuffer[37] = 'a';
-		headerBuffer[38] = 't';
-		headerBuffer[39] = 'a';
-		headerBuffer[40] = (byte) (totalAudioLen & 0xff);
-		headerBuffer[41] = (byte) ((totalAudioLen >> 8) & 0xff);
-		headerBuffer[42] = (byte) ((totalAudioLen >> 16) & 0xff);
-		headerBuffer[43] = (byte) ((totalAudioLen >> 24) & 0xff);
-
-		out.write(headerBuffer, 0, 44);
-	}
-
-
 	/**
 	 * This method is called when the button "Anteprima" is pressed and it create a temporary wav file and play it.
 	 * @param view the button pressed.
@@ -454,7 +298,11 @@ public class ModifyActivity extends ActionBarActivity {
 	public void startPreview(View view){
 
 		//create temporary files
-		boolean isCreated = createWavFile("Temp", x, y, z, size);
+		SongCreator songCreator = new SongCreator(x, y, z, size);
+		songCreator.setUpsample(seekbar_value);
+		songCreator.setAxes( x_axis.isChecked(),  y_axis.isChecked(),  z_axis.isChecked());
+		boolean isCreated = songCreator.createWavFile(this, "Temp"); // Create only the song, without the image and without insert the data on the database.
+
 		if(!isCreated){
 			Toast.makeText(getBaseContext(),"File non creato.", Toast.LENGTH_SHORT).show();
 			return;
@@ -495,7 +343,7 @@ public class ModifyActivity extends ActionBarActivity {
 		}
 	}
 
-	
+
 	/**
 	 * Method called when the button "Stop" is pressed. Stop the preview of the song.
 	 * @param view The button pressed.
@@ -511,6 +359,10 @@ public class ModifyActivity extends ActionBarActivity {
 
 				mp.stop();
 				mp = null;
+				
+				File dir = getFilesDir();
+				File temp = new File(dir, "Temp.wav"); // Delete the temoraney file.
+				temp.delete();
 			}
 		}catch(Exception e){
 			Toast.makeText(getBaseContext(),e.toString(), Toast.LENGTH_SHORT).show();
