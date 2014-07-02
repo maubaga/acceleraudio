@@ -364,13 +364,11 @@ public class ModifyActivity extends ActionBarActivity {
 					sample_rate, num_channels, 
 					byteRate);
 
-			for(int u = 0; u < 10; u++) //TODO ho una media di 10!
-				averageArray(dataAdded); //loop this method for more average!
+
+			AccelerAudioUtilities.averageArray(dataAdded); //loop this method for more average!
 
 			fOut.write(dataAdded);
 			fOut.close();
-			//			Toast.makeText(getBaseContext(),"Il file è stato creato!",
-			//					Toast.LENGTH_SHORT).show();
 
 			return true;
 
@@ -435,12 +433,6 @@ public class ModifyActivity extends ActionBarActivity {
 		headerBuffer[43] = (byte) ((totalAudioLen >> 24) & 0xff);
 
 		out.write(headerBuffer, 0, 44);
-	}
-
-	private void averageArray(byte[] byteArray){
-		for (int i = 1; i < byteArray.length - 1; i++){
-			byteArray[i] = (byte) ((byteArray[i - 1] + byteArray[i] + byteArray[i + 1]) /  3);
-		}
 	}
 
 

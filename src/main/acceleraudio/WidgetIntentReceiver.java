@@ -247,8 +247,8 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 					FREQUENCY, NUM_OF_CHANNEL, 
 					byteRate);
 
-			for(int u = 0; u < 10; u++) //TODO ho una media di 10!
-				averageArray(dataAdded); //loop this method for more average!
+
+			AccelerAudioUtilities.averageArray(dataAdded); //loop this method for more average!
 
 			fOut.write(dataAdded);
 			fOut.close();
@@ -318,11 +318,6 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		out.write(headerBuffer, 0, 44);
 	}
 
-	private void averageArray(byte[] byteArray){
-		for (int i = 1; i < byteArray.length - 1; i++){
-			byteArray[i] = (byte) ((byteArray[i - 1] + byteArray[i] + byteArray[i + 1]) /  3);
-		}
-	}
 
 
 	/**
