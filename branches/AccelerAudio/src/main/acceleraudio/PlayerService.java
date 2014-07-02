@@ -25,7 +25,7 @@ public class PlayerService extends Service{
 	public final static String CHANGE = "main.acceleraudio.change";
 	public final static String CURRENT_PROGRESS = "current_progress";
 	private String sessionToPlay;
-	private String sessionInPlayNow;
+	private static String sessionInPlayNow;
 	private MediaPlayer myPlayer = null; 
 	private boolean isPlaying = false;
 	private boolean isLoop = true;
@@ -194,6 +194,10 @@ public class PlayerService extends Service{
 	@Override 
 	public void onDestroy() {
 		stop();
+	}
+	
+	public static String getSessionInPlay(){
+		return sessionInPlayNow;
 	}
 
 

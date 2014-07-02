@@ -108,6 +108,17 @@ public class ModifyActivity extends ActionBarActivity {
 	}
 	
 	@Override
+	protected void onResume() {
+		super.onResume();
+		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(PlayerService.class, this);
+		if (isPlaying){
+			//Stop the song in background
+			Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
+			stopService(stopIntent);
+		}
+	}
+	
+	@Override
 	public void onBackPressed() {
 		stopPreview(null);
 		finish(); 

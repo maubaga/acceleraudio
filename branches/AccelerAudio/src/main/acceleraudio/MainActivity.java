@@ -69,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -458,7 +458,7 @@ public class MainActivity extends ActionBarActivity {
 					image.renameTo(new File(dir, new_name + ".png"));
 					audio.renameTo(new File(dir, new_name + ".wav"));
 					showSessions(getSessions());
-					
+
 					WidgetIntentReceiver.updateWidgetOnStop(getApplicationContext()); //Update the widget with the last song.
 
 				}
@@ -480,6 +480,16 @@ public class MainActivity extends ActionBarActivity {
 	 */
 	private void deleteSession(String session_name){
 
+		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(PlayerService.class, this);
+		if (isPlaying){
+			String sessionInPlay = PlayerService.getSessionInPlay().substring(35, PlayerService.getSessionInPlay().length()-4);
+			if(session_name.equals(sessionInPlay)){
+				//Stop the song in background
+				Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
+				stopService(stopIntent);
+			}
+		}
+
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		db.delete(TABLE, NAME + "='" + session_name + "'", null);
 
@@ -488,7 +498,7 @@ public class MainActivity extends ActionBarActivity {
 		File audio = new File(dir, session_name + ".wav");
 		image.delete();
 		audio.delete();
-		
+
 		WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
 
 	}
@@ -620,7 +630,7 @@ public class MainActivity extends ActionBarActivity {
 		values.put(DBOpenHelper.Z_VALUES, z);
 		values.put(DBOpenHelper.DATA_SIZE, size);        //add the number samples to the database
 		db.insert(DBOpenHelper.TABLE, null, values);
-		
+
 		WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
 
 		return true;
