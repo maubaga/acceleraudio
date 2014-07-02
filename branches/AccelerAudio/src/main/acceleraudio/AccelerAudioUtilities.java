@@ -127,5 +127,15 @@ public class AccelerAudioUtilities{
 			return false;
 		}
 	}
+	
+	/**
+	 * This method average a Byte array.
+	 * @param byteArray The array to average.
+	 */
+	public static void averageArray(byte[] byteArray){
+		for (int i = 1; i < byteArray.length - 1; i++){
+			byteArray[i] = (byte) ((byteArray[i - 1] + byteArray[i] + byteArray[i + 1]) /  3);
+		}
+	}
 
 }
