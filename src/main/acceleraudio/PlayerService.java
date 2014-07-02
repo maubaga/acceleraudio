@@ -133,7 +133,7 @@ public class PlayerService extends Service{
 		intent.putExtra(PlayActivity.DURATION, myPlayer.getDuration());
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); 
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
-		.setContentTitle("Stai ascoltando: "+sessionInPlayNow.substring(35, sessionInPlayNow.length()-4))
+		.setContentTitle("Stai ascoltando: " + sessionInPlayNow.substring(35, sessionInPlayNow.length()-4))
 		.setContentText("Premi per tornare alla traccia.")
 		.setSmallIcon(R.drawable.abc_ic_go)
 		.setContentIntent(pi) // Required on Gingerbread and below 
@@ -196,8 +196,12 @@ public class PlayerService extends Service{
 		stop();
 	}
 	
+	/**
+	 * Get the name of the session in play now (without .wav).
+	 * @return the name of the session.
+	 */
 	public static String getSessionInPlay(){
-		return sessionInPlayNow;
+		return sessionInPlayNow.substring(35, sessionInPlayNow.length()-4);
 	}
 
 
