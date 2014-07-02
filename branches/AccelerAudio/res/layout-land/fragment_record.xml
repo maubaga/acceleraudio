@@ -15,8 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="8dp" >
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
@@ -24,7 +23,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/asse_x"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -32,7 +31,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/asse_y"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -40,7 +39,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/asse_z"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <View
@@ -52,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="8dp" >
+            >
 
             <TextView
                 android:id="@+id/x_axis"
@@ -60,7 +59,7 @@
                 android:layout_height="32dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/y_axis"
@@ -68,7 +67,7 @@
                 android:layout_height="32dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/z_axis"
@@ -76,7 +75,7 @@
                 android:layout_height="32dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -90,6 +89,35 @@
         android:inputType="textCapSentences"
         android:singleLine="true"
         android:textSize="22sp" />
+
+    <LinearLayout
+        android:id="@+id/mic"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/hint"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:gravity="center"
+            android:text="@string/start_hint"
+            android:textSize="28sp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="#00000000"
+            android:contentDescription="@string/record_img_description"
+            android:onClick="preStartRecord"
+            android:scaleType="fitCenter"
+            android:src="@drawable/rec" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/bars"
@@ -154,8 +182,8 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/note"
-            android:contentDescription="@string/note_img_description" />
+            android:contentDescription="@string/note_img_description"
+            android:src="@drawable/note" />
 
         <TextView
             android:id="@+id/note"
@@ -176,28 +204,6 @@
             android:layout_height="wrap_content"
             android:textSize="18sp" />
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/mic"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="180dp"
-        android:layout_marginRight="180dp"
-        android:layout_marginTop="0dp"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <ImageButton
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="#00000000"
-            android:contentDescription="@string/record_img_description"
-            android:onClick="preStartRecord"
-            android:scaleType="fitCenter"
-            android:src="@drawable/rec" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttons"
