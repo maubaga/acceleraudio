@@ -46,21 +46,21 @@ public class RecordService extends Service  implements SensorEventListener {
 	@Override 
 	public IBinder onBind(Intent intent) 
 	{ 
-		return null; // Clients can not bind to this service 
+		return null; // Clients can not bind to this service.
 	} 
 
 	@Override 
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		if (START.equals(intent.getAction())){ //the button start is pressed.
-			if (isOnPause){                     //isn't the first time, i don't need to create the sensorManager and the RecordContainer
+		if (START.equals(intent.getAction())){ // The start button is pressed.
+			if (isOnPause){                     // If it isn't the first time, I don't need to create the sensorManager and the RecordContainer.
 				isStart = true;
 				isOnPause = false;
 			}
-			else{                               //is the first time than I have to create the sensorManager and the RecordContainer
+			else{                               // If it's the first time than I have to create the sensorManager and the RecordContainer.
 				record = new RecordContainer();
 
 
-				maxRecordTime = intent.getLongExtra(MAX_RECORD_TIME, 30000); //default time 30 seconds
+				maxRecordTime = intent.getLongExtra(MAX_RECORD_TIME, 30000); // Default time 30 seconds.
 				session_name = intent.getStringExtra(SESSION_NAME);
 				rate = intent.getIntExtra(RATE, 50);
 				
@@ -100,7 +100,7 @@ public class RecordService extends Service  implements SensorEventListener {
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// can be safely ignored for this demo
+		// No need to use this.
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class RecordService extends Service  implements SensorEventListener {
 			if (!isStart)
 				return;
 			
-			checkMaxDuration(); //control if I reach the max duration of the recording
+			checkMaxDuration(); // Check if I reach the max duration of the recording.
 			
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
 			{
@@ -126,7 +126,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	}
 
 	/**
-	 * Called when the button stop is pressed. This method send the value of the three array and the number of samples.
+	 * Called when the stop button is pressed. Send the value of the three arrays and the number of samples.
 	 */
 	private void publishFinishResults() {		
 		Intent intent = new Intent(STOP_SERVICE);
@@ -139,7 +139,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	}
 
 	/**
-	 * This method send the three value of accelerometer.
+	 * Send the three values of the accelerometer.
 	 * @param x the value of x axis.
 	 * @param y the value of y axis.
 	 * @param z the value of z axis.
@@ -154,20 +154,21 @@ public class RecordService extends Service  implements SensorEventListener {
 	}
 	
 	/**
-	 * This method check if the max duration set in the preference is reached. If the time is over it stop the recording.
+	 * Check if the max duration set in the preference is reached. If the time is over it stops the recording.
 	 */
 	private void checkMaxDuration(){
 		if(SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime){
 			isStart = false;
 			mSensorManager.unregisterListener(this);
 			publishFinishResults();
-			Toast.makeText(this,"Raggiunta la durata massima raggiunta di " + (maxRecordTime / 1000) + " secondi.", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getResources().getString(R.string.length_error_part1) + " " + (maxRecordTime / 1000) +
+					" " + getResources().getString(R.string.length_error_part2), Toast.LENGTH_LONG).show();
 			stopSelf();
 		}
 	}
 	
 	/**
-	 * Display a simple notification that show that the recording is running in background.
+	 * Display a simple notification that shows that the recording is running in background.
 	 */
 	private void displayNotification(){	
 		Intent intent = new Intent();
@@ -175,12 +176,12 @@ public class RecordService extends Service  implements SensorEventListener {
 	    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	    
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
-		.setContentTitle("Registrazione AccelerAudio")
-		.setContentText("Premi per fermare la registrazione.")
+		.setContentTitle(getResources().getString(R.string.rec_notification_title))
+		.setContentText(getResources().getString(R.string.rec_notification_text))
         .setSmallIcon(R.drawable.abc_ic_voice_search)
         .setContentIntent(pendingIntent)
 		.build();
-		final int notificationID = 2; // An ID for this notification unique within the app 
+		final int notificationID = 2; // An ID for this notification unique within the app.
 		startForeground(notificationID, notification);
 	}
 } 

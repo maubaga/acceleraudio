@@ -34,7 +34,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		if(intent.getAction().equals(ACTION_WIDGET_START)){
 			boolean isRecordingStart = AccelerAudioUtilities.isMyServiceRunning(context, RecordService.class);
 			if (isRecordingStart){
-				Toast.makeText(context,"Registrazione già iniziata da applicazione.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, context.getResources().getString(R.string.rec_already_start), Toast.LENGTH_SHORT).show();
 				return;
 			}
 			startFromWidget(context);
@@ -43,7 +43,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			stopFromWidget(context);
 		}
 
-		if(intent.getAction().equals(RecordService.STOP_SERVICE)){ //The recording is over!
+		if(intent.getAction().equals(RecordService.STOP_SERVICE)){ // The recording is over!
 			byte[] x = intent.getByteArrayExtra(RecordService.X_VALUE);
 			byte[] y = intent.getByteArrayExtra(RecordService.Y_VALUE);
 			byte[] z = intent.getByteArrayExtra(RecordService.Z_VALUE);
@@ -65,7 +65,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 			boolean isCreated = songCreator.createNewSession(context, name); 
 
 			if(isCreated){
-				// Update layout of the Widgets.
+				// Update the layout of the Widgets.
 				updateWidgetOnStop(context);
 				
 				// Start Modify Activity.
@@ -89,7 +89,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 
 	private void startFromWidget(Context context) {
-		//Get max duration and rate from the preferences
+		// Get max duration and rate from the preferences.
 		SharedPreferences preferences = context.getSharedPreferences(PrefActivity.KEY_PREFERENCE, Context.MODE_PRIVATE);
 		String pref_maxRec = preferences.getString(PrefActivity.KEY_MAX_REC, context.getResources().getString(R.string.duration1));
 		int rate = preferences.getInt(PrefActivity.KEY_RATE, 100);
@@ -103,7 +103,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		if (context.getResources().getString(R.string.duration4).equals(pref_maxRec))
 			maxRecordTime = 300 * 1000;
 
-		//Select the name to give to the session
+		// Select the name to give to the session.
 		String folder = context.getApplicationContext().getFilesDir().getPath() + "/";
 		int fileIndex = 1;
 		String name = "Widget";
@@ -115,7 +115,7 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 				fileIndex++;
 		}
 
-		//Start the background recording
+		// Start the background recording.
 		Intent intent = new Intent(context, RecordService.class);
 		intent.setAction(RecordService.START);
 		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime); 
@@ -124,13 +124,13 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		context.startService(intent);
 		Toast.makeText(context,"Registrazione in background iniziata", Toast.LENGTH_SHORT).show();
 
-		//Update layout of the widgets
+		// Update the layout of the widgets.
 		updateWidgetOnStart(context);
 	}
 
 
 	private void stopFromWidget(Context context) {
-		//This intent stop the background recording and notify to return the values
+		// Stop the background recording and notify to return the values.
 		Intent intent = new Intent(context, RecordService.class);
 		intent.setAction(RecordService.STOP);
 		context.startService(intent);
@@ -138,13 +138,13 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	}
 
 	private void updateWidgetOnStart(Context context) {		
-		//Start the little widget
+		// Start the little widget.
 		RemoteViews littleRemoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		littleRemoteViews.setChronometer(R.id.little_chronometer, SystemClock.elapsedRealtime(), null, true);
 		littleRemoteViews.setViewVisibility(R.id.start_button, View.GONE);
 		littleRemoteViews.setViewVisibility(R.id.stop_button, View.VISIBLE);
 
-		//Start the big widget
+		// Start the big widget.
 		RemoteViews bigRemoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		bigRemoteViews.setChronometer(R.id.big_chronometer, SystemClock.elapsedRealtime(), null, true);
 		bigRemoteViews.setViewPadding(R.id.big_chronometer, 80, 0, 0, 0);
@@ -153,11 +153,11 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 		bigRemoteViews.setViewVisibility(R.id.widget_prefereces, View.GONE);
 		bigRemoteViews.setViewVisibility(R.id.stop_button, View.VISIBLE);
 
-		//Refresh the stop listener.
+		// Refresh the stop listener.
 		littleRemoteViews.setOnClickPendingIntent(R.id.stop_button, LittleWidgetProvider.stopButtonPendingIntent(context));
 		bigRemoteViews.setOnClickPendingIntent(R.id.stop_button, BigWidgetProvider.stopButtonPendingIntent(context));
 
-		//Update the widgets
+		// Update the widgets.
 		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), littleRemoteViews);
 		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), bigRemoteViews);
 	}
@@ -167,14 +167,14 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 	 * @param context The context where the method is call.
 	 */
 	public static void updateWidgetOnStop(Context context) {	
-		//Stop the little widget
+		// Stop the little widget.
 		RemoteViews littleRemoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		littleRemoteViews.setChronometer(R.id.little_chronometer, SystemClock.elapsedRealtime(), null, false);
 		littleRemoteViews.setTextViewText(R.id.little_chronometer, context.getResources().getString(R.string.initial_time));
 		littleRemoteViews.setViewVisibility(R.id.start_button, View.VISIBLE);
 		littleRemoteViews.setViewVisibility(R.id.stop_button, View.GONE);
 
-		//Stop the big widget
+		// Stop the big widget.
 		RemoteViews bigRemoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		bigRemoteViews.setChronometer(R.id.big_chronometer, SystemClock.elapsedRealtime(), null, false);
 		bigRemoteViews.setTextViewText(R.id.big_chronometer, context.getResources().getString(R.string.initial_time));
@@ -186,14 +186,14 @@ public class WidgetIntentReceiver extends BroadcastReceiver {
 
 		BigWidgetProvider.updateLastSong(bigRemoteViews, context);
 
-		//Refresh the start and preference listener.
+		// Refresh the start and preference listener.
 		littleRemoteViews.setOnClickPendingIntent(R.id.start_button, LittleWidgetProvider.startButtonPendingIntent(context));
 		littleRemoteViews.setOnClickPendingIntent(R.id.little_chronometer, LittleWidgetProvider.chronometerPendingIntent(context));
 		bigRemoteViews.setOnClickPendingIntent(R.id.start_button, BigWidgetProvider.startButtonPendingIntent(context));
 		bigRemoteViews.setOnClickPendingIntent(R.id.widget_prefereces, BigWidgetProvider.preferencesPendingIntent(context));
 		bigRemoteViews.setOnClickPendingIntent(R.id.big_chronometer, BigWidgetProvider.chronometerPendingIntent(context));
 
-		//Update the widgets
+		// Update the widgets.
 		LittleWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), littleRemoteViews);
 		BigWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), bigRemoteViews);
 	}

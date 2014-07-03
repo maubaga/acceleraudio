@@ -19,7 +19,7 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {		
-		//Get the layout of the BigWidget
+		// Get the layout of the BigWidget.
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.big_widget);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
@@ -32,8 +32,8 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	}
 
 	/**
-	 * Get a PendigIntent for start button that start a recording.
-	 * @param context The context where the method is call.
+	 * Get a PendigIntent for start button that starts a recording.
+	 * @param context The Context where the method is called.
 	 * @return A PendingIntet to associate with the start button.
 	 */
 	public static PendingIntent startButtonPendingIntent(Context context) {
@@ -43,8 +43,8 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	}
 	
 	/**
-	 * Get a PendigIntent for stop button that stop the recording.
-	 * @param context The context where the method is call.
+	 * Get a PendigIntent for stop button that stops the recording.
+	 * @param context The Context where the method is called.
 	 * @return A PendingIntet to associate with the stop button.
 	 */
 	public static PendingIntent stopButtonPendingIntent(Context context) {
@@ -54,8 +54,8 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	}
 	
 	/**
-	 * Get a PendigIntent for preferences button that that start PrefActivity.
-	 * @param context The context where the method is call.
+	 * Get a PendigIntent for preferences button that starts PrefActivity.
+	 * @param context The Context where the method is called.
 	 * @return A PendingIntet to associate with the preferences button.
 	 */
 	public static PendingIntent preferencesPendingIntent(Context context) {
@@ -64,8 +64,8 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	}
 	
 	/**
-	 * Get a PendigIntent for preferences chronometer that that start MainActivity.
-	 * @param context The context where the method is call.
+	 * Get a PendigIntent for the chronometer that starts MainActivity.
+	 * @param context The Context where the method is called.
 	 * @return A PendingIntet to associate with the chronometer.
 	 */
 	public static PendingIntent chronometerPendingIntent(Context context) {
@@ -74,12 +74,12 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	}
 	
 	/**
-	 * This method get the last song from the database and show it in a TextView. Then set a Intent on it that start PlayActivity.
-	 * @param remoteViews RemoteView that contain the TextView.
-	 * @param context The context where the method is call.
+	 * Get the last song from the database and show it in a TextView. Then set a Intent that start PlayActivity.
+	 * @param remoteViews RemoteView that contains the TextView.
+	 * @param context The Context where the method is called.
 	 */
 	public static void updateLastSong(RemoteViews remoteViews, Context context) {
-		//Get the last song from the database
+		// Get the last song from the database.
 		DBOpenHelper dbHelper = new DBOpenHelper(context);
 		String[] SELECT = {NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, DURATION}; 
 		String ORDER_BY = LAST_MODIFY_DATE + " DESC, " + LAST_MODIFY_TIME + " DESC";
@@ -103,8 +103,8 @@ public class BigWidgetProvider extends AppWidgetProvider {
 	}
 
 	/**
-	 * This method update the RemoteViews give as param.
-	 * @param context The context where the method is call.
+	 * Update the RemoteViews given as param.
+	 * @param context The Context where the method is called.
 	 * @param remoteViews RemoteViews to update.
 	 */
 	public static void pushWidgetUpdate(Context context, RemoteViews remoteViews) {

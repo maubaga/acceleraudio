@@ -44,12 +44,12 @@ public class RecordActivity extends ActionBarActivity{
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(intent.getAction().equals(RecordService.STOP_SERVICE)){ //The recording is over!
+			if(intent.getAction().equals(RecordService.STOP_SERVICE)){ // The recording is over!
 				isStart = false;
 				finish();
 			}
 
-			if(intent.getAction().equals(RecordService.SENSOR_CHANGE)){ //The values of the sensor are changed
+			if(intent.getAction().equals(RecordService.SENSOR_CHANGE)){ // The values of the sensor are changed.
 				float x = intent.getFloatExtra(RecordService.X_VALUE, 99);
 				float y = intent.getFloatExtra(RecordService.Y_VALUE, 99);
 				float z = intent.getFloatExtra(RecordService.Z_VALUE, 99);
@@ -91,7 +91,7 @@ public class RecordActivity extends ActionBarActivity{
 	public void onBackPressed() {		
 		if(isStart){
 			isStart = false;
-			//This intent delete the background recording
+			// This intent deletes the background recording.
 			Intent intent = new Intent(this, RecordService.class);
 			intent.setAction(RecordService.CANCEL);
 			startService(intent);
@@ -169,7 +169,7 @@ public class RecordActivity extends ActionBarActivity{
 		super.onResume();
 		registerReceiver(receiver, new IntentFilter(RecordService.SENSOR_CHANGE));
 		registerReceiver(receiver, new IntentFilter(RecordService.STOP_SERVICE));
-		//The recording is already stopped in background, this permits to change activity
+		// The recording is already stopped in background, this permits to change activity.
 		chrono = (Chronometer)findViewById(R.id.chrono);
 		chrono.setBase(baseChronometer);
 		chrono.start();
@@ -177,7 +177,7 @@ public class RecordActivity extends ActionBarActivity{
 			finish();
 
 		if(isStart){
-			//This is only for graphical changes
+			// This is only for graphical changes.
 			EditText start_name = (EditText)findViewById(R.id.name);
 			TextView start_hint = (TextView)findViewById(R.id.hint);
 			ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
@@ -215,24 +215,24 @@ public class RecordActivity extends ActionBarActivity{
 	public void preStartRecord(View view){
 		EditText name = (EditText) findViewById(R.id.name);
 		session_name = name.getText().toString();
-		//Check if a name is given
+		// Check if the name is blank.
 		if(session_name.equals("")){
-			Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getResources().getString(R.string.name_error1), Toast.LENGTH_SHORT).show();
 			return;
 		}
 
 		if(session_name.substring(0, 1).equals(" ")){
-			Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getResources().getString(R.string.name_error2), Toast.LENGTH_LONG).show();
 			return;
 		}
 
 		if(session_name.contains("  ")){
-			Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getResources().getString(R.string.name_error3), Toast.LENGTH_SHORT).show();
 			return;
 		}	
 		
 		if(session_name.contains("/")){
-			Toast.makeText(this,"Non puoi inserire / nel nome", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getResources().getString(R.string.name_error4), Toast.LENGTH_SHORT).show();
 			return;
 		}	
 
@@ -240,8 +240,8 @@ public class RecordActivity extends ActionBarActivity{
 		if(fileCheck.exists()){
 
 			new AlertDialog.Builder(this)
-			.setTitle(session_name + " è già presente")
-			.setMessage("Vuoi sovrascrivere il file?")
+			.setTitle(session_name + " " + getResources().getString(R.string.name_error1))
+			.setMessage(getResources().getString(R.string.overwrite_suggestion))
 			.setIcon(null)
 			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) { 
@@ -285,7 +285,7 @@ public class RecordActivity extends ActionBarActivity{
 			break;
 		}
 
-		//This starts the background recording
+		// Starts the background recording.
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.START);
 		intent.putExtra(RecordService.MAX_RECORD_TIME, maxRecordTime);
@@ -294,7 +294,7 @@ public class RecordActivity extends ActionBarActivity{
 		startService(intent);
 		isStart = true;
 
-		//This is only for graphical changes
+		// This is only for graphical changes.
 		EditText start_name = (EditText)findViewById(R.id.name);
 		TextView start_hint = (TextView)findViewById(R.id.hint);
 		ScrollView scroll = (ScrollView)findViewById(R.id.scroll);
@@ -326,12 +326,12 @@ public class RecordActivity extends ActionBarActivity{
 	}
 
 	/**
-	 * A method called when the button pause is pressed, this method stop temporarily the data storing in the object Record
+	 * A method called when the pause button is pressed, this method stops temporarily the data storing in the object Record.
 	 * @param view
 	 */
 	public void pauseRecord(View view){
 
-		//This intent put the background recording on pause
+		// This intent pauses the background recording.
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.PAUSE);
 		startService(intent);
@@ -350,8 +350,8 @@ public class RecordActivity extends ActionBarActivity{
 
 
 	/**
-	 * A method called when the button stop is pressed, this method show the data stored in the object Record
-	 * @param view the button pressed
+	 * A method called when the stop button is pressed and shows the data stored in the object Record.
+	 * @param view the button pressed.
 	 */
 	public void stopRecord(View view){	
 
@@ -371,7 +371,7 @@ public class RecordActivity extends ActionBarActivity{
 		pause.setVisibility(View.GONE);		
 		scroll.setVisibility(View.VISIBLE);
 
-		//This intent stop the background recording and notify to return the values
+		// Stop the background recording and notify to return the values.
 		Intent intent = new Intent(this, RecordService.class);
 		intent.setAction(RecordService.STOP);
 		startService(intent);

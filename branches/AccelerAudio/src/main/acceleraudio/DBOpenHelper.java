@@ -4,10 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-//A helper class to manage database creation and version management
+// A helper class to manage database creation and version management.
 public class DBOpenHelper extends SQLiteOpenHelper {
 	
-	//keys for database
+	// The keys of the database.
 	private static final String DATABASE_NAME = "AccAudio.db";
 	private static final int DATABASE_VERSION = 1;
 	public static final String TABLE = "registrazione";
