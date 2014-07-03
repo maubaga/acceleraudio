@@ -52,7 +52,6 @@ public class SongCreator {
 		setAxes(true, true, true);
 	}
 
-
 	/**
 	 * Set the rate, it must be 0 < rate <= 100.
 	 * @param rate The rate to set.
@@ -85,7 +84,6 @@ public class SongCreator {
 		useZ = z;
 	}
 
-	
 	/**
 	 * This method create a new file songName.wav with the array specified in the Constructor.
 	 * @param context The Context where this method is called.
@@ -147,6 +145,132 @@ public class SongCreator {
 		}
 	}
 
+	/**
+	 * This method create the song and the image. 
+	 * It return true if the creation is successful, 
+	 * false if the session name is null or disk space is insufficient to save the song or an error in the create is occurred.
+	 * @param context The Context where this method is called.
+	 * @param session_name The name of the song, it mustn't be null.
+	 * @return true if the creation is successful, false otherwise.
+	 */
+	public boolean createNewSession(Context context, String session_name){
+		if(session_name == null || session_name.equals(""))
+			return false;
+	
+		long byteRequest = 200 + 44 + upsampl * size; // 200: max image dimension, 44: bytes wav headers, size * upsample: song dimension.
+		// Check if the space in the "disk" is sufficient to save the song and the image.
+		if (!checkSpace(byteRequest)){
+			Toast.makeText(context,"Memoria insufficiente per salvare la traccia.", Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+		// Create and save the image.
+		boolean isSaved = AccelerAudioUtilities.saveImage(context, session_name, AccelerAudioUtilities.createImage());
+		if(!isSaved){ // Check if the image is create and save.
+			Toast.makeText(context,"Errore nel salvataggio dell'immagine.", Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+		// Create the song.
+		boolean isCreated = createWavFile(context, session_name);
+
+		if(!isCreated){ // Check if the song is created.
+			Toast.makeText(context,"Errore nella creazione della traccia.", Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+		int duration = size * upsampl * 1000 / FREQUENCY; // Duration of the sound in milliSeconds.
+
+		// Get data and time.
+		String date = AccelerAudioUtilities.getCurrentDate();
+		String time = AccelerAudioUtilities.getCurrentTime();
+
+		// Add to the database.
+		DBOpenHelper openHelper = new DBOpenHelper(context);
+		SQLiteDatabase db = openHelper.getWritableDatabase();
+		db.delete(TABLE, NAME + "='" + session_name + "'", null);
+		ContentValues values = new ContentValues();
+		values.put(DBOpenHelper.NAME, session_name);
+		values.put(DBOpenHelper.FIRST_DATE, date);
+		values.put(DBOpenHelper.FIRST_TIME, time);
+		values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
+		values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
+		values.put(DBOpenHelper.DURATION, duration);   
+		values.put(DBOpenHelper.RATE, rate);       
+		values.put(DBOpenHelper.UPSAMPL, upsampl);            
+		values.put(DBOpenHelper.X_CHECK, useX);
+		values.put(DBOpenHelper.Y_CHECK, useY);
+		values.put(DBOpenHelper.Z_CHECK, useZ);
+		values.put(DBOpenHelper.X_VALUES, x);                // Add the three byte array to the database.
+		values.put(DBOpenHelper.Y_VALUES, y);
+		values.put(DBOpenHelper.Z_VALUES, z);
+		values.put(DBOpenHelper.DATA_SIZE, size);            // Add the number samples to the database.
+		long id = db.insert(DBOpenHelper.TABLE, null, values);
+
+		if(id < 0)
+			return false;
+
+		return true;
+	}
+
+	/**
+	 * This method modify an existing session, update the last modify date and time in the database and rename the image if is necessary.
+	 * This method retun false if session_name or old_session_name are null or the space is insufficient or an error is occurred.
+	 * @param context The Context where this method is called.
+	 * @param session_name The new name for the session to modify.
+	 * @param old_session_name The old name for the session before the modify.
+	 * @return true if the modification is successful, false otherwise.
+	 */
+	public boolean modifySession(Context context, String session_name, String old_session_name){
+		if(session_name == null || session_name.equals("") || old_session_name == null || old_session_name.equals(""))
+			return false;
+		
+		long byteRequest = 44 + upsampl * size; // 44: bytes wav headers, size * upsample: song dimension.
+		if (!checkSpace(byteRequest)){      // Check if the space in the "disk" is sufficient to save the song and the image.
+			Toast.makeText(context,"Memoria insufficiente per modificare la traccia.", Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+		// Create the song.
+		boolean isCreated = createWavFile(context, session_name);
+
+		if(!isCreated){ // Check if the song is created.
+			Toast.makeText(context, "Errore di creazione file", Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+		int duration = size * upsampl * 1000 / FREQUENCY; // Duration of the sound in milliSeconds.
+
+		DBOpenHelper openHelper = new DBOpenHelper(context);
+		SQLiteDatabase db = openHelper.getWritableDatabase();
+
+		// Get data and time.
+		String date = AccelerAudioUtilities.getCurrentDate();
+		String time = AccelerAudioUtilities.getCurrentTime();
+
+		// Update the database.
+		ContentValues values = new ContentValues();
+		values.put(DBOpenHelper.NAME, session_name);
+		values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
+		values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
+		values.put(DBOpenHelper.DURATION, duration); 
+		values.put(DBOpenHelper.UPSAMPL, upsampl);            
+		values.put(DBOpenHelper.X_CHECK, useX);
+		values.put(DBOpenHelper.Y_CHECK, useY);
+		values.put(DBOpenHelper.Z_CHECK, useZ);
+		db.update(DBOpenHelper.TABLE, values, NAME +"= '" + old_session_name + "'",null);
+
+		// Delete the previous song and rename the image if the name is change.
+		if(!old_session_name.equals(session_name)){
+			File dir = context.getFilesDir();
+			File image = new File(dir, old_session_name + ".png");
+			File audio = new File(dir, old_session_name + ".wav");
+			image.renameTo(new File(dir, session_name + ".png"));
+			audio.delete();
+		}
+
+		return true;
+	}
 
 	/**
 	 * This method create the header of the wav file as described by https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
@@ -213,23 +337,16 @@ public class SongCreator {
 		out.write(headerBuffer, 0, 44);
 	}
 
-
-
 	/**
-	 * This method create the song and the image. 
-	 * It return true if the creation is successful, 
-	 * false if the session name is null or disk space is insufficient to save the song or an error in the create is occurred.
-	 * @param context The Context where this method is called.
-	 * @param session_name The name of the song, it mustn't be null.
-	 * @return true if the creation is successful, false otherwise.
+	 * This method get the free memory space in the device in byte and check if byteRequest < freeByte. Return true if the space is sufficient,
+	 * false otherwise.
+	 * @param byteRequest The number of byte request from the memory.
+	 * @return true if byteRequest < freeByte, false otherwise.
 	 */
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public boolean createNewSession(Context context, String session_name){
-		if(session_name == null || session_name.equals(""))
-			return false;
-
-		//Get free space
+	private boolean checkSpace(long byteRequest){
+		// Get free space.
 		File path = Environment.getDataDirectory();
 		StatFs stat = new StatFs(path.getPath());
 		long blockSize; 
@@ -243,108 +360,11 @@ public class SongCreator {
 			blockSize = stat.getBlockSize(); // getBlockSizeLong() need API level 18
 			availableBlocks= stat.getAvailableBlocks(); // getAvailableBlocksLong() need API level 18
 		}
-
 		long freeByte = blockSize * availableBlocks;		
-		long byteRequest = 200 + 44 + upsampl * size; // 200: max image dimension, 44: bytes wav headers, size * upsample: song dimension.
-		// Check if the space in the "disk" is sufficient to save the song and the image.
-		if (byteRequest > freeByte){
-			Toast.makeText(context,"Memoria insufficiente per salvare la traccia.", Toast.LENGTH_LONG).show();
+
+		if (byteRequest > freeByte)
 			return false;
-		}
-
-
-		boolean isSaved = AccelerAudioUtilities.saveImage(context, session_name, AccelerAudioUtilities.createImage());
-		if(!isSaved){
-			Toast.makeText(context,"Errore nel salvataggio dell'immagine.", Toast.LENGTH_LONG).show();
-			return false;
-		}
-
-		boolean isCreated = createWavFile(context, session_name);
-
-		if(!isCreated){
-			Toast.makeText(context,"Errore nella creazione della traccia.", Toast.LENGTH_LONG).show();
-			return false;
-		}
-
-		int duration = size * upsampl * 1000 / FREQUENCY; // Duration of the sound in milliSeconds.
-
-		// Get data and time.
-		String date = AccelerAudioUtilities.getCurrentDate();
-		String time = AccelerAudioUtilities.getCurrentTime();
-
-		// Add to the database.
-		DBOpenHelper openHelper = new DBOpenHelper(context);
-		SQLiteDatabase db = openHelper.getWritableDatabase();
-		db.delete(TABLE, NAME + "='" + session_name + "'", null);
-		ContentValues values = new ContentValues();
-		values.put(DBOpenHelper.NAME, session_name);
-		values.put(DBOpenHelper.FIRST_DATE, date);
-		values.put(DBOpenHelper.FIRST_TIME, time);
-		values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
-		values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-		values.put(DBOpenHelper.DURATION, duration);   
-		values.put(DBOpenHelper.RATE, rate);       
-		values.put(DBOpenHelper.UPSAMPL, upsampl);            
-		values.put(DBOpenHelper.X_CHECK, useX);
-		values.put(DBOpenHelper.Y_CHECK, useY);
-		values.put(DBOpenHelper.Z_CHECK, useZ);
-		values.put(DBOpenHelper.X_VALUES, x);                // Add the three byte array to the database.
-		values.put(DBOpenHelper.Y_VALUES, y);
-		values.put(DBOpenHelper.Z_VALUES, z);
-		values.put(DBOpenHelper.DATA_SIZE, size);            // Add the number samples to the database.
-		long id = db.insert(DBOpenHelper.TABLE, null, values);
-
-		if(id < 0)
-			return false;
-
-		return true;
-	}
-
-	/**
-	 * This method modify an existing session, update the last modify date and time in the database and rename the image if is necessary.
-	 * @param context The Context where this method is called.
-	 * @param session_name The new name for the session to modify.
-	 * @param oldSessionName The old name for the session before the modify.
-	 * @return true if the modification is successful, false otherwise.
-	 */
-	public boolean modifySession(Context context, String session_name, String oldSessionName){
-		boolean isCreated = createWavFile(context, session_name);
-
-		if(!isCreated){
-			Toast.makeText(context, "Errore di creazione file", Toast.LENGTH_LONG).show();
-			return false;
-		}
-
-		int duration = size * upsampl * 1000 / FREQUENCY; // Duration of the sound in milliSeconds.
-
-		DBOpenHelper openHelper = new DBOpenHelper(context);
-		SQLiteDatabase db = openHelper.getWritableDatabase();
-
-		// Get data and time.
-		String date = AccelerAudioUtilities.getCurrentDate();
-		String time = AccelerAudioUtilities.getCurrentTime();
-
-		// Update the database.
-		ContentValues values = new ContentValues();
-		values.put(DBOpenHelper.NAME, session_name);
-		values.put(DBOpenHelper.LAST_MODIFY_DATE, date);
-		values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
-		values.put(DBOpenHelper.DURATION, duration); 
-		values.put(DBOpenHelper.UPSAMPL, upsampl);            
-		values.put(DBOpenHelper.X_CHECK, useX);
-		values.put(DBOpenHelper.Y_CHECK, useY);
-		values.put(DBOpenHelper.Z_CHECK, useZ);
-		db.update(DBOpenHelper.TABLE, values, NAME +"= '" + oldSessionName + "'",null);
-
-		// Delete the previous song and rename the image if the name is change.
-		if(!oldSessionName.equals(session_name)){
-			File dir = context.getFilesDir();
-			File image = new File(dir, oldSessionName + ".png");
-			File audio = new File(dir, oldSessionName + ".wav");
-			image.renameTo(new File(dir, session_name + ".png"));
-			audio.delete();
-		}
-		
-		return true;
+		else 
+			return true;
 	}
 }
