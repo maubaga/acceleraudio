@@ -28,9 +28,9 @@
     <string name="detail_upsample">\n\nInterpolazione:</string>
     
     <string name="name_error1">Inserisci un nome per la sessione</string>
-    <string name="name_error2">Non puoi inserire spazi consecutivi nel nome</string>
-    <string name="name_error3">Non puoi inserire / nel nome</string>
-    <string name="name_error4">Il nome non può iniziare con uno spazio</string>
+    <string name="name_error2">Il nome non può iniziare con uno spazio</string>
+    <string name="name_error3">Non puoi inserire spazi consecutivi nel nome</string>
+    <string name="name_error4">Non puoi inserire / nel nome</string>
     <string name="name_error5">esiste già!</string>
     
     <string name="duplicate_error">Non ho copiato i file</string>

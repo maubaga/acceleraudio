@@ -68,6 +68,11 @@ public class PlayActivity extends ActionBarActivity {
 		session_name = intent.getStringExtra(SESSION_NAME);
 		isAutoplayEnabled = intent.getBooleanExtra(AUTOPLAY, false);
 		duration = intent.getIntExtra(DURATION, -1);
+		
+		if(!isAutoplayEnabled){
+			intent.putExtra(AUTOPLAY, true);
+			isOnPause = true;
+		}			
 	}
 
 	@Override
