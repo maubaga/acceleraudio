@@ -395,10 +395,10 @@ public class MainActivity extends ActionBarActivity {
 	 * @param name The name of the session to play.
 	 */
 	private void startSession(String name){
-		String[] FROM = { NAME, DURATION};
+		String[] SELECT = { NAME, DURATION};
 		String WHERE = NAME + " = '" + name + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
+		Cursor cursor = db.query(TABLE, SELECT, WHERE, null, null, null, null);
 		cursor.moveToFirst();
 		int duration = cursor.getInt(cursor.getColumnIndex(DURATION));
 		Intent playIntent = new Intent(this, PlayActivity.class);
