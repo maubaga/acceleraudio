@@ -16,6 +16,24 @@
     <string name="duplicate">Duplica</string>
     <string name="delete">Elimina</string>
     <string name="confirm_delete">Vuoi eliminare questa sessione?</string>
+    <string name="rec_already_start_widget">Registrazione già iniziata da widget</string>
+    
+    <string name="detail_name">Nome:</string>
+    <string name="detail_length">\n\nDurata:</string>
+    <string name="detail_first_time">\n\nData creazione:</string>
+    <string name="detail_last_time">\n\nUltima modifica:</string>
+    <string name="detail_axes">\n\nAssi utilizzati:</string>
+    <string name="detail_rate">\n\nCampionamento:</string>
+    <string name="detail_rate_value">Campioni/s</string>
+    <string name="detail_upsample">\n\nInterpolazione:</string>
+    
+    <string name="name_error1">Inserisci un nome per la sessione</string>
+    <string name="name_error2">Non puoi inserire spazi consecutivi nel nome</string>
+    <string name="name_error3">Non puoi inserire / nel nome</string>
+    <string name="name_error4">Il nome non può iniziare con uno spazio</string>
+    <string name="name_error5">esiste già!</string>
+    
+    <string name="duplicate_error">Non ho copiato i file</string>
 
     <!-- ****** RECORDACTIVITY ****** -->
 
@@ -29,8 +47,15 @@
     <string name="note_img_description">Campioni registrati</string>
     <string name="play_img_description">Play</string>
     <string name="pause_img_description">Pausa</string>
+    
+    <string name="rec_notification_title">Registrazione AccelerAudio</string>
+    <string name="rec_notification_text">Premi per fermare la registrazione.</string>
+    
+    <string name="overwrite_suggestion">Vuoi sovrascrivere il file?</string>
+    <string name="length_error_part1">Raggiunta la durata massima raggiunta di</string>
+    <string name="length_error_part2">secondi.</string>
 
-    <!-- ****** CREATEACTIVITY ****** -->
+    <!-- ****** MODIFYACTIVITY ****** -->
 
     <string name="title_activity_create">Dettagli sessione</string>
     <string name="action_accept">Conferma</string>
@@ -41,11 +66,16 @@
     <string name="upscaling_title"><b>DURATA DEI SUONI</b></string>
     <string name="preview">Anteprima</string>
     <string name="session_img_description">Immagine della sessione</string>
+    
+    <string name="axes_error">Devi selezionare almeno un asse</string>
 
     <!-- ****** PLAYACTIVITY ****** -->
 
     <string name="title_activity_play">Lettore musicale</string>
     <string name="loop_img_description">Loop/No loop</string>
+    
+    <string name="play_notification_title">Stai ascoltando:</string>
+    <string name="play_notification_text">Premi per tornare alla traccia.</string>
 
     <!-- ****** PREFACTIVITY ****** -->
 
@@ -64,10 +94,15 @@
     <string name="initial_time">00:00</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="rec_already_start">Registrazione già iniziata da applicazione.</string>
 
     <!-- ****** ALTRO ****** -->
     <string name="app_name">AccelerAudio</string>
     <string name="action_settings">Impostazioni</string>
     <string name="title_activity_modify">Modifica</string>
-
+    
+    <string name="creation_error">Errore di creazione file</string>
+    <string name="memory_error">Memoria insufficiente per salvare la traccia.</string>
+    <string name="img_error">Errore nel salvataggio dell\'immagine.</string>
+    <string name="track_creation_error">Errore nella creazione della traccia.</string>
 </resources>

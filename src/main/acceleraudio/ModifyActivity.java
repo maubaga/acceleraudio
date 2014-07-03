@@ -78,8 +78,6 @@ public class ModifyActivity extends ActionBarActivity {
 			.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 
-
-
 		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/";
 
 		intent = getIntent();
@@ -100,7 +98,7 @@ public class ModifyActivity extends ActionBarActivity {
 	protected void onResume() {
 		super.onResume();
 		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(this, PlayerService.class);
-		if (isPlaying){ // Check if is in play something.
+		if (isPlaying){ // Check if something is playing.
 			// Stop the song in background.
 			Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 			stopService(stopIntent);
@@ -150,14 +148,14 @@ public class ModifyActivity extends ActionBarActivity {
 			y_axis.setChecked(yCheck);
 			z_axis.setChecked(zCheck);
 
-			//Checking if at least one axes is selected
+			// Check if at least one axes is selected.
 			x_axis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
 
 				@Override 
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
 					if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
 
-						Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), getResources().getString(R.string.axes_error), Toast.LENGTH_SHORT).show();
 						buttonView.setChecked(true);
 
 					}
@@ -170,7 +168,7 @@ public class ModifyActivity extends ActionBarActivity {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
 					if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
 
-						Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), getResources().getString(R.string.axes_error), Toast.LENGTH_SHORT).show();
 						buttonView.setChecked(true);
 
 					}
@@ -183,7 +181,7 @@ public class ModifyActivity extends ActionBarActivity {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
 					if(!x_axis.isChecked() && !y_axis.isChecked() && !z_axis.isChecked()){
 
-						Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), getResources().getString(R.string.axes_error), Toast.LENGTH_SHORT).show();
 						buttonView.setChecked(true);
 
 					}
@@ -207,12 +205,12 @@ public class ModifyActivity extends ActionBarActivity {
 
 				@Override 
 				public void onStartTrackingTouch(SeekBar seekBar) { 
-					//no need to use this
+					// No need to use this.
 				} 
 
 				@Override 
 				public void onStopTrackingTouch(SeekBar seekBar) {
-					//no need to use this
+					// No need to use this.
 				} 
 			});
 
@@ -239,24 +237,24 @@ public class ModifyActivity extends ActionBarActivity {
 		if (id == R.id.action_accept) {
 
 			session_name = nameEditText.getText().toString();
-			//Check if a name is given
+
 			if(session_name.equals("")){
-				Toast.makeText(this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getResources().getString(R.string.name_error1), Toast.LENGTH_SHORT).show();
 				return false;
 			}
 
 			if(session_name.contains("  ")){
-				Toast.makeText(this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getResources().getString(R.string.name_error2), Toast.LENGTH_SHORT).show();
 				return false;
 			}
 			
 			if(session_name.contains("/")){
-				Toast.makeText(this,"Non puoi inserire / nel nome", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getResources().getString(R.string.name_error3), Toast.LENGTH_SHORT).show();
 				return false;
 			}	
 
 			if(session_name.substring(0, 1).equals(" ")){
-				Toast.makeText(this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, getResources().getString(R.string.name_error4), Toast.LENGTH_LONG).show();
 				return false;
 			}
 
@@ -265,7 +263,7 @@ public class ModifyActivity extends ActionBarActivity {
 			File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + session_name + ".wav");
 			if(fileCheck.exists() && !session_name.equals(oldSessionName)){
 
-				Toast.makeText(this, session_name + " esiste già!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, session_name + " " + getResources().getString(R.string.name_error5), Toast.LENGTH_SHORT).show();
 				return false;
 
 			}
@@ -297,7 +295,7 @@ public class ModifyActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * This method is called when the button "Anteprima" is pressed and it create a temporary wav file and play it.
+	 * This method is called when the button "Anteprima" is pressed and it creates a temporary wav file and plays it.
 	 * @param view the button pressed.
 	 */
 	public void startPreview(View view){
@@ -366,7 +364,7 @@ public class ModifyActivity extends ActionBarActivity {
 				mp = null;
 				
 				File dir = getFilesDir();
-				File temp = new File(dir, "Temp.wav"); // Delete the temoraney file.
+				File temp = new File(dir, "Temp.wav"); // Delete the temporary file.
 				temp.delete();
 			}
 		}catch(Exception e){

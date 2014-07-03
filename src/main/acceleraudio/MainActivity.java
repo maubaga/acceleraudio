@@ -55,7 +55,6 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
-
 	private DBOpenHelper dbHelper;
 	private static String folder;
 
@@ -73,13 +72,13 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		dbHelper.close();
+		dbHelper.close(); // Close the database when it's not used.
 	}
 
 	@Override
 	protected void onResume(){
 		super.onResume();
-
+		// Reopen the database.
 		folder = getApplicationContext().getFilesDir().getPath() + "/";
 		dbHelper = new DBOpenHelper(this);
 		Cursor cursor = getSessions();
@@ -107,8 +106,8 @@ public class MainActivity extends ActionBarActivity {
 
 		if (id == R.id.action_new) {
 			boolean isRecordingStart = AccelerAudioUtilities.isMyServiceRunning(this, RecordService.class);
-			if (isRecordingStart){ // Check the recording is already start.
-				Toast.makeText(this,"Registrazione già iniziata da widget", Toast.LENGTH_SHORT).show();
+			if (isRecordingStart){ // Check if the recording is already start.
+				Toast.makeText(this, getResources().getString(R.string.rec_already_start_widget), Toast.LENGTH_SHORT).show();
 				return false;
 			}
 			Intent intent = new Intent(this, RecordActivity.class);
@@ -118,11 +117,10 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * This method get the detail of all the song in the database.
+	 * Get the details of all the songs in the database.
 	 * @return A Cursor that contains the details.
 	 */
 	private Cursor getSessions() {
-		// Get all of the notes from the database and create the item list
 		String[] select = { NAME, LAST_MODIFY_DATE, LAST_MODIFY_TIME, FIRST_DATE, FIRST_TIME, RATE, UPSAMPL, X_CHECK, Y_CHECK, Z_CHECK, DURATION};
 		String order_by = NAME + " ASC";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -131,12 +129,12 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * This method get the detail of the song from the database and all the date that build it.
-	 * @param songName Name of the song (without extension like .wav)
+	 * Get the details of the songs from the database and all the data that build it.
+	 * @param songName Name of the song (without extension like .wav).
 	 * @return A Cursor that contains the details.
 	 */
 	private Cursor getArraysData(String songName) {
-		// Get the three arrays from blob fields in the data base and the dimension of the arrays
+		// Get the three arrays from blob fields in the data base and the dimensions of the arrays.
 		String[] select = {X_CHECK, Y_CHECK, Z_CHECK, UPSAMPL, X_VALUES, Y_VALUES, Z_VALUES, DATA_SIZE, FIRST_DATE, FIRST_TIME, RATE, DURATION};
 		String where = NAME + "= '" + songName + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -145,8 +143,9 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * This method show the all songs record from this app. Get the data from the database and it show this data in a list with an image and a button that permits to play the song. More option and details are allow thanks a long press in the track.
-	 * @param cursor A Cursor that contain the track to show and their details.
+	 * Show all the songs recorded; Get the data from the database and show it in a list with an image and a button that permits to play the song; 
+	 * More options and details are allow thanks to a long press in the track.
+	 * @param cursor A Cursor that contain the tracks to show and their details.
 	 */
 	private void showSessions(Cursor cursor) {
 
@@ -154,8 +153,8 @@ public class MainActivity extends ActionBarActivity {
 		LinearLayout index = (LinearLayout)findViewById(R.id.index);
 		View index_line = (View)findViewById(R.id.index_line);
 		LinearLayout main_container = (LinearLayout)findViewById(R.id.main_container);
-		main_container.removeAllViews();
-
+		main_container.removeAllViews(); // If there are some old Views, remove them.
+		// Display a message if the database is empty.
 		if(cursor.getCount() == 0){
 
 			index.setVisibility(View.GONE);
@@ -169,16 +168,17 @@ public class MainActivity extends ActionBarActivity {
 			empty_db.setVisibility(View.GONE);
 
 		}
-
+		// Create the LinearLayouts and fill them with the data.
 		for(int i = 0; i < cursor.getCount(); i++){
 
 			cursor.moveToPosition(i);
+			// The container of a session.
 			LinearLayout session = new LinearLayout(this);
 			session.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics())));
 			session.setOrientation(LinearLayout.HORIZONTAL);
 			session.setClickable(true);
 			session.setBackgroundResource(R.drawable.selector_colors);
-
+			// The session's image.
 			ImageView img = new ImageView(this);
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics()), 20);
@@ -186,6 +186,7 @@ public class MainActivity extends ActionBarActivity {
 			img.setImageURI(Uri.parse(folder + cursor.getString(cursor.getColumnIndex(NAME)) + ".png"));
 			img.setLayoutParams(params);
 
+			// The session's name.
 			TextView name = new TextView(this);
 			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
 					0, LayoutParams.WRAP_CONTENT, 55);
@@ -196,6 +197,10 @@ public class MainActivity extends ActionBarActivity {
 			name.setText(cursor.getString(cursor.getColumnIndex(NAME)));
 			name.setLayoutParams(params2);
 
+			// Get the session's name; The play button needs it.
+			final String session_name = name.getText().toString();
+
+			// The date on which the session has been modified for the last time.
 			TextView date = new TextView(this);
 			LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
 					0, LayoutParams.WRAP_CONTENT, 45);
@@ -205,21 +210,41 @@ public class MainActivity extends ActionBarActivity {
 			date.setText(AccelerAudioUtilities.dateConverter(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE))));
 			date.setLayoutParams(params3);
 
-			//Session's name
-			final String session_name = name.getText().toString();
+			ImageButton play = new ImageButton(this);
+			LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams(
+					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 20);
+			play.setImageResource(R.drawable.media_play_main);
+			play.setPadding(5, 5, 5, 5);
+			play.setScaleType(ScaleType.FIT_CENTER);
+			play.setLayoutParams(params4);
+			play.setBackgroundResource(R.drawable.selector_colors);
+			play.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					startSession(session_name);
+				}
 
-			//First and last date
+			});
+
+			// Get all the data for the details window;
+			// The session's dates;
 			String first_date = AccelerAudioUtilities.dateConverter(cursor.getString(cursor.getColumnIndex(FIRST_DATE)));
 			String first_time = cursor.getString(cursor.getColumnIndex(FIRST_TIME));
 			String last_date = AccelerAudioUtilities.dateConverter(cursor.getString(cursor.getColumnIndex(LAST_MODIFY_DATE)));
 			String last_time = cursor.getString(cursor.getColumnIndex(LAST_MODIFY_TIME));
 			final String first_time_date = first_date + " " + first_time;
 			final String last_time_date = last_date + " " + last_time;
-			final String rate = cursor.getString(cursor.getColumnIndex(RATE)); //Rate value			
-			final String upsampl = cursor.getString(cursor.getColumnIndex(UPSAMPL)); //Upsampling value
+			
+			// The session's rate value.
+			final String rate = cursor.getString(cursor.getColumnIndex(RATE)); 
+			
+			// The session's upsampling value.
+			final String upsampl = cursor.getString(cursor.getColumnIndex(UPSAMPL)); 
+			
+			// The session's length.
 			final String duration = PlayActivity.secondToTime(cursor.getInt(cursor.getColumnIndex(DURATION)));
 
-			//Used axes
+			// The axes used by the session.
 			String temp_used_axes = "";
 			boolean second_axis = false;
 			if(cursor.getString(cursor.getColumnIndex(X_CHECK)).equals("1")){
@@ -243,30 +268,17 @@ public class MainActivity extends ActionBarActivity {
 			}			
 			final String used_axes = temp_used_axes;
 
-
-
-			ImageButton play = new ImageButton(this);
-			LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams(
-					0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()), 20);
-			play.setImageResource(R.drawable.media_play_main);
-			play.setPadding(5, 5, 5, 5);
-			play.setScaleType(ScaleType.FIT_CENTER);
-			play.setLayoutParams(params4);
-			play.setBackgroundResource(R.drawable.selector_colors);
-			play.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					startSession(session_name);
-				}
-
-			});
-
-
-			//Text of the Details window
-			final String message = "Nome: " + session_name + "\n\nData creazione: " + first_time_date + 
-					"\n\nUltima modifica: " + last_time_date + "\n\nAssi utilizzati: " + used_axes +
-					"\n\nCampionamento: " + rate + " Campioni/s" + "\n\nInterpolazione: " + upsampl + 
-					"\n\nDurata: " + duration;
+			// Text of the details window.
+			final String message = 
+					getResources().getString(R.string.detail_name) + " " + session_name +
+					getResources().getString(R.string.detail_length) + " " + duration +
+					getResources().getString(R.string.detail_first_time) + " " + first_time_date +
+					getResources().getString(R.string.detail_last_time) + " " + last_time_date +
+					getResources().getString(R.string.detail_axes) + " " + used_axes +
+					getResources().getString(R.string.detail_rate) + " " + rate + " " + getResources().getString(R.string.detail_rate_value) +
+					getResources().getString(R.string.detail_upsample) + " " + upsampl;
+			
+			// Show the details window when a session is pressed.
 			session.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -274,6 +286,7 @@ public class MainActivity extends ActionBarActivity {
 				}
 			});
 
+			// Show the context menu when a session is long pressed.
 			session.setOnLongClickListener(new OnLongClickListener() { 
 				@Override
 				public boolean onLongClick(View v) {
@@ -282,13 +295,12 @@ public class MainActivity extends ActionBarActivity {
 				}
 			});
 
-
+			// A simple line between the sessions.
 			View line = new View(this);
 			line.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics())));
 			line.setBackgroundColor(0x227a7a7a);
 
-
-
+			// Add the Views to the containers.
 			session.addView(img);
 			session.addView(name);
 			session.addView(date);
@@ -303,8 +315,8 @@ public class MainActivity extends ActionBarActivity {
 
 
 	/**
-	 * AlertDialog that contain the detail of the track.
-	 * @param message The detail to view in string form.
+	 * AlertDialog that contains the details of the session.
+	 * @param message The details to view in string form.
 	 */
 	private void detailsView(String message){
 
@@ -324,8 +336,8 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * Contextual menu that appears when it is done long press on a track.
-	 * @param v The view in which it was done long press;
+	 * Contextual menu that appears when a session is long pressed.
+	 * @param v The view which was long pressed;
 	 * @param session_name The name of the song.
 	 */
 	private void contextMenu(View v, String session_name){
@@ -341,45 +353,42 @@ public class MainActivity extends ActionBarActivity {
 
 				switch(which){
 
-				case 0: //rename button
+				case 0: // Rename button.
 					renameSession(name);
 					break;
 
-				case 1: //modify button
+				case 1: // Modify button.
 					modifySession(name);
 					break;
 
-				case 2: //duplicate button
+				case 2: // Duplicate button.
 					duplicateSession(name);
 					showSessions(getSessions());
 					break;
 
-				case 3: //delete button
+				case 3: // Delete button.
+					// Show a confirmation window.
 					new AlertDialog.Builder(MainActivity.this)
 					.setTitle(name)
 					.setMessage(R.string.confirm_delete)
 					.setIcon(null)
 					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) { 
-							deleteSession(name); //here i delete the session
-							showSessions(getSessions());
+							deleteSession(name); // Delete the session.
+							showSessions(getSessions()); // Update the Views with the updated database.
 						}
 					})
 					.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) { 
-							return;
+							return; // Do nothing.
 						}
 					})
 					.show();
 					break;
-
 				}
-
 			}
 		}).show();
-
 	}
-
 
 	/**
 	 * Play the session calling the PlayActivity.
@@ -387,7 +396,7 @@ public class MainActivity extends ActionBarActivity {
 	 */
 	private void startSession(String name){
 		String[] FROM = { NAME, DURATION};
-		String WHERE = NAME + " = '" + name +"'";
+		String WHERE = NAME + " = '" + name + "'";
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(TABLE, FROM, WHERE, null, null, null, null);
 		cursor.moveToFirst();
@@ -395,7 +404,7 @@ public class MainActivity extends ActionBarActivity {
 		Intent playIntent = new Intent(this, PlayActivity.class);
 		playIntent.putExtra(PlayActivity.DURATION, duration);
 		playIntent.putExtra(PlayActivity.SESSION_NAME, name);
-		playIntent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
+		playIntent.putExtra(PlayActivity.AUTOPLAY, true);  // The song starts automatically.
 		startActivity(playIntent);
 	}
 
@@ -404,11 +413,11 @@ public class MainActivity extends ActionBarActivity {
 	 * @param new_name The name of the song to delete.
 	 */
 	private void renameSession(String new_name){
-		
+
 		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(this, PlayerService.class);
-		if (isPlaying){ // Check if is in play something.
+		if (isPlaying){ // Check if something is playing.
 			String sessionInPlay = PlayerService.getSessionInPlay();
-			if(new_name.equals(sessionInPlay)){ // Check if the song to rename is in play now.
+			if(new_name.equals(sessionInPlay)){ // Check if the song to rename is playing now.
 				// Stop the song in background.
 				Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 				stopService(stopIntent);
@@ -434,29 +443,29 @@ public class MainActivity extends ActionBarActivity {
 				String new_name = input.getText().toString();
 
 				if(new_name.equals("")){
-					Toast.makeText(MainActivity.this,"Inserisci un nome per la sessione", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, getResources().getString(R.string.name_error1), Toast.LENGTH_SHORT).show();
 					return;
 				}
 
 				if(new_name.contains("  ")){
-					Toast.makeText(MainActivity.this,"Non puoi inserire spazi consecutivi nel nome", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, getResources().getString(R.string.name_error2), Toast.LENGTH_SHORT).show();
 					return;
 				}
-				
+
 				if(new_name.contains("/")){
-					Toast.makeText(MainActivity.this,"Non puoi inserire / nel nome", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, getResources().getString(R.string.name_error3), Toast.LENGTH_SHORT).show();
 					return;
 				}	
 
 				if(new_name.substring(0, 1).equals(" ")){
-					Toast.makeText(MainActivity.this,"Il nome non può iniziare con uno spazio", Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this, getResources().getString(R.string.name_error4), Toast.LENGTH_LONG).show();
 					return;
 				}
 
 				File fileCheck = new File(getApplicationContext().getFilesDir().getPath() + "/" + new_name + ".wav");
 				if(fileCheck.exists() && !new_name.equals(name)){
 
-					Toast.makeText(MainActivity.this, new_name + " esiste già!", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, new_name + " " + getResources().getString(R.string.name_error5), Toast.LENGTH_SHORT).show();
 					return;
 
 				} else{
@@ -474,7 +483,7 @@ public class MainActivity extends ActionBarActivity {
 					audio.renameTo(new File(dir, new_name + ".wav"));
 					showSessions(getSessions());
 
-					WidgetIntentReceiver.updateWidgetOnStop(getApplicationContext()); //Update the widget with the last song.
+					WidgetIntentReceiver.updateWidgetOnStop(getApplicationContext()); // Update the widget with the last song.
 
 				}
 
@@ -496,9 +505,9 @@ public class MainActivity extends ActionBarActivity {
 	private void deleteSession(String session_name){
 
 		boolean isPlaying = AccelerAudioUtilities.isMyServiceRunning(this, PlayerService.class);
-		if (isPlaying){ // Check if is in play something.
+		if (isPlaying){ // Check if something is playing.
 			String sessionInPlay = PlayerService.getSessionInPlay();
-			if(session_name.equals(sessionInPlay)){ // Check if the song to delete is in play now.
+			if(session_name.equals(sessionInPlay)){ // Check if the song to delete is playing now.
 				// Stop the song in background.
 				Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 				stopService(stopIntent);
@@ -514,7 +523,7 @@ public class MainActivity extends ActionBarActivity {
 		image.delete();
 		audio.delete();
 
-		WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
+		WidgetIntentReceiver.updateWidgetOnStop(this); // Update the widget with the last song.
 	}
 
 
@@ -559,7 +568,7 @@ public class MainActivity extends ActionBarActivity {
 
 
 	/**
-	 * This method duplicates the song and the image associated with it. Return true if duplication is successful, 
+	 * Duplicates the song and the image associated with it. Return true if the duplication is successful, 
 	 * else return false if an error is occurred.
 	 * @param name The name of the song (without ".wav")
 	 * @return true if duplication is successful, false otherwise.
@@ -571,7 +580,7 @@ public class MainActivity extends ActionBarActivity {
 		boolean xCheck, yCheck, zCheck;
 		int fileIndex = 2;
 
-		//read information from the database
+		// Read information from the database.
 		cursor = getArraysData(name);
 		cursor.moveToFirst();
 		x = cursor.getBlob(cursor.getColumnIndex(X_VALUES));
@@ -586,7 +595,7 @@ public class MainActivity extends ActionBarActivity {
 		duration = cursor.getInt(cursor.getColumnIndex(DURATION));
 
 		try{
-			//duplicate the song
+			// Duplicate the song.
 			File inputFile = new File(folder + name + ".wav");
 			FileInputStream input = new FileInputStream(inputFile);
 
@@ -599,7 +608,7 @@ public class MainActivity extends ActionBarActivity {
 			}
 			FileOutputStream output = openFileOutput(name + "-" + fileIndex +".wav", MODE_PRIVATE);
 
-			byte[] buf = new byte[(int)inputFile.length()]; //numbers of bytes of the song + 44 bytes for the headers
+			byte[] buf = new byte[(int)inputFile.length()]; // Numbers of bytes of the song + 44 bytes for the headers.
 			int len;
 			while ((len = input.read(buf)) > 0) {
 				output.write(buf, 0, len);
@@ -609,22 +618,22 @@ public class MainActivity extends ActionBarActivity {
 			input.close();
 			output.close();
 
-			// Create new image.
+			// Create a new image.
 			AccelerAudioUtilities.saveImage(this, name + "-" + fileIndex, AccelerAudioUtilities.createImage());
 
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(this, "Non ho copiato i file", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getResources().getString(R.string.duplicate_error), Toast.LENGTH_SHORT).show();
 			return false;
 		}
 
 
-		//Get data and time
+		// Get date and time.
 		String date = AccelerAudioUtilities.getCurrentDate();
 		String time = AccelerAudioUtilities.getCurrentTime();
 
-		//insert the data in the database
+		// Insert the data in the database.
 		DBOpenHelper oh = new DBOpenHelper(getApplicationContext());
 		SQLiteDatabase db = oh.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -635,24 +644,24 @@ public class MainActivity extends ActionBarActivity {
 		values.put(DBOpenHelper.LAST_MODIFY_TIME, time);
 		values.put(DBOpenHelper.RATE, rate);     
 		values.put(DBOpenHelper.DURATION, duration);     
-		values.put(DBOpenHelper.UPSAMPL, seekValue);       //add seekbar value
+		values.put(DBOpenHelper.UPSAMPL, seekValue);       // Add the seekbar value.
 		values.put(DBOpenHelper.X_CHECK, xCheck);
 		values.put(DBOpenHelper.Y_CHECK, yCheck);
 		values.put(DBOpenHelper.Z_CHECK, zCheck);
-		values.put(DBOpenHelper.X_VALUES, x);          //add the three byte array to the database
+		values.put(DBOpenHelper.X_VALUES, x);          // Add the three byte arrays to the database.
 		values.put(DBOpenHelper.Y_VALUES, y);
 		values.put(DBOpenHelper.Z_VALUES, z);
-		values.put(DBOpenHelper.DATA_SIZE, size);        //add the number samples to the database
+		values.put(DBOpenHelper.DATA_SIZE, size);        // Add the number of samples to the database.
 		db.insert(DBOpenHelper.TABLE, null, values);
 
-		WidgetIntentReceiver.updateWidgetOnStop(this); //Update the widget with the last song.
+		WidgetIntentReceiver.updateWidgetOnStop(this); // Update the widget with the last song.
 
 		return true;
 	}
 
 	/**
-	 * Change from integer to boolean (0 = false, any other numbers = true)
-	 * @param bool the integer to convert
+	 * Convert from integer to boolean (0 = false, any other numbers = true)
+	 * @param bool The integer to convert.
 	 * @return true if the parameter is different from 0, else otherwise.
 	 */
 	private boolean intToBoolean(int bool){

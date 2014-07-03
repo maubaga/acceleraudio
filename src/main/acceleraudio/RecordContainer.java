@@ -23,7 +23,7 @@ public class RecordContainer implements IRecordContainer{
 	}
 
 	/**
-	 * A method that add three values, one for each arrays
+	 * Add three values, one for each arrays
 	 * @param x the value to add at the first array
 	 * @param y the value to add at the second array
 	 * @param z the value to add at the third array
@@ -35,12 +35,12 @@ public class RecordContainer implements IRecordContainer{
 			recordZ[recordCount] = z;
 		}
 		catch (ArrayIndexOutOfBoundsException e){
-			//The three arrays are too short, I need to resize them
+			// The three arrays are too short, I need to resize them.
 			byte[] recordXtmp = new byte[recordX.length * 2];
 			byte[] recordYtmp = new byte[recordX.length * 2];
 			byte[] recordZtmp = new byte[recordX.length * 2];
 
-			//Now i copy the old values in the new arrays
+			// Copy the old values in the new arrays.
 			for (int i = 0; i < recordX.length; i++){
 				recordXtmp[i] = recordX[i];
 				recordYtmp[i] = recordY[i];
@@ -50,7 +50,7 @@ public class RecordContainer implements IRecordContainer{
 			recordY = recordYtmp;
 			recordZ = recordZtmp;
 
-			//Now I have add the last value
+			// Add the last value.
 			recordX[recordCount] = x;
 			recordY[recordCount] = y;
 			recordZ[recordCount] = z;
@@ -58,39 +58,39 @@ public class RecordContainer implements IRecordContainer{
 		recordCount++;
 	}
 	/**
-	 * A method that return the number of values for each arrays, the total number of values is getSize() * 3
-	 * @return An int that represent the number of values in an array
+	 * A method that return the number of values for each arrays, the total number of values is getSize() * 3.
+	 * @return An int that represent the number of values in an array.
 	 */
 	public int getSize(){
 		return recordCount;
 	}
 
 	/**
-	 * Return the first array
-	 * @return the first array 
+	 * Return the first array.
+	 * @return the first array.
 	 */
 	public byte[] getXarray(){
 		return recordX;
 	}
 
 	/**
-	 * Return the second array
-	 * @return the second array
+	 * Return the second array.
+	 * @return the second array.
 	 */
 	public byte[] getYarray(){
 		return recordY;
 	}
 
 	/**
-	 * Return the third array
-	 * @return the third array
+	 * Return the third array.
+	 * @return the third array.
 	 */
 	public byte[] getZarray(){
 		return recordZ;
 	}
 
 	/**
-	 * This method empties the arrays
+	 * Empties the arrays.
 	 */
 	public void reset(){
 		recordCount = 0;

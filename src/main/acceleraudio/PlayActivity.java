@@ -43,8 +43,8 @@ public class PlayActivity extends ActionBarActivity {
 			}
 			if(intent.getAction().equals(PlayerService.CHANGE)){
 				int currentProgress = intent.getIntExtra(PlayerService.CURRENT_PROGRESS, 0);
-				soundProgress.setProgress(currentProgress);                    //update the seekbar
-				text_time_passed.setText(secondToTime(currentProgress));       //update my "chronometer"
+				soundProgress.setProgress(currentProgress);                    // Update the seekbar.
+				text_time_passed.setText(secondToTime(currentProgress));       // Update my "chronometer".
 			}
 		}
 	};
@@ -64,7 +64,7 @@ public class PlayActivity extends ActionBarActivity {
 
 
 		intent = getIntent();
-		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/"
+		appFileDirectory = getApplicationContext().getFilesDir().getPath() + "/"; // "/data/data/main.acceleraudio/files/".
 		session_name = intent.getStringExtra(SESSION_NAME);
 		isAutoplayEnabled = intent.getBooleanExtra(AUTOPLAY, false);
 		duration = intent.getIntExtra(DURATION, -1);
@@ -83,13 +83,13 @@ public class PlayActivity extends ActionBarActivity {
 		soundProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
 
 			@Override 
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {  //update the current time
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {  // Update the current time.
 				text_time_passed.setText(secondToTime(progress)); 
 			} 
 
 			@Override 
 			public void onStartTrackingTouch(SeekBar seekBar) { 
-				//no need to use this
+				// No need to use this.
 			} 
 
 			@Override 
@@ -137,20 +137,9 @@ public class PlayActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-//	@Override
-//	public void onBackPressed() {
-//		isOnPause = false;
-//
-//		//Stop the song in background
-//		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
-//		stopService(stopIntent);
-//
-//		finish(); 
-//	}
-
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		// Save isLoop value in saveInstanceState bundle
+		// Save isLoop value in saveInstanceState bundle.
 		savedInstanceState.putBoolean("is_loop_on", isLoop);
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -193,7 +182,7 @@ public class PlayActivity extends ActionBarActivity {
 
 
 	/**
-	 * This method is called when the button "Play" is pressed. It start the PlayService.
+	 * This method is called when the button "Play" is pressed. It starts the PlayService.
 	 * @param view the button pressed.
 	 */
 	public void play(View view){
@@ -205,7 +194,7 @@ public class PlayActivity extends ActionBarActivity {
 
 		isOnPause = false;
 
-		//Start the background play
+		// Start the background play.
 		Intent startIntent = new Intent(getApplicationContext(),PlayerService.class); 
 		startIntent.setAction(PlayerService.PLAY_START);
 		startIntent.putExtra(PlayerService.SONG_TO_PLAY, appFileDirectory + session_name + ".wav");
@@ -214,7 +203,7 @@ public class PlayActivity extends ActionBarActivity {
 	}
 	
 	/**
-	 * This method is called when the button "Pause" is pressed. It pause the song in the PlayService.
+	 * This method is called when the button "Pause" is pressed. It pauses the song in the PlayService.
 	 * @param view the button pressed.
 	 */
 	public void pause(View view) {
@@ -226,13 +215,14 @@ public class PlayActivity extends ActionBarActivity {
 
 		isOnPause = true;
 
+		// Pause the song in background.
 		Intent pauseIntent = new Intent(getApplicationContext(),PlayerService.class); 
 		pauseIntent.setAction(PlayerService.PLAY_PAUSE);
 		startService(pauseIntent);
 	}
 	
 	/**
-	 * This method is called when the button "Stop" is pressed. It stop the PlayService.
+	 * This method is called when the button "Stop" is pressed. It stops the PlayService.
 	 * @param view the button pressed.
 	 */
 	public void stop(View view) {
@@ -241,9 +231,10 @@ public class PlayActivity extends ActionBarActivity {
 		ImageButton pause = (ImageButton)findViewById(R.id.pause);
 		play.setVisibility(View.VISIBLE);
 		pause.setVisibility(View.GONE);
+		
 		isOnPause = false;
 
-		//Stop the song in background
+		// Stop the song in background.
 		Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 		stopService(stopIntent);
 
@@ -265,7 +256,7 @@ public class PlayActivity extends ActionBarActivity {
 			loop.setImageResource(R.drawable.loop);			
 		}
 
-		//I notify the PlayService that the loop button is pressed
+		// Notify the PlayService that the loop button is pressed.
 		Intent loopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 		loopIntent.setAction(PlayerService.SET_LOOP);
 		startService(loopIntent);
@@ -273,7 +264,7 @@ public class PlayActivity extends ActionBarActivity {
 
 
 	/**
-	 * This pass the time in milliseconds to the PlayService.
+	 * Pass the time in milliseconds to the PlayService.
 	 * @param milliseconds time to seek in milliseconds.
 	 */
 	private void seekTo(int milliseconds){
@@ -285,14 +276,14 @@ public class PlayActivity extends ActionBarActivity {
 
 
 	/**
-	 * This method convert milliseconds into minutes an seconds in the format mm:ss
-	 * @param totalMilliSeconds the milliseconds to convert
-	 * @return A String that represent the time format mm:ss
+	 * This method convert milliseconds into minutes and seconds in the format mm:ss.
+	 * @param totalMilliSeconds the milliseconds to convert.
+	 * @return A String that represent the time in format mm:ss.
 	 */
 	public static String secondToTime(int totalMilliSeconds){
-		int totalSeconds = totalMilliSeconds / 1000; //convert to milliseconds to seconds
-		int minutes = totalSeconds / 60;             //get the minutes
-		int seconds = totalSeconds % 60;    		 //get the seconds
+		int totalSeconds = totalMilliSeconds / 1000; // Convert from milliseconds to seconds.
+		int minutes = totalSeconds / 60;             // Get the minutes.
+		int seconds = totalSeconds % 60;    		 // Get the seconds.
 		String secondString = "";
 		String minuteString = "";
 
