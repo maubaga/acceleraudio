@@ -11,10 +11,9 @@ import android.widget.RemoteViews;
 
 public class LittleWidgetProvider extends AppWidgetProvider {
 
-	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {		
-		//Get the layout of the LittleWidget
+		// Get the layout of the LittleWidget.
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.little_widget);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, startButtonPendingIntent(context));
 		remoteViews.setOnClickPendingIntent(R.id.stop_button, stopButtonPendingIntent(context));
@@ -24,8 +23,8 @@ public class LittleWidgetProvider extends AppWidgetProvider {
 	}
 
 	/**
-	 * Get a PendigIntent for start button that start a recording.
-	 * @param context The context where the method is call.
+	 * Get a PendigIntent for start button that starts a recording.
+	 * @param context The Context where the method is called.
 	 * @return A PendingIntet to associate with the start button.
 	 */
 	public static PendingIntent startButtonPendingIntent(Context context) {
@@ -35,8 +34,8 @@ public class LittleWidgetProvider extends AppWidgetProvider {
 	}
 	
 	/**
-	 * Get a PendigIntent for stop button that stop the recording.
-	 * @param context The context where the method is call.
+	 * Get a PendigIntent for stop button that stops the recording.
+	 * @param context The Context where the method is called.
 	 * @return A PendingIntet to associate with the stop button.
 	 */
 	public static PendingIntent stopButtonPendingIntent(Context context) {
@@ -46,8 +45,8 @@ public class LittleWidgetProvider extends AppWidgetProvider {
 	}
 
 	/**
-	 * Get a PendigIntent for preferences chronometer that that start MainActivity.
-	 * @param context The context where the method is call.
+	 * Get a PendigIntent for the chronometer that starts MainActivity.
+	 * @param context The Context where the method is called.
 	 * @return A PendingIntet to associate with the chronometer.
 	 */
 	public static PendingIntent chronometerPendingIntent(Context context) {
@@ -57,8 +56,8 @@ public class LittleWidgetProvider extends AppWidgetProvider {
 	
 	
 	/**
-	 * This method update the RemoteViews give as param.
-	 * @param context The context where the method is call.
+	 * Update the RemoteViews given as param.
+	 * @param context The Context where the method is called.
 	 * @param remoteViews RemoteViews to update.
 	 */
 	public static void pushWidgetUpdate(Context context, RemoteViews remoteViews) {

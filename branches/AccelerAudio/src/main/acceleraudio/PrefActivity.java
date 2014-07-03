@@ -23,7 +23,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//class that manages the preferences of the app
+// Class that manages the preferences of the app.
 public class PrefActivity extends ActionBarActivity {
 	
 	private static CheckBox cbX;
@@ -32,7 +32,7 @@ public class PrefActivity extends ActionBarActivity {
 	private static TextView max_duration_values;
 	private static String duration_value;
 	
-	//keys for the values contained in SharedPreferences
+	// Keys for the values contained in SharedPreferences.
 	public static final String KEY_PREFERENCE ="Session_Preferences";
 	public static final String KEY_SELECT_X = "cBoxSelectX";
 	public static final String KEY_SELECT_Y = "cBoxSelectY";
@@ -86,7 +86,7 @@ public class PrefActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_pref, container,
 					false);
 			
-			//recovery states of the components using SharedPreferences
+			// Recover the states of the components using SharedPreferences.
 			Context context = getActivity();
 			SharedPreferences preferences = context.getSharedPreferences(KEY_PREFERENCE, Context.MODE_PRIVATE);
 			boolean pref_cbX = preferences.getBoolean(KEY_SELECT_X, true);
@@ -96,7 +96,7 @@ public class PrefActivity extends ActionBarActivity {
 			String pref_maxRec = preferences.getString(KEY_MAX_REC, getResources().getString(R.string.duration1));
 			int pref_upsampl = preferences.getInt(KEY_UPSAMPL, 100);
 			
-			//assignment of the values of the states related to the components
+			// Assign the values of the states related to the components
 			cbX = (CheckBox)rootView.findViewById(R.id.checkBoxX); 
 			cbX.setChecked(pref_cbX);
 			cbY = (CheckBox)rootView.findViewById(R.id.checkBoxY); 
@@ -104,14 +104,14 @@ public class PrefActivity extends ActionBarActivity {
 			cbZ = (CheckBox)rootView.findViewById(R.id.checkBoxZ); 
 			cbZ.setChecked(pref_cbZ);
 			
-			//checking if, at least, one axes is selected
+			// Check if, at least, one axes is selected.
 			cbX.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){ 
 
 				   @Override 
 				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
 					   if(!cbX.isChecked() && !cbY.isChecked() && !cbZ.isChecked()){
 						   
-						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						   Toast.makeText(getActivity(), getResources().getString(R.string.axes_error), Toast.LENGTH_SHORT).show();
 						   buttonView.setChecked(true);
 						   
 					   }
@@ -124,7 +124,7 @@ public class PrefActivity extends ActionBarActivity {
 				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
 					   if(!cbX.isChecked() && !cbY.isChecked() && !cbZ.isChecked()){
 						   
-						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						   Toast.makeText(getActivity(), getResources().getString(R.string.axes_error), Toast.LENGTH_SHORT).show();
 						   buttonView.setChecked(true);
 						   
 					   }
@@ -137,14 +137,14 @@ public class PrefActivity extends ActionBarActivity {
 				   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { 
 					   if(!cbX.isChecked() && !cbY.isChecked() && !cbZ.isChecked()){
 						   
-						   Toast.makeText(getActivity(),"Devi selezionare almeno un asse", Toast.LENGTH_SHORT).show();
+						   Toast.makeText(getActivity(), getResources().getString(R.string.axes_error), Toast.LENGTH_SHORT).show();
 						   buttonView.setChecked(true);
 						   
 					   }
 				   } 
 				       });
 			
-			//assignment of the values of the states related to the components
+			// Assign the values of the states related to the components.
 			max_duration_values = (TextView)rootView.findViewById(R.id.max_duration_value);
 			max_duration_values.setText(pref_maxRec);
 			
@@ -153,8 +153,8 @@ public class PrefActivity extends ActionBarActivity {
 			sb_rate.setProgress(pref_rate);
 			tvProgress_rate.setText(String.valueOf(pref_rate)); 
 			
-			//Sets a listener to receive notifications of changes to the 
-			//SeekBar's progress level, relative to sample-rate
+			// Set a listener to receive notifications of changes to the 
+			// seekBar's progress level, relative to sample-rate.
 			sb_rate.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
 
 				   @Override 
@@ -164,23 +164,23 @@ public class PrefActivity extends ActionBarActivity {
 
 				   @Override 
 				   public void onStartTrackingTouch(SeekBar seekBar) { 
-					   //no need to use this
+					   // No need to use this.
 				   } 
 
 				   @Override 
 				   public void onStopTrackingTouch(SeekBar seekBar) {
-					   //no need to use this
+					   // No need to use this.
 				   } 
 				       });
 			
-			//assignment of the values of the states related to the components
+			// Assign the values of the states related to the components.
 			final TextView tvProgress=(TextView)rootView.findViewById(R.id.progress_seekbar);
 			SeekBar sb_upsampl = (SeekBar)rootView.findViewById(R.id.v_upsamping);
 			sb_upsampl.setProgress(pref_upsampl);
 			tvProgress.setText(String.valueOf(pref_upsampl)); 
 			
-			//Sets a listener to receive notifications of changes to the 
-			//SeekBar's progress level, relative to upsampling
+			// Set a listener to receive notifications of changes to the 
+			// seekBar's progress level, relative to upsampling.
 			sb_upsampl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
 
 				   @Override 
@@ -190,12 +190,12 @@ public class PrefActivity extends ActionBarActivity {
 
 				   @Override 
 				   public void onStartTrackingTouch(SeekBar seekBar) { 
-					   //no need to use this
+					   // No need to use this.
 				   } 
 
 				   @Override 
 				   public void onStopTrackingTouch(SeekBar seekBar) {
-					   //no need to use this
+					   // No need to use this.
 				   } 
 				       });
 			
@@ -206,11 +206,11 @@ public class PrefActivity extends ActionBarActivity {
 	protected void onPause(){
 		super.onPause();
 		
-		//make use of SharedPrefereces and its editor to save the state of the components
+		// Make use of SharedPrefereces and its editor to save the state of the components.
 		SharedPreferences preferences = getSharedPreferences(KEY_PREFERENCE, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		
-		//state of CheckBoxes relative to the selected axes
+		// States of the CheckBoxes relative to the selected axes.
 		CheckBox cbX = (CheckBox)findViewById(R.id.checkBoxX); 
 		boolean pref_cbX = cbX.isChecked();
 		CheckBox cbY = (CheckBox)findViewById(R.id.checkBoxY); 
@@ -218,18 +218,18 @@ public class PrefActivity extends ActionBarActivity {
 		CheckBox cbZ = (CheckBox)findViewById(R.id.checkBoxZ); 
 		boolean pref_cbZ = cbZ.isChecked();
 		
-		//state of TextBox relative to the sample-rate
+		// State of the TextView relative to the sample-rate.
 		TextView tvProgress_rate=(TextView)findViewById(R.id.progress_seekbar_rate);
 		int pref_rate = Integer.parseInt(tvProgress_rate.getText().toString());
 		
-		//state of TextBox relative to the max duration of record
+		// State of the TextView relative to the max duration of record.
 		String pref_maxRec = duration_value;
 		
-		//state of TextBox relative to the upsampling
+		// State of the TextView relative to the upsampling.
 		TextView tvProgress=(TextView)findViewById(R.id.progress_seekbar);
 		int pref_upsampl = Integer.parseInt(tvProgress.getText().toString());
 		
-		//save state with Editor
+		// Save state with Editor.
 		editor.putBoolean(KEY_SELECT_X, pref_cbX);
 		editor.putBoolean(KEY_SELECT_Y, pref_cbY);
 		editor.putBoolean(KEY_SELECT_Z, pref_cbZ);
@@ -240,7 +240,7 @@ public class PrefActivity extends ActionBarActivity {
 		editor.commit();
 	}
 	
-//a pop-up for choose the duration of record
+// A pop-up to choose the maximum duration of a session.
 public void durationChooser(View view){
 		
 		new AlertDialog.Builder(this).setTitle(R.string.max_duration).setItems(R.array.durations,

@@ -8,13 +8,11 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-
-
 public class AccelerAudioUtilities{
 	/**
-	 * This method convert date from the format yyyy-mm-dd to the format dd/mm/yyyy
-	 * @param inputDate A String that represents the date in format yyyy-mm-dd
-	 * @return  A String that represents the date in format dd/mm/yyyy
+	 * Converts the date from the format yyyy-mm-dd to the format dd/mm/yyyy.
+	 * @param inputDate A String that represents the date in format yyyy-mm-dd.
+	 * @return  A String that represents the date in format dd/mm/yyyy.
 	 */
 	public static String dateConverter(String inputDate){
 		String yy = inputDate.substring(0, 4);
@@ -25,8 +23,8 @@ public class AccelerAudioUtilities{
 	}
 	
 	/**
-	 * This method return a String that represents current date in format yyyy-mm-dd
-	 * @return  A String that represents the date in format yyyy-mm-dd
+	 * This method returns a String that represents current date in format yyyy-mm-dd.
+	 * @return  A String that represents the date in format yyyy-mm-dd.
 	 */
 	public static String getCurrentDate(){
 		
@@ -48,15 +46,14 @@ public class AccelerAudioUtilities{
 		else
 			months = "" + (mm + 1);
 
-
 		date = yy + "-" + months + "-" + days;
 		
 		return date;
 	}
 	
 	/**
-	 * This method return a String that represents current time in format hh:mm
-	 * @return  A String that represents the time in format hh:mm
+	 * This method returns a String that represents current time in format hh:mm.
+	 * @return  A String that represents the time in format hh:mm.
 	 */
 	public static String getCurrentTime(){
 		final Calendar c = Calendar.getInstance();
@@ -84,14 +81,14 @@ public class AccelerAudioUtilities{
 	
 	/**
 	 * Create a symmetrical 10*10 Bitmap in RGB_565 format from the current time.
-	 * @return The Bitmap create.
+	 * @return The Bitmap created.
 	 */
 	public static Bitmap createImage() {
-		// Create a Bitmap
-		Bitmap bmp = Bitmap.createBitmap(10, 10, Bitmap.Config.RGB_565); // this creates a MUTABLE bitmap
+		// Create a Bitmap.
+		Bitmap bmp = Bitmap.createBitmap(10, 10, Bitmap.Config.RGB_565); // Create a MUTABLE bitmap.
 		long value = System.currentTimeMillis();
 
-		// Color the Bitmap
+		// Color the Bitmap.
 		int color = (int) value;
 		int[] indexes = new int[4];
 		for(int i = 0; i < indexes.length; i++)
@@ -110,14 +107,14 @@ public class AccelerAudioUtilities{
 	
 	/**
 	 * Save the Bitmap session_image with the name imageName.png, return true if the image is created, false otherwise.
-	 * @param context The Context where the image is create.
-	 * @param imageName The name of the image to save (without .png)
-	 * @param session_image The Bitmap to save
-	 * @return true if the image is created, false otherwise
+	 * @param context The Context where the image is created.
+	 * @param imageName The name of the image to save (without .png).
+	 * @param session_image The Bitmap to save.
+	 * @return true if the image is created, false otherwise.
 	 */
 	public static boolean saveImage(Context context, String imageName, Bitmap session_image){
 		FileOutputStream out;
-		String file = imageName + ".png"; //name of the .png file
+		String file = imageName + ".png"; // Name of the .png file.
 		try {
 			out = context.openFileOutput(file, Context.MODE_PRIVATE);
 			session_image.compress(Bitmap.CompressFormat.PNG, 90, out);
@@ -131,7 +128,7 @@ public class AccelerAudioUtilities{
 	}
 	
 	/**
-	 * This method average a Byte array.
+	 * Average a Byte array.
 	 * @param byteArray The array to average.
 	 */
 	public static void averageArray(byte[] byteArray){
@@ -142,7 +139,7 @@ public class AccelerAudioUtilities{
 	
 	/**
 	 * Check if the service serviceClass is running, return true if is running, false otherwise.
-	 * @param context The context where the method is call.
+	 * @param context The context where the method is called.
 	 * @param serviceClass The service to check.
 	 * @return true if the service is running, false otherwise.
 	 */

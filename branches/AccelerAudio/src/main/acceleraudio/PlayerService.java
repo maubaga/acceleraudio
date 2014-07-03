@@ -34,7 +34,7 @@ public class PlayerService extends Service{
 	@Override 
 	public IBinder onBind(Intent intent) 
 	{ 
-		return null; // Clients can not bind to this service 
+		return null; // Clients can not bind to this service.
 	} 
 
 	@Override 
@@ -64,7 +64,7 @@ public class PlayerService extends Service{
 	}
 	
 	/**
-	 * This method is called when the button "Play" is pressed. It start the song.
+	 * This method is called when the button "Play" is pressed. It starts the song.
 	 */
 	private void play() { 
 		if(isPlaying && sessionToPlay.equals(sessionInPlayNow))
@@ -95,20 +95,20 @@ public class PlayerService extends Service{
 			isPlaying = true;
 			sessionInPlayNow = sessionToPlay.toString();
 
-			//Thread to update the seekbar
+			// Thread to update the seekbar.
 			new Thread(
 					new Runnable() {
 						@Override
 						public void run() {
 							while(myPlayer != null && isPlaying) {
-								// Updating progress bar
+								// Updating progress bar.
 								int progress =  myPlayer.getCurrentPosition();
 								Intent changeProgress = new Intent(CHANGE);
 								changeProgress.putExtra(CURRENT_PROGRESS, progress);
 								sendBroadcast(changeProgress);
 
 								try {
-									// Sleep for 0.1 seconds
+									// Sleep for 0.1 seconds.
 									Thread.sleep(100);
 								} catch (InterruptedException e) {
 									Log.d("Sleep seekbar", "sleep failure");
@@ -116,7 +116,7 @@ public class PlayerService extends Service{
 							}
 						}
 					}
-					// Starts the thread by calling the run() method in its Runnable
+					// Starts the thread by calling the run() method in its Runnable.
 					).start();
 
 		} catch (IOException e) {
@@ -124,27 +124,27 @@ public class PlayerService extends Service{
 					Toast.LENGTH_SHORT).show();
 		}
 
-		// Runs this service in the foreground, 
-		// supplying the ongoing notification to be shown to the user
+		// Runs this service in the foreground;
+		// Supply the ongoing notification.
 		Intent intent = new Intent(this, PlayActivity.class); 
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); 
 		intent.putExtra(PlayActivity.SESSION_NAME, sessionInPlayNow.substring(35, sessionInPlayNow.length()-4));
-		intent.putExtra(PlayActivity.AUTOPLAY, true);  //the song starts automatically
+		intent.putExtra(PlayActivity.AUTOPLAY, true);  // The song starts automatically.
 		intent.putExtra(PlayActivity.DURATION, myPlayer.getDuration());
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); 
 		Notification notification = new NotificationCompat.Builder(getApplicationContext())
-		.setContentTitle("Stai ascoltando: " + sessionInPlayNow.substring(35, sessionInPlayNow.length()-4))
-		.setContentText("Premi per tornare alla traccia.")
+		.setContentTitle(getResources().getString(R.string.play_notification_title) + " " + sessionInPlayNow.substring(35, sessionInPlayNow.length()-4))
+		.setContentText(getResources().getString(R.string.play_notification_text))
 		.setSmallIcon(R.drawable.abc_ic_go)
-		.setContentIntent(pi) // Required on Gingerbread and below 
+		.setContentIntent(pi) // Required on Gingerbread and below.
 		.build();
-		final int notificationID = 1; // An ID for this notification unique within the app 
+		final int notificationID = 1; // An ID for this notification unique within the app.
 		startForeground(notificationID, notification);
 
 	}
 	
 	/**
-	 * This method is called when the button "Pause" is pressed. It pause the song in the song.
+	 * This method is called when the button "Pause" is pressed. It pauses the song in the song.
 	 */
 	private void pause() { 
 		if (isPlaying) { 
@@ -156,7 +156,7 @@ public class PlayerService extends Service{
 	} 
 	
 	/**
-	 * This method is called when the button "Stop" is pressed. It stop the song.
+	 * This method is called when the button "Stop" is pressed. It stops the song.
 	 */
 	private void stop() { 
 		if (isPlaying) 
@@ -197,7 +197,7 @@ public class PlayerService extends Service{
 	}
 	
 	/**
-	 * Get the name of the session in play now (without .wav).
+	 * Get the name of the session playing now (without .wav).
 	 * @return the name of the session.
 	 */
 	public static String getSessionInPlay(){
