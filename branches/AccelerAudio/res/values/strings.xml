@@ -32,6 +32,7 @@
     <string name="name_error3">Non puoi inserire spazi consecutivi nel nome</string>
     <string name="name_error4">Non puoi inserire / nel nome</string>
     <string name="name_error5">esiste già!</string>
+    <string name="name_error6">Non puoi inserire \' nel nome</string>
     
     <string name="duplicate_error">Non ho copiato i file</string>
 
