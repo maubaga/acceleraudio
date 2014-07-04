@@ -242,19 +242,28 @@ public class ModifyActivity extends ActionBarActivity {
 				Toast.makeText(this, getResources().getString(R.string.name_error1), Toast.LENGTH_SHORT).show();
 				return false;
 			}
-
-			if(session_name.contains("  ")){
-				Toast.makeText(this, getResources().getString(R.string.name_error2), Toast.LENGTH_SHORT).show();
-				return false;
-			}
 			
-			if(session_name.contains("/")){
-				Toast.makeText(this, getResources().getString(R.string.name_error3), Toast.LENGTH_SHORT).show();
-				return false;
+			if(session_name.length() > 200){ // Name too long.
+				session_name = session_name.substring(0, 200); // Cut the name too long.
 			}	
 
 			if(session_name.substring(0, 1).equals(" ")){
-				Toast.makeText(this, getResources().getString(R.string.name_error4), Toast.LENGTH_LONG).show();
+				Toast.makeText(this, getResources().getString(R.string.name_error2), Toast.LENGTH_LONG).show();
+				return false;
+			}
+
+			if(session_name.contains("  ")){
+				Toast.makeText(this, getResources().getString(R.string.name_error3), Toast.LENGTH_SHORT).show();
+				return false;
+			}	
+			
+			if(session_name.contains("/")){
+				Toast.makeText(this, getResources().getString(R.string.name_error4), Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			
+			if(session_name.contains("'")){
+				Toast.makeText(this, getResources().getString(R.string.name_error6), Toast.LENGTH_SHORT).show();
 				return false;
 			}
 
