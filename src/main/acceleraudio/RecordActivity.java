@@ -33,7 +33,6 @@ import android.widget.Toast;
 public class RecordActivity extends ActionBarActivity{
 
 	private long timeStop = 0;
-	private static long baseChronometer = 0;
 	private static long maxRecordTime;
 	private static int rate;
 	private Chronometer chrono;
@@ -58,12 +57,12 @@ public class RecordActivity extends ActionBarActivity{
 				TextView xTextView = (TextView) findViewById(R.id.x_axis);
 				TextView yTextView = (TextView) findViewById(R.id.y_axis);
 				TextView zTextView = (TextView) findViewById(R.id.z_axis);				
-				View x_bar1 = (View)findViewById(R.id.x_bar1);
-				View x_bar2 = (View)findViewById(R.id.x_bar2);
-				View y_bar1 = (View)findViewById(R.id.y_bar1);
-				View y_bar2 = (View)findViewById(R.id.y_bar2);
-				View z_bar1 = (View)findViewById(R.id.z_bar1);
-				View z_bar2 = (View)findViewById(R.id.z_bar2);
+				View x_bar1 = findViewById(R.id.x_bar1);
+				View x_bar2 = findViewById(R.id.x_bar2);
+				View y_bar1 = findViewById(R.id.y_bar1);
+				View y_bar2 = findViewById(R.id.y_bar2);
+				View z_bar1 = findViewById(R.id.z_bar1);
+				View z_bar2 = findViewById(R.id.z_bar2);
 				TextView notes = (TextView) findViewById(R.id.note);
 
 				xTextView.setText(x + "");
@@ -169,12 +168,13 @@ public class RecordActivity extends ActionBarActivity{
 		super.onResume();
 		registerReceiver(receiver, new IntentFilter(RecordService.SENSOR_CHANGE));
 		registerReceiver(receiver, new IntentFilter(RecordService.STOP_SERVICE));
+		
 		// The recording is already stopped in background, this permits to change activity.
-		chrono = (Chronometer)findViewById(R.id.chrono);
-		chrono.setBase(baseChronometer);
-		chrono.start();
-		if(isStart && (SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime))
+		boolean isRecordingStart = AccelerAudioUtilities.isMyServiceRunning(this, RecordService.class);
+		if (isStart && !isRecordingStart){ // Check if the recording is already start.
+			isStart = false;
 			finish();
+		}
 
 		if(isStart){
 			// This is only for graphical changes.
@@ -318,8 +318,6 @@ public class RecordActivity extends ActionBarActivity{
 		chrono.setVisibility(View.VISIBLE);
 		chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
 		chrono.start();
-
-		baseChronometer = chrono.getBase();
 
 		start_name.setVisibility(View.GONE);
 		start_hint.setVisibility(View.GONE);
