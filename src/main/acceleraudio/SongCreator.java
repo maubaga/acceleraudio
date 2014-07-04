@@ -2,6 +2,7 @@ package main.acceleraudio;
 
 import static main.acceleraudio.DBOpenHelper.NAME;
 import static main.acceleraudio.DBOpenHelper.TABLE;
+import interfaces.acceleraudio.ISongCreator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +16,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.widget.Toast;
 
-public class SongCreator {
+public class SongCreator implements ISongCreator{
 	// All file parameters.
 	public static final byte BITS_PER_SAMPLE = 8; // 8, 16...
 	public static final byte NUM_OF_CHANNEL = 1; // 1 = mono, 2 = stereo.
@@ -304,10 +305,10 @@ public class SongCreator {
 	 * Modify an existing session, update the last modify date and time in the database and rename the image if is necessary.
 	 * @param context The Context where this method is called.
 	 * @param session_name The new name for the session to modify.
-	 * @param oldSessionName The old name for the session before the modify.
+	 * @param old_session_name The old name for the session before the modify.
 	 * @return true if the modification is successful, false otherwise.
 	 */
-	public boolean modifySession(Context context, String session_name, String oldSessionName){
+	public boolean modifySession(Context context, String session_name, String old_session_name){
 		boolean isCreated = createWavFile(context, session_name);
 
 		if(!isCreated){
@@ -334,13 +335,13 @@ public class SongCreator {
 		values.put(DBOpenHelper.X_CHECK, useX);
 		values.put(DBOpenHelper.Y_CHECK, useY);
 		values.put(DBOpenHelper.Z_CHECK, useZ);
-		db.update(DBOpenHelper.TABLE, values, NAME +"= '" + oldSessionName + "'",null);
+		db.update(DBOpenHelper.TABLE, values, NAME +"= '" + old_session_name + "'",null);
 
 		// Delete the previous song and rename the image if the name is change.
-		if(!oldSessionName.equals(session_name)){
+		if(!old_session_name.equals(session_name)){
 			File dir = context.getFilesDir();
-			File image = new File(dir, oldSessionName + ".png");
-			File audio = new File(dir, oldSessionName + ".wav");
+			File image = new File(dir, old_session_name + ".png");
+			File audio = new File(dir, old_session_name + ".wav");
 			image.renameTo(new File(dir, session_name + ".png"));
 			audio.delete();
 		}
