@@ -119,6 +119,7 @@ public class PlayActivity extends ActionBarActivity {
 	protected void onPause() {
 		super.onPause();
 		unregisterReceiver(receiver);
+		WidgetIntentReceiver.updateWidgetOnStop(this); // Update the widget.
 	}
 
 	@Override

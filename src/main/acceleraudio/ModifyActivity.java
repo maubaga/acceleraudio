@@ -56,7 +56,7 @@ public class ModifyActivity extends ActionBarActivity {
 	private static boolean xCheck;
 	private static boolean yCheck;
 	private static boolean zCheck;
-
+	
 	private static int seekValue;
 	private static int seekbar_value;
 
@@ -103,6 +103,12 @@ public class ModifyActivity extends ActionBarActivity {
 			Intent stopIntent = new Intent(getApplicationContext(), PlayerService.class); 
 			stopService(stopIntent);
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		stopPreview(null);
 	}
 
 	@Override
