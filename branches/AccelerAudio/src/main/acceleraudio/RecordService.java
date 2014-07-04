@@ -12,7 +12,6 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Chronometer;
 import android.widget.Toast;
 
 public class RecordService extends Service  implements SensorEventListener {
@@ -38,7 +37,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	private static boolean isOnPause = false;
 	private static long maxRecordTime;
 	private static int rate;
-	private static Chronometer chrono;
+	private long timeStart = 0;
 	private long timeStop = 0;
 	private final int aSecond = 1000000;
 	private String session_name;
@@ -53,6 +52,8 @@ public class RecordService extends Service  implements SensorEventListener {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (START.equals(intent.getAction())){ // The start button is pressed.
 			if (isOnPause){                     // If it isn't the first time, I don't need to create the sensorManager and the RecordContainer.
+				timeStart = SystemClock.elapsedRealtime() - timeStop;
+				
 				isStart = true;
 				isOnPause = false;
 			}
@@ -68,9 +69,7 @@ public class RecordService extends Service  implements SensorEventListener {
 				mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 				mSensorManager.registerListener(this, mAccelerometer , aSecond/rate);
 				
-				chrono = new Chronometer(getApplicationContext());
-				chrono.setBase(SystemClock.elapsedRealtime() + timeStop);
-				chrono.start();
+				timeStart = SystemClock.elapsedRealtime();
 				isStart = true;
 				
 				displayNotification();
@@ -80,8 +79,7 @@ public class RecordService extends Service  implements SensorEventListener {
 			isStart = false;
 			isOnPause = true;
 			
-			chrono.stop();
-			timeStop = chrono.getBase() - SystemClock.elapsedRealtime();
+			timeStop = SystemClock.elapsedRealtime() - timeStart;
 		}
 		if (STOP.equals(intent.getAction())){
 			isStart = false;
@@ -157,7 +155,7 @@ public class RecordService extends Service  implements SensorEventListener {
 	 * Check if the max duration set in the preference is reached. If the time is over it stops the recording.
 	 */
 	private void checkMaxDuration(){
-		if(SystemClock.elapsedRealtime() - chrono.getBase() >= maxRecordTime){
+		if(SystemClock.elapsedRealtime() - timeStart >= maxRecordTime){
 			isStart = false;
 			mSensorManager.unregisterListener(this);
 			publishFinishResults();
