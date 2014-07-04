@@ -70,7 +70,7 @@ public class PlayerService extends Service{
 		if(isPlaying && sessionToPlay.equals(sessionInPlayNow))
 			return;
 
-		if(isPlaying && !sessionToPlay.equals(sessionInPlayNow))
+		if(!sessionToPlay.equals(sessionInPlayNow))
 			stop();
 
 		try {
@@ -165,8 +165,9 @@ public class PlayerService extends Service{
 		if (myPlayer != null) { 
 			myPlayer.release(); 
 			myPlayer = null;
-			position = 0;
 		} 
+		
+		position = 0;
 	} 
 
 	/**
@@ -198,9 +199,11 @@ public class PlayerService extends Service{
 	
 	/**
 	 * Get the name of the session playing now (without .wav).
-	 * @return the name of the session.
+	 * @return the name of the session, null if nothig is in play.
 	 */
 	public static String getSessionInPlay(){
+		if(sessionInPlayNow == null)
+			return null;
 		return sessionInPlayNow.substring(35, sessionInPlayNow.length()-4);
 	}
 
