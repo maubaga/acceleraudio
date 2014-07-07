@@ -26,7 +26,7 @@ public class BatteryWidgetIntentReceiver extends BroadcastReceiver {
 		int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 		int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-		float batteryPct = (int)(level / (float)scale * 100);
+		int batteryPct = level * 100 / scale;
 		remoteViews.setTextViewText(R.id.level, batteryPct + "%");
 
 		if(batteryPct < 15){
