@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="app_name">Battery</string>
+    <string name="initial_time">0%</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+
+</resources>
