@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.BatteryManager;
 import android.widget.RemoteViews;
 
@@ -27,8 +28,20 @@ public class BatteryWidgetProvider extends AppWidgetProvider {
 		int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 		int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-		float batteryPct = level / (float)scale * 100;
+		int batteryPct = level * 100 / scale;
 		remoteViews.setTextViewText(R.id.level, batteryPct + "%");
+		
+		if(batteryPct < 15){
+			remoteViews.setTextColor(R.id.level, Color.RED);
+		}
+		else{
+			if(batteryPct < 50){
+				remoteViews.setTextColor(R.id.level, Color.YELLOW);
+			}
+			else{
+				remoteViews.setTextColor(R.id.level, Color.GREEN);
+			}
+		}
 		
 		pushWidgetUpdate(context, remoteViews);
 	}

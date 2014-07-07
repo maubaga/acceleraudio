@@ -4,5 +4,6 @@
     android:minHeight="73dp" 
     android:minWidth="146dp"
     android:updatePeriodMillis="1000" 
+    android:previewImage="@drawable/widget_preview"
     >
 </appwidget-provider>
